@@ -7,10 +7,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C5ED69F0-40A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0AB87EEE-3AB8-417F-958B-10426D67BDCD}"
 	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
+		LICENSE.txt = LICENSE.txt
+		Package.nuspec = Package.nuspec
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TableauAPI", "src\TableauAPI\TableauAPI.xproj", "{BA9FA0B9-27AD-4569-9469-2EA52D92027D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TableauAPI", "TableauAPI\TableauAPI.csproj", "{86424F73-D49D-4372-BFF9-A30F5A16CE39}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,15 +19,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BA9FA0B9-27AD-4569-9469-2EA52D92027D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BA9FA0B9-27AD-4569-9469-2EA52D92027D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BA9FA0B9-27AD-4569-9469-2EA52D92027D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BA9FA0B9-27AD-4569-9469-2EA52D92027D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86424F73-D49D-4372-BFF9-A30F5A16CE39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86424F73-D49D-4372-BFF9-A30F5A16CE39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86424F73-D49D-4372-BFF9-A30F5A16CE39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86424F73-D49D-4372-BFF9-A30F5A16CE39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{BA9FA0B9-27AD-4569-9469-2EA52D92027D} = {C5ED69F0-40A4-41FC-8C48-75F3AED71AC2}
+		{86424F73-D49D-4372-BFF9-A30F5A16CE39} = {C5ED69F0-40A4-41FC-8C48-75F3AED71AC2}
 	EndGlobalSection
 EndGlobal
