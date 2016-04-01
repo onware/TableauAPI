@@ -40,7 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="FilesLogging\AppDiagnostics.cs" />
     <Compile Include="FilesLogging\CsvDataGenerator.cs" />
     <Compile Include="FilesLogging\CsvRowValuePairs.cs" />
@@ -109,7 +108,9 @@
     <Compile Include="ServerData\SiteUser.cs" />
     <Compile Include="ServerData\SiteWorkbook.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="TableauAPI.nuspec" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,20 +1,17 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Package</id>
+    <id>TableauAPI</id>
     <version>1.0.0</version>
-    <authors>frase</authors>
-    <owners>frase</owners>
+    <authors>LightHorse Innovation Corporation</authors>
+    <owners>LightHorse Innovation Corporation</owners>
     <licenseUrl>https://github.com/lighthorseinnovation/TableauAPI/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/lighthorseinnovation/TableauAPI</projectUrl>
-    <iconUrl>https://github.com/lighthorseinnovation/TableauAPI/blob/master/logo.png</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/lighthorseinnovation/TableauAPI/master/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>An implementation of the Tableau REST API in C# distributed as a NuGet package.</description>
     <releaseNotes>Initial release.</releaseNotes>
     <copyright>Copyright 2016 Tableau, LightHorse Innovation Corporation</copyright>
     <tags>Tableau REST API</tags>
-    <dependencies>
-      <dependency id="SampleDependency" version="1.0" />
-    </dependencies>
   </metadata>
 </package>
