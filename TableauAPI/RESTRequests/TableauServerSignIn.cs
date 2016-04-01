@@ -33,7 +33,7 @@ class TableauServerSignIn : TableauServerRequestBase
     /// <param name="statusLog"></param>
     public static void VerifySignInPossible(string url, string userId, string userPassword, TaskStatusLogs statusLog)
     {
-        var urlManager = TableauServerUrls.FromContentUrl(url, TaskMasterOptions.RestApiReponsePageSizeDefault);
+        var urlManager = TableauServerUrls.FromContentUrl(url, 1000);
         var signIn = new TableauServerSignIn(urlManager, userId, userPassword, statusLog);
         bool success = signIn.ExecuteRequest();
 
