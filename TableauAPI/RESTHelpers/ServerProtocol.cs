@@ -1,10 +1,11 @@
-﻿using System;
-
-/// <summary>
-/// Does the server use HTTP or HTTPS
-/// </summary>
-public enum ServerProtocol
+﻿namespace TableauAPI.RESTHelpers
 {
-    http,
-    https
+    /// <summary>
+    /// Does the server use HTTP or HTTPS
+    /// </summary>
+    public enum ServerProtocol
+    {
+        http,
+        https
+    }
 }

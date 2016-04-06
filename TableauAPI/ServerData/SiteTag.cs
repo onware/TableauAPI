@@ -1,36 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml;
-/// <summary>
-/// Information about a Tag
-/// </summary>
-class SiteTag
-{
-    public readonly string Label;
-    /// <summary>
-    /// Any developer/diagnostic notes we want to indicate
-    /// </summary>
-    public readonly string DeveloperNotes;
+using TableauAPI.FilesLogging;
 
+namespace TableauAPI.ServerData
+{
     /// <summary>
-    /// Constructor
+    /// Information about a Tag
     /// </summary>
-    /// <param name="userNode"></param>
-    public SiteTag(XmlNode tagNode)
+    public class SiteTag
     {
-        if (tagNode.Name.ToLower() != "tag")
+        public readonly string Label;
+        /// <summary>
+        /// Any developer/diagnostic notes we want to indicate
+        /// </summary>
+        public readonly string DeveloperNotes;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="userNode"></param>
+        public SiteTag(XmlNode tagNode)
         {
-            AppDiagnostics.Assert(false, "Not a tag");
-            throw new Exception("Unexpected content - not tag");
+            if (tagNode.Name.ToLower() != "tag")
+            {
+                AppDiagnostics.Assert(false, "Not a tag");
+                throw new Exception("Unexpected content - not tag");
+            }
+
+            this.Label = tagNode.Attributes["label"].Value;
         }
 
-        this.Label = tagNode.Attributes["label"].Value;
-    }
+        public override string ToString()
+        {
+            return "Tag: " + this.Label;
+        }
 
-    public override string ToString()
-    {
-        return "Tag: " + this.Label;
     }
-
 }

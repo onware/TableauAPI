@@ -1,37 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using TableauAPI.ServerData;
 
-/// <summary>
-/// Filtering methods for sorting content into projects that own them
-/// </summary>
-/// <typeparam name="T"></typeparam>
-class FilterProjectMembership<T> where T : IHasProjectId
+namespace TableauAPI.RESTHelpers
 {
     /// <summary>
-    /// Keeps only the members of the set that have a matching project id
+    /// Filtering methods for sorting content into projects that own them
     /// </summary>
-    /// <param name="items"></param>
-    /// <param name="projectId"></param>
-    /// <returns></returns>
-    public static ICollection<T> KeepOnlyProjectMembers(ICollection<T> items, SiteProject project, bool nullMeansNoFilter)
+    /// <typeparam name="T"></typeparam>
+    internal class FilterProjectMembership<T> where T : IHasProjectId
     {
-        //See if a blank filter implies we should return the full set
-        if((nullMeansNoFilter) && (project == null))
+        /// <summary>
+        /// Keeps only the members of the set that have a matching project id
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        public static ICollection<T> KeepOnlyProjectMembers(ICollection<T> items, SiteProject project, bool nullMeansNoFilter)
         {
-            return items;
-        }
-
-        var projectId = project.Id;
-        var listOut = new List<T>();
-        foreach (var thisItem in items)
-        {
-            if(thisItem.ProjectId == projectId)
+            //See if a blank filter implies we should return the full set
+            if((nullMeansNoFilter) && (project == null))
             {
-                listOut.Add(thisItem);
+                return items;
             }
-        }
 
-        return listOut;
+            var projectId = project.Id;
+            var listOut = new List<T>();
+            foreach (var thisItem in items)
+            {
+                if(thisItem.ProjectId == projectId)
+                {
+                    listOut.Add(thisItem);
+                }
+            }
+
+            return listOut;
+        }
     }
 }

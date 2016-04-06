@@ -1,17 +1,20 @@
-﻿partial class CredentialManager
+﻿namespace TableauAPI.RESTHelpers
 {
-    internal class Credential
+    public partial class CredentialManager
     {
-        public readonly string Name;
-        public readonly string Password;
-        public readonly bool IsEmbedded;
-
-        public Credential(string name, string password, bool isEmbedded)
+        public class Credential
         {
-            this.Name = name;
-            this.Password = password;
-            this.IsEmbedded = isEmbedded;
-        }
-    }
+            public readonly string Name;
+            public readonly string Password;
+            public readonly bool IsEmbedded;
 
+            public Credential(string name, string password, bool isEmbedded)
+            {
+                this.Name = name;
+                this.Password = password;
+                this.IsEmbedded = isEmbedded;
+            }
+        }
+
+    }
 }
