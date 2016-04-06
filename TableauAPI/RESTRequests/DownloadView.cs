@@ -29,10 +29,12 @@ namespace TableauAPI.RESTRequests
                 webClient.Headers.Add(HttpRequestHeader.ContentType, "application/x-www-form-urlencoded;charset=UTF-8");
 
                 value = webClient.UploadString(
-                    String.Format("{0}/trusted", _onlineUrls.ServerUrlWithProtocol),
-                    $"username={userName}&target_site={_onlineUrls.SiteUrlSegement}");
+                    string.Format("{0}/trusted", _onlineUrls.ServerUrlWithProtocol),
+                    string.Format("username={0}&target_site={1}", userName, _onlineUrls.SiteUrlSegement));
             }
-            return value == "-1" ? String.Empty : value;
+            return value == "-1" ? string.Empty : value;
         }
+
+        
     }
 }
