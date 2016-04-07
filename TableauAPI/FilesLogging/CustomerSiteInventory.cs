@@ -8,7 +8,7 @@ namespace TableauAPI.FilesLogging
     /// <summary>
     /// Management class for site inventory
     /// </summary>
-    class CustomerSiteInventory : CsvDataGenerator
+    internal class CustomerSiteInventory : CsvDataGenerator
     {
         const string ContentType = "content-type";
         const string ContentUrl = "content-url";

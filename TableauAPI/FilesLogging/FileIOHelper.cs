@@ -8,7 +8,7 @@ namespace TableauAPI.FilesLogging
     /// <summary>
     /// Helper for file io
     /// </summary>
-    static class FileIOHelper
+    internal static class FileIOHelper
     {
 
         /// <summary>

@@ -7,7 +7,7 @@ namespace TableauAPI.FilesLogging
     /// <summary>
     /// Generic threadsafe class for maintaining a log of items
     /// </summary>
-    class Logger
+    internal class Logger
     {
         /// <summary>
         /// Stores an item of status

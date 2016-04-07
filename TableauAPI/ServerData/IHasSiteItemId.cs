@@ -3,7 +3,7 @@
     /// <summary>
     /// Object has a unique identity in the site
     /// </summary>
-    interface IHasSiteItemId
+    internal interface IHasSiteItemId
     {
         string Id  {get;}
     }

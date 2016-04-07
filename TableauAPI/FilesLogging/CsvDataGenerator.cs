@@ -7,7 +7,7 @@ namespace TableauAPI.FilesLogging
     /// <summary>
     /// Management class for customer actions 
     /// </summary>
-    class CsvDataGenerator
+    internal class CsvDataGenerator
     {
         List<string> _knownKeys = new List<string>();
         List<CsvRowValuePairs> _customerActions = new List<CsvRowValuePairs>();

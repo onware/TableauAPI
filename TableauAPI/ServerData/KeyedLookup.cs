@@ -5,7 +5,7 @@ namespace TableauAPI.ServerData
     /// <summary>
     /// Efficent lookup for unevenly distributed sets of data
     /// </summary>
-    class KeyedLookup<T> where T : IHasSiteItemId
+    internal class KeyedLookup<T> where T : IHasSiteItemId
     {
         Dictionary<string, T> _dictionary = new Dictionary<string, T>();
         public void AddItem(string key, T item)

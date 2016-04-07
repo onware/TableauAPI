@@ -3,7 +3,7 @@
     /// <summary>
     /// Object has a Project Id
     /// </summary>
-    interface IHasProjectId
+    public interface IHasProjectId
     {
         string ProjectId  {get;}
     }

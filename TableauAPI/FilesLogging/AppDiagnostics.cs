@@ -1,6 +1,6 @@
 ﻿namespace TableauAPI.FilesLogging
 {
-    static class AppDiagnostics
+    internal static class AppDiagnostics
     {
         public static void Assert(bool condition, string text)
         {

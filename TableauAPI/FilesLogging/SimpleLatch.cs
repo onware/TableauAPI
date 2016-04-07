@@ -3,7 +3,7 @@
     /// <summary>
     /// A simple latch.  Stays false until its set to true
     /// </summary>
-    class SimpleLatch
+    internal class SimpleLatch
     {
         public bool Value
         {

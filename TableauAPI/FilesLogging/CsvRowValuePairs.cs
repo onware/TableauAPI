@@ -5,7 +5,7 @@ namespace TableauAPI.FilesLogging
     /// <summary>
     /// Data that is going into a CSV file as a set of column/value pairs
     /// </summary>
-    class CsvRowValuePairs
+    internal class CsvRowValuePairs
     {
         readonly Dictionary<string, string> _keyValuePairs = new Dictionary<string,string>();
   

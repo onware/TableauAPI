@@ -3,7 +3,7 @@
     /// <summary>
     /// Object can answer questions about tags
     /// </summary>
-    interface ITagSetInfo
+    internal interface ITagSetInfo
     {
         /// <summary>
         /// True of if the content has the specified tag
