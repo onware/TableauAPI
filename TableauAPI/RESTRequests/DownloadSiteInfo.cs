@@ -42,16 +42,16 @@ namespace TableauAPI.RESTRequests
         /// <param name="serverName"></param>
         public void ExecuteRequest()
         {
-            var statusLog = _onlineSession.StatusLog;
+            var statusLog = OnlineSession.StatusLog;
 
             //Create a web request, in including the users logged-in auth information in the request headers
-            var urlRequest = _onlineUrls.Url_SiteInfo(_onlineSession);
+            var urlRequest = _onlineUrls.Url_SiteInfo(OnlineSession);
             var webRequest = CreateLoggedInWebRequest(urlRequest);
             webRequest.Method = "GET";
 
             //Request the data from server
-            _onlineSession.StatusLog.AddStatus("Web request: " + urlRequest, -10);
-            var response = GetWebReponseLogErrors(webRequest, "get site info");
+            OnlineSession.StatusLog.AddStatus("Web request: " + urlRequest, -10);
+            var response = GetWebResponseLogErrors(webRequest, "get site info");
         
             var xmlDoc = GetWebResponseAsXml(response);
 

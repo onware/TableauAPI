@@ -6,7 +6,7 @@ using TableauAPI.ServerData;
 namespace TableauAPI.FilesLogging
 {
     /// <summary>
-    /// Helper for file io
+    /// Helper for File IO
     /// </summary>
     internal static class FileIOHelper
     {
@@ -42,7 +42,10 @@ namespace TableauAPI.FilesLogging
         /// <summary>
         /// Creates a high-probabilty-unique path based on the current date-time
         /// </summary>
-        /// <param name="basePath"></param>
+        /// <param name="basePath">File system path where the unique directories will be created.</param>
+        /// <param name="createDirectory">true if the method should create the directory; false otherwise.</param>
+        /// <param name="newDirectoryPrefix">Prefix for new subdirectories.</param>
+        /// <param name="when">DateTime which should be used in the folder name.</param>
         /// <returns></returns>
         public static string PathDateTimeSubdirectory(string basePath, bool createDirectory, string newDirectoryPrefix = "", Nullable<DateTime> when = null)
         {
@@ -75,9 +78,10 @@ namespace TableauAPI.FilesLogging
 
 
         /// <summary>
-        /// Gives us a high probability unqique file name
+        /// Gives us a high probability unique file name
         /// </summary>
-        /// <param name="baseName"></param>
+        /// <param name="baseName">Filename to be used for generated files.</param>
+        /// <param name="when">DateTime value to be used in the generated filename.</param>
         /// <returns></returns>
         public static string FilenameWithDateTimeUnique(string baseName, Nullable<DateTime> when = null)
         {
@@ -105,9 +109,10 @@ namespace TableauAPI.FilesLogging
         /// <summary>
         /// If we have Project Mapping information, generate a project based path for the download
         /// </summary>
-        /// <param name="basePath"></param>
-        /// <param name="projectList"></param>
-        /// <param name="projectId"></param>
+        /// <param name="basePath">File system location which will be the root of project paths.</param>
+        /// <param name="projectList">Collection of projects which this method will ensure paths exist.</param>
+        /// <param name="project">Project record.</param>
+        /// <param name="statusLog">Logging object.</param>
         /// <returns></returns>
         public static string EnsureProjectBasedPath(string basePath, IProjectsList projectList, IHasProjectId project, TaskStatusLogs statusLog)
         {
@@ -133,19 +138,6 @@ namespace TableauAPI.FilesLogging
             }
 
             return pathWithProject;
-        }
-
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="directoryName"></param>
-        /// <returns></returns>
-        internal static string ReverseGenerateWindowsSafeFilename(string directoryName)
-        {
-            //[2015-03-20] UNDONE: Unmunge any escape characters we baked into the directory name
-            return directoryName;
         }
     }
 }

@@ -35,7 +35,7 @@ namespace TableauAPI.FilesLogging
             {
                 return _keyValuePairs[columnName];
             }
-            return "";
+            return string.Empty;
         }
     }
 }

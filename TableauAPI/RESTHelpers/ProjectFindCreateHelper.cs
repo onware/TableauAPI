@@ -8,18 +8,16 @@ namespace TableauAPI.RESTHelpers
     /// </summary>
     internal class ProjectFindCreateHelper : TableauServerSignedInRequestBase
     {
-        /// <summary>
-        /// URL manager
-        /// </summary>
         private readonly TableauServerUrls _onlineUrls;
         private readonly UploadBehaviorProjects _uploadProjectBehavior;
         private readonly DownloadProjectsList _projectsList;
-        //    private readonly 
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="onlineUrls"></param>
         /// <param name="login"></param>
+        /// <param name="uploadProjectBehavior"></param>
         public ProjectFindCreateHelper(
             TableauServerUrls onlineUrls, 
             TableauServerSignIn login,
@@ -30,7 +28,7 @@ namespace TableauAPI.RESTHelpers
             _uploadProjectBehavior = uploadProjectBehavior;
 
             //Ask server for the list of projects
-            var projectsList = new DownloadProjectsList(_onlineUrls, _onlineSession);
+            var projectsList = new DownloadProjectsList(_onlineUrls, OnlineSession);
             projectsList.ExecuteRequest();
             _projectsList = projectsList;
         }
@@ -59,7 +57,7 @@ namespace TableauAPI.RESTHelpers
             if (_uploadProjectBehavior.AttemptProjectCreate)
             {
                 //Create the project name
-                var createProject = new SendCreateProject(_onlineUrls, _onlineSession, projectName);
+                var createProject = new SendCreateProject(_onlineUrls, OnlineSession, projectName);
                 try
                 {
                     var newProject = createProject.ExecuteRequest();
@@ -68,7 +66,7 @@ namespace TableauAPI.RESTHelpers
                 }
                 catch (Exception exCreateProject)
                 {
-                    this.StatusLog.AddError("Failed attempting to create project '" + projectName + "', " + exCreateProject.Message);
+                    StatusLog.AddError("Failed attempting to create project '" + projectName + "', " + exCreateProject.Message);
                 }
             }
 
@@ -78,7 +76,7 @@ namespace TableauAPI.RESTHelpers
                 throw new Exception("Not allowed to use default project");
             }
 
-            this.StatusLog.AddStatus("Project name not found '" + projectName + "'. Reverting to default project", -10);
+            StatusLog.AddStatus("Project name not found '" + projectName + "'. Reverting to default project", -10);
 
             find_default_project:
             //If all else fails, fall back to using the default project
@@ -92,7 +90,7 @@ namespace TableauAPI.RESTHelpers
             if (defaultProject != null) return defaultProject.Id;
 
             //Default project not found. Choosing any project
-            this.StatusLog.AddError("Default project not found. Reverting to any project");
+            StatusLog.AddError("Default project not found. Reverting to any project");
             foreach (var thisProj in _projectsList.Projects)
             {
                 return thisProj.Id;

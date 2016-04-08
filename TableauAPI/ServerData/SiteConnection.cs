@@ -11,10 +11,25 @@ namespace TableauAPI.ServerData
     /// </summary>
     public class SiteConnection : IHasSiteItemId
     {
+        /// <summary>
+        /// Connection ID
+        /// </summary>
         public readonly string Id;
+        /// <summary>
+        /// The underlying source of the data (e.g. SQL Server? MySQL? Excel? CSV?)
+        /// </summary>
         public readonly string ConnectionType;
+        /// <summary>
+        /// Server IP, hostname or FQDN
+        /// </summary>
         public readonly string ServerAddress;
+        /// <summary>
+        /// Server Port
+        /// </summary>
         public readonly string ServerPort;
+        /// <summary>
+        /// User name of authorized User.
+        /// </summary>
         public readonly string UserName;
 
         /// <summary>
@@ -36,25 +51,25 @@ namespace TableauAPI.ServerData
                 throw new Exception("Unexpected content - not connection");
             }
 
-            this.Id = projectNode.Attributes["id"].Value;
-            this.ConnectionType = projectNode.Attributes["type"].Value;
+            Id = projectNode.Attributes?["id"].Value;
+            ConnectionType = projectNode.Attributes?["type"].Value;
 
-            this.ServerAddress = XmlHelper.SafeParseXmlAttribute(projectNode, "serverAddress", "");
-            this.ServerPort = XmlHelper.SafeParseXmlAttribute(projectNode, "serverPort", "");
-            this.UserName = XmlHelper.SafeParseXmlAttribute(projectNode, "userName", "");
+            ServerAddress = XmlHelper.SafeParseXmlAttribute(projectNode, "serverAddress", "");
+            ServerPort = XmlHelper.SafeParseXmlAttribute(projectNode, "serverPort", "");
+            UserName = XmlHelper.SafeParseXmlAttribute(projectNode, "userName", "");
 
-            this.DeveloperNotes = sbDevNotes.ToString();
+            DeveloperNotes = sbDevNotes.ToString();
         }
 
-
+        /// <summary>
+        /// Returns a string representing the current Tableau Server Connection
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
-            return "Connection: " + this.ConnectionType + "/" + this.ServerAddress + "/" + this.Id;
+            return "Connection: " + ConnectionType + "/" + ServerAddress + "/" + Id;
         }
 
-        string IHasSiteItemId.Id
-        {
-            get { return this.Id; }
-        }
+        string IHasSiteItemId.Id => Id;
     }
 }

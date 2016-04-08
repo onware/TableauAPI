@@ -5,18 +5,11 @@
     /// </summary>
     internal class SimpleLatch
     {
-        public bool Value
-        {
-            get
-            {
-                return _latch;
-            }
-        }
-        private bool _latch = false;
+        public bool Value { get; private set; }
 
         public void Trigger()
         {
-            _latch = true;
+            Value = true;
         }
     }
 }

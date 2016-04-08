@@ -4,13 +4,13 @@ using TableauAPI.FilesLogging;
 
 namespace TableauAPI.RESTHelpers
 {
-    public partial class CredentialManager
+    internal partial class CredentialManager
     {
-
         /// <summary>
         /// Load the DB credentials set from a file
         /// </summary>
         /// <param name="pathDBCredentials"></param>
+        /// <param name="statusLog"></param>
         /// <returns></returns>
         internal static CredentialManager LoadFromFile(string pathDBCredentials, TaskStatusLogs statusLog)
         {

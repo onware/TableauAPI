@@ -10,9 +10,9 @@ namespace TableauAPI.RESTHelpers
     /// 
     /// It is used for helping with downloads of Workbooks (*.twb vs. *.twbx) and Datasources (*.tds vs. *.tdsx)
     /// </summary>
-    public class DownloadPayloadTypeHelper
+    internal class DownloadPayloadTypeHelper
     {
-        private Dictionary<string, string> _mapContent = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _mapContent = new Dictionary<string, string>();
 
         /// <summary>
         /// Constructor

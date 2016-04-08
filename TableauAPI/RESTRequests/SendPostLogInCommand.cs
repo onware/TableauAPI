@@ -43,8 +43,8 @@ namespace TableauAPI.RESTRequests
             webRequest.Method = "GET";
 
             //Request the data from server
-            _onlineSession.StatusLog.AddStatus("Custom web request: " + url, -10);
-            var response = GetWebReponseLogErrors(webRequest, "custom request");
+            OnlineSession.StatusLog.AddStatus("Custom web request: " + url, -10);
+            var response = GetWebResponseLogErrors(webRequest, "custom request");
         
             var responseText = GetWebResponseAsText(response);
             _commandResult = responseText;

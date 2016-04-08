@@ -44,9 +44,11 @@ namespace TableauAPI.FilesLogging
         /// <returns></returns>
         public static string GetInventoryTwbPathMatchingCsvPath(string pathCsv)
         {
-            string pathDir = Path.GetDirectoryName(pathCsv);
-            string fileNameNoExtension = Path.GetFileNameWithoutExtension(pathCsv);
-            string pathTwbOut = Path.Combine(pathDir, fileNameNoExtension + ".twb");
+            var pathDir = Path.GetDirectoryName(pathCsv);
+            if (pathDir == null)
+                throw new DirectoryNotFoundException();
+            var fileNameNoExtension = Path.GetFileNameWithoutExtension(pathCsv);
+            var pathTwbOut = Path.Combine(pathDir, fileNameNoExtension + ".twb");
             return pathTwbOut;
         }
     }

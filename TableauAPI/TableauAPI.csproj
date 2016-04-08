@@ -21,6 +21,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Debug\TableauAPI.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -86,14 +88,18 @@
     <Compile Include="RESTRequests\DownloadUsersListBase.cs" />
     <Compile Include="RESTRequests\DownloadUsersListInGroup.cs" />
     <Compile Include="RESTRequests\DownloadView.cs" />
+    <Compile Include="RESTRequests\DownloadViewsForSiteList.cs" />
+    <Compile Include="RESTRequests\DownloadViewsForWorkbookList.cs" />
     <Compile Include="RESTRequests\DownloadWorkbookConnections.cs" />
     <Compile Include="RESTRequests\DownloadWorkbooks.cs" />
     <Compile Include="RESTRequests\DownloadWorkbooksList.cs" />
+    <Compile Include="RESTRequests\TrustedUrls.cs" />
     <Compile Include="RESTRequests\SendCreateProject.cs" />
     <Compile Include="RESTRequests\SendDeleteDatasourceTag.cs" />
     <Compile Include="RESTRequests\SendDeleteWorkbookTag.cs" />
     <Compile Include="RESTRequests\SendPostLogInCommand.cs" />
     <Compile Include="RESTRequests\TableauServerSignIn.cs" />
+    <Compile Include="RESTRequests\TableauServerTicket.cs" />
     <Compile Include="ServerData\IEditDataConnectionsSet.cs" />
     <Compile Include="ServerData\IHasProjectId.cs" />
     <Compile Include="ServerData\IHasSiteItemId.cs" />
@@ -108,6 +114,7 @@
     <Compile Include="ServerData\SiteTag.cs" />
     <Compile Include="ServerData\SiteTagsSet.cs" />
     <Compile Include="ServerData\SiteUser.cs" />
+    <Compile Include="ServerData\SiteView.cs" />
     <Compile Include="ServerData\SiteWorkbook.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -82,12 +82,12 @@ namespace TableauAPI.RESTRequests
         {
             int pageSize = _onlineUrls.PageSize;
             //Create a web request, in including the users logged-in auth information in the request headers
-            var urlQuery = _onlineUrls.Url_GroupsList(_onlineSession, pageSize, pageToRequest);
+            var urlQuery = _onlineUrls.Url_GroupsList(OnlineSession, pageSize, pageToRequest);
             var webRequest = CreateLoggedInWebRequest(urlQuery);
             webRequest.Method = "GET";
 
-            _onlineSession.StatusLog.AddStatus("Web request: " + urlQuery, -10);
-            var response = GetWebReponseLogErrors(webRequest, "get groups list");
+            OnlineSession.StatusLog.AddStatus("Web request: " + urlQuery, -10);
+            var response = GetWebResponseLogErrors(webRequest, "get groups list");
             var xmlDoc = GetWebResponseAsXml(response);
 
             //Get all the group nodes
@@ -109,7 +109,7 @@ namespace TableauAPI.RESTRequests
                 catch(Exception exGetGroup)
                 {
                     AppDiagnostics.Assert(false, "Group parse error");
-                    _onlineSession.StatusLog.AddError("Error parsing group: " + itemXml.OuterXml + ", " + exGetGroup.Message);
+                    OnlineSession.StatusLog.AddError("Error parsing group: " + itemXml.OuterXml + ", " + exGetGroup.Message);
                 }
 
 
@@ -122,14 +122,14 @@ namespace TableauAPI.RESTRequests
                     {
                         var downloadUsersInGroup = new DownloadUsersListInGroup(
                             _onlineUrls, 
-                            _onlineSession, 
+                            OnlineSession, 
                             thisGroup.Id);
                         downloadUsersInGroup.ExecuteRequest();
                         thisGroup.AddUsers(downloadUsersInGroup.Users);
                     }
                     catch (Exception exGetUsers)
                     {
-                        _onlineSession.StatusLog.AddError("Error parsing group's users: " + exGetUsers.Message);
+                        OnlineSession.StatusLog.AddError("Error parsing group's users: " + exGetUsers.Message);
                     }
                 }
 
@@ -151,7 +151,7 @@ namespace TableauAPI.RESTRequests
         {
             if(string.IsNullOrWhiteSpace(group.Id))
             {
-                _onlineSession.StatusLog.AddError(group.Name + " is missing a group ID. Not returned from server! xml=" + xmlNode.OuterXml);
+                OnlineSession.StatusLog.AddError(group.Name + " is missing a group ID. Not returned from server! xml=" + xmlNode.OuterXml);
             }
         }
 

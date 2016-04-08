@@ -2,17 +2,16 @@
 
 namespace TableauAPI.RESTHelpers
 {
-    public partial class CredentialManager
+    internal partial class CredentialManager
     {
-
-        List<CredentialNode> _workbookCredentials = new List<CredentialNode>();
-        List<CredentialNode> _datasourceCredentials = new List<CredentialNode>();
+        private readonly List<CredentialNode> _workbookCredentials = new List<CredentialNode>();
+        private readonly List<CredentialNode> _datasourceCredentials = new List<CredentialNode>();
 
         /// <summary>
         /// Looks through the set of credentials we are managing. If a match is found, its returned
         /// </summary>
-        /// <param name="contentName"></param>
-        /// <param name="projectName"></param>
+        /// <param name="workbookName">Name of Tableau workbook</param>
+        /// <param name="projectName">Name of Tableau project</param>
         /// <returns></returns>
         public Credential FindWorkbookCredential(string workbookName, string projectName)
         {
@@ -22,8 +21,8 @@ namespace TableauAPI.RESTHelpers
         /// <summary>
         /// Looks through the set of credentials we are managing. If a match is found, its returned
         /// </summary>
-        /// <param name="contentName"></param>
-        /// <param name="projectName"></param>
+        /// <param name="datasourceName">Name of the Tableau data source</param>
+        /// <param name="projectName">Name of the Tableau project</param>
         /// <returns></returns>
         public Credential FindDatasourceCredential(string datasourceName, string projectName)
         {

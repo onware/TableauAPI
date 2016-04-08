@@ -5,7 +5,13 @@
     /// </summary>
     public enum ServerProtocol
     {
-        http,
-        https
+        /// <summary>
+        /// HTTP protocol
+        /// </summary>
+        Http,
+        /// <summary>
+        /// HTTPS protocol
+        /// </summary>
+        Https
     }
 }

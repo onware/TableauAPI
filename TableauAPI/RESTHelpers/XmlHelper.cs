@@ -13,12 +13,11 @@ namespace TableauAPI.RESTHelpers
         /// </summary>
         /// <param name="xNode"></param>
         /// <param name="attributeName"></param>
-        /// <param name="defaultValue"></param>
         /// <returns></returns>
         public static string RequiredParseXmlAttribute(XmlNode xNode, string attributeName)
         {
-            var attr = xNode.Attributes[attributeName];
-            if ((attr == null) || (string.IsNullOrWhiteSpace(attr.Value)))
+            var attr = xNode.Attributes?[attributeName];
+            if (string.IsNullOrWhiteSpace(attr?.Value))
             {
                 throw new Exception("No xml attribute found for " + attributeName);
             }
@@ -35,8 +34,8 @@ namespace TableauAPI.RESTHelpers
         /// <returns></returns>
         public static string SafeParseXmlAttribute(XmlNode xNode, string attributeName, string defaultValue)
         {
-            var attr = xNode.Attributes[attributeName];
-            if ((attr == null) || (string.IsNullOrWhiteSpace(attr.Value)))
+            var attr = xNode.Attributes?[attributeName];
+            if (string.IsNullOrWhiteSpace(attr?.Value))
             {
                 return defaultValue;
             }
@@ -46,13 +45,13 @@ namespace TableauAPI.RESTHelpers
 
         public static bool SafeParseXmlAttribute_Bool(XmlNode xNode, string attributeName, bool defaultValue)
         {
-            var attr = xNode.Attributes[attributeName];
-            if ((attr == null) || (string.IsNullOrWhiteSpace(attr.Value)))
+            var attr = xNode.Attributes?[attributeName];
+            if (string.IsNullOrWhiteSpace(attr?.Value))
             {
                 return defaultValue;
             }
 
-            return System.Convert.ToBoolean(attr.Value);
+            return Convert.ToBoolean(attr.Value);
 
         }
 
@@ -73,8 +72,11 @@ namespace TableauAPI.RESTHelpers
         /// <summary>
         /// Recursive search for first matching node, returning attribute
         /// </summary>
-        /// <param name="xmlDoc"></param>
+        /// <param name="xmlNode"></param>
         /// <param name="nodeName"></param>
+        /// <param name="attributeName"></param>
+        /// <param name="searchSiblings"></param>
+        /// <param name="found"></param>
         /// <returns></returns>
         public static string GetAttributeValue(XmlNode xmlNode, string nodeName, string attributeName, bool searchSiblings, out bool found)
         {
@@ -86,7 +88,7 @@ namespace TableauAPI.RESTHelpers
 
             if (xmlNode.Name == nodeName)
             {
-                var attribute = xmlNode.Attributes[attributeName];
+                var attribute = xmlNode.Attributes?[attributeName];
                 //No attribute
                 if (attribute == null)
                 {
@@ -97,7 +99,7 @@ namespace TableauAPI.RESTHelpers
             }
 
             //Do any of the current nodes children have the value?
-            string childHasValue = GetAttributeValue(xmlNode.FirstChild, nodeName, attributeName, true, out found);
+            var childHasValue = GetAttributeValue(xmlNode.FirstChild, nodeName, attributeName, true, out found);
             if (found)
             {
                 return childHasValue;
@@ -129,7 +131,7 @@ namespace TableauAPI.RESTHelpers
         /// <param name="value"></param>
         public static void WriteBooleanAttribute(XmlWriter xmlWriter, string attributeName, bool value)
         {
-            string valueText = BoolToXmlText(value);
+            var valueText = BoolToXmlText(value);
             xmlWriter.WriteAttributeString(attributeName, valueText);
         }
 
@@ -159,13 +161,13 @@ namespace TableauAPI.RESTHelpers
         /// <returns></returns>
         internal static bool ReadBooleanAttribute(XmlNode xNode, string attributeName, bool defaultValue)
         {
-            var attribute = xNode.Attributes[attributeName];
+            var attribute = xNode.Attributes?[attributeName];
             if(attribute == null)
             {
                 return defaultValue;
             }
 
-            string attributeValue = attribute.Value;
+            var attributeValue = attribute.Value;
             attributeValue = attributeValue.Trim().ToLower();
             if(attributeValue == "true")
             {
@@ -189,7 +191,7 @@ namespace TableauAPI.RESTHelpers
         /// <returns></returns>
         internal static string ReadTextAttribute(XmlNode xNode, string attributeName, string defaultValue = "")
         {
-            var attribute = xNode.Attributes[attributeName];
+            var attribute = xNode.Attributes?[attributeName];
             if (attribute == null)
             {
                 return defaultValue;

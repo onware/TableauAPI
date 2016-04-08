@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TableauAPI.RESTHelpers;
 using TableauAPI.ServerData;
 
@@ -10,29 +11,29 @@ namespace TableauAPI.FilesLogging
     /// </summary>
     internal class CustomerSiteInventory : CsvDataGenerator
     {
-        const string ContentType = "content-type";
-        const string ContentUrl = "content-url";
-        const string ContentConnectionServer = "connection-server";
-        const string ContentConnectionType = "connection-type";
-        const string ContentConnectionPort = "connection-port";
-        const string ContentConnectionUserName = "connection-user-name";
-        const string ContentProjectId = "project-id";
-        const string ContentWorkbookId = "workbook-id";
-        const string ContentWorkbookName = "workbook-name";
-        const string ContentProjectName = "project-name";
-        const string ContentUserId = "user-id";
-        const string ContentUserName= "user-name";
-        const string ContentGroupId = "group-id";
-        const string ContentGroupName = "group-name";
-        const string ContentId = "id";
-        const string ContentName = "name";
-        const string ContentDescription = "description";
-        const string ContentOwnerId = "owner-id";
-        const string ContentOwnerName = "owner-name";
-        const string ContentTags = "tags";
-        const string WorkbookShowTabs = "workbook-show-tabs";
-        const string SiteRole = "user-role";
-        const string DeveloperNotes = "developer-notes";
+        private const string ContentType = "content-type";
+        private const string ContentUrl = "content-url";
+        private const string ContentConnectionServer = "connection-server";
+        private const string ContentConnectionType = "connection-type";
+        private const string ContentConnectionPort = "connection-port";
+        private const string ContentConnectionUserName = "connection-user-name";
+        private const string ContentProjectId = "project-id";
+        private const string ContentWorkbookId = "workbook-id";
+        private const string ContentWorkbookName = "workbook-name";
+        private const string ContentProjectName = "project-name";
+        private const string ContentUserId = "user-id";
+        private const string ContentUserName= "user-name";
+        private const string ContentGroupId = "group-id";
+        private const string ContentGroupName = "group-name";
+        private const string ContentId = "id";
+        private const string ContentName = "name";
+        private const string ContentDescription = "description";
+        private const string ContentOwnerId = "owner-id";
+        private const string ContentOwnerName = "owner-name";
+        private const string ContentTags = "tags";
+        private const string WorkbookShowTabs = "workbook-show-tabs";
+        private const string SiteRole = "user-role";
+        private const string DeveloperNotes = "developer-notes";
 
         /// <summary>
         /// Efficent store for looking up user names
@@ -52,6 +53,7 @@ namespace TableauAPI.FilesLogging
         /// <param name="workbooks"></param>
         /// <param name="users"></param>
         /// <param name="groups"></param>
+        /// <param name="statusLogger"></param>
         public CustomerSiteInventory(
             IEnumerable<SiteProject> projects, 
             IEnumerable<SiteDatasource> dataSources,
@@ -65,19 +67,20 @@ namespace TableauAPI.FilesLogging
             {
                 statusLogger = new TaskStatusLogs();
             }
-            this.StatusLog = statusLogger;
+            StatusLog = statusLogger;
 
             //If we have a user-set, put it into a lookup class so we can quickly look up user names when we write out other data
             //that has user ids
+            var siteUsers = users as IList<SiteUser> ?? users.ToList();
             if(users != null)
             {
-                _siteUserMapping = new KeyedLookup<SiteUser>(users);
+                _siteUserMapping = new KeyedLookup<SiteUser>(siteUsers);
             }
 
             AddProjectsData(projects);
             AddDatasourcesData(dataSources);
             AddWorkbooksData(workbooks);
-            AddUsersData(users);
+            AddUsersData(siteUsers);
             AddGroupsData(groups);
         }
 
@@ -94,7 +97,7 @@ namespace TableauAPI.FilesLogging
             }
             catch(Exception ex)
             {
-                this.StatusLog.AddError("Error looking up user id, " + ex.Message);
+                StatusLog.AddError("Error looking up user id, " + ex.Message);
                 return "** Error in user lookup **"; //Continue onward
             }
         }
@@ -138,8 +141,8 @@ namespace TableauAPI.FilesLogging
                 //Attempt to look up the owner name.  This will be blank if we do not have a users list
                 string ownerName = helper_AttemptUserNameLookup(thisDatasource.OwnerId);
 
-                this.AddKeyValuePairs(
-                    new string[] { 
+                AddKeyValuePairs(
+                    new[] { 
                         ContentType         //1
                         ,ContentId           //2
                         ,ContentName         //3
@@ -150,7 +153,7 @@ namespace TableauAPI.FilesLogging
                         ,ContentTags         //8
                         ,DeveloperNotes      //9
                     },
-                    new string[] { 
+                    new[] { 
                         "datasource"                //1
                         ,thisDatasource.Id           //2
                         ,thisDatasource.Name         //3
@@ -159,7 +162,6 @@ namespace TableauAPI.FilesLogging
                         ,thisDatasource.OwnerId      //6
                         ,ownerName                   //7
                         ,thisDatasource.TagSetText   //8
-                        ,thisDatasource.DeveloperNotes //9
                     });
             }
         }
@@ -167,7 +169,7 @@ namespace TableauAPI.FilesLogging
         /// <summary>
         /// Add CSV for all the data sources
         /// </summary>
-        /// <param name="dataSources"></param>
+        /// <param name="workbooks"></param>
         private void AddWorkbooksData(IEnumerable<SiteWorkbook> workbooks)
         {
             //None? Do nothing.
@@ -179,8 +181,8 @@ namespace TableauAPI.FilesLogging
                 //Attempt to look up the owner name.  This will be blank if we do not have a users list
                 string ownerName = helper_AttemptUserNameLookup(thisWorkbook.OwnerId);
 
-                this.AddKeyValuePairs(
-                    new string[] { 
+                AddKeyValuePairs(
+                    new [] { 
                         ContentType            //1 
                         ,ContentId              //2
                         ,ContentName            //3
@@ -195,7 +197,7 @@ namespace TableauAPI.FilesLogging
                         ,ContentTags            //12
                         ,DeveloperNotes         //13
                     },
-                    new string[] { 
+                    new [] { 
                         "workbook"                //1 
                         ,thisWorkbook.Id          //2
                         ,thisWorkbook.Name        //3
@@ -231,8 +233,8 @@ namespace TableauAPI.FilesLogging
             //Write out details for each data connection
             foreach (var thisConnection in dataConnections)
             {
-                this.AddKeyValuePairs(
-                    new string[] { 
+                AddKeyValuePairs(
+                    new[] { 
                         ContentType               //1 
                         ,ContentId                //2
                         ,ContentConnectionType    //3
@@ -246,7 +248,7 @@ namespace TableauAPI.FilesLogging
                         ,ContentOwnerId           //11
                         ,DeveloperNotes           //12
                     },
-                    new string[] { 
+                    new[] { 
                         "data-connection"              //1 
                         ,thisConnection.Id             //2
                         ,thisConnection.ConnectionType //3
@@ -275,8 +277,8 @@ namespace TableauAPI.FilesLogging
             //Add each project as a row in the CSV file we will generate
             foreach (var thisProject in projects)
             {
-                this.AddKeyValuePairs(
-                    new string[] { 
+                AddKeyValuePairs(
+                    new[] { 
                         ContentType               //1
                         ,ContentId                 //2
                         ,ContentName               //3
@@ -285,7 +287,7 @@ namespace TableauAPI.FilesLogging
                         ,ContentDescription        //6
                         ,DeveloperNotes            //7
                     },      
-                    new string[] { 
+                    new[] { 
                         "project"                  //1
                         ,thisProject.Id             //2
                         ,thisProject.Name           //3
@@ -309,8 +311,8 @@ namespace TableauAPI.FilesLogging
             //Add each project as a row in the CSV file we will generate
             foreach (var thisGroup in groups)
             {
-                this.AddKeyValuePairs(
-                    new string[] { 
+                AddKeyValuePairs(
+                    new[] { 
                         ContentType               //1
                         ,ContentId                 //2
                         ,ContentName               //3
@@ -318,7 +320,7 @@ namespace TableauAPI.FilesLogging
                         ,ContentGroupName          //5
                         ,DeveloperNotes            //6
                     },
-                    new string[] { 
+                    new[] { 
                         "group"                   //1
                         ,thisGroup.Id              //2
                         ,thisGroup.Name            //3
@@ -352,8 +354,8 @@ namespace TableauAPI.FilesLogging
 
             foreach(var thisUser in usersInGroup)
             {
-                this.AddKeyValuePairs(
-                    new string[] { 
+                AddKeyValuePairs(
+                    new[] { 
                         ContentType               //1
                         ,ContentId                 //2
                         ,ContentName               //3
@@ -364,7 +366,7 @@ namespace TableauAPI.FilesLogging
                         ,ContentGroupName          //8
                         ,DeveloperNotes            //9
                     },
-                    new string[] { 
+                    new[] { 
                         "group-member"            //1
                         ,thisUser.Id               //2
                         ,thisUser.Name             //3
@@ -382,7 +384,7 @@ namespace TableauAPI.FilesLogging
         /// <summary>
         /// Add CSV rows for all the users data
         /// </summary>
-        /// <param name="projects"></param>
+        /// <param name="users"></param>
         private void AddUsersData(IEnumerable<SiteUser> users)
         {
             //No data to add? do nothing.
@@ -391,8 +393,8 @@ namespace TableauAPI.FilesLogging
             //Add each project as a row in the CSV file we will generate
             foreach (var thisUser in users)
             {
-                this.AddKeyValuePairs(
-                    new string[] { 
+                AddKeyValuePairs(
+                    new[] { 
                         ContentType         //1 
                         ,ContentId          //2
                         ,ContentName        //3
@@ -401,7 +403,7 @@ namespace TableauAPI.FilesLogging
                         ,ContentUserName    //6
                         ,DeveloperNotes     //7
                     },
-                    new string[] { 
+                    new[] { 
                         "user"                   //1
                         ,thisUser.Id             //2
                         ,thisUser.Name           //3

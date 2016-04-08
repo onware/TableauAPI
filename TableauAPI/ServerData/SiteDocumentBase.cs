@@ -8,42 +8,66 @@ namespace TableauAPI.ServerData
     /// </summary>
     public abstract class SiteDocumentBase : IHasProjectId, ITagSetInfo, IHasSiteItemId
     {
+        /// <summary>
+        /// Document ID
+        /// </summary>
         public readonly string Id;
+        /// <summary>
+        /// Document Name
+        /// </summary>
         public readonly string Name;
-        //Note: [2015-10-28] Datasources presently don't return this information
-        //public readonly string ContentUrl;
-        public readonly string ProjectId;
-        public readonly string ProjectName;
-        public readonly string OwnerId;
-        public readonly SiteTagsSet TagsSet;
 
         /// <summary>
-        /// Any developer/diagnostic notes we want to indicate
+        /// Project ID
         /// </summary>
+        public readonly string ProjectId;
+
+        /// <summary>
+        /// Project Name
+        /// </summary>
+        public readonly string ProjectName;
+
+        /// <summary>
+        /// Owner ID
+        /// </summary>
+        public readonly string OwnerId;
+        
+        /// <summary>
+        /// Tags
+        /// </summary>
+        public readonly SiteTagsSet TagsSet;
+
         public readonly string DeveloperNotes;
+        protected readonly XmlNamespaceManager NamespaceManager;
 
         protected SiteDocumentBase(XmlNode xmlNode)
         {
             this.Name = xmlNode.Attributes["name"].Value;
             this.Id = xmlNode.Attributes["id"].Value;
 
-//Note: [2015-10-28] Datasources presently don't return this information
-//        this.ContentUrl = xmlNode.Attributes["contentUrl"].Value;
+            //Note: [2015-10-28] Datasources presently don't return this information
+            //        this.ContentUrl = xmlNode.Attributes["contentUrl"].Value;
 
             //Namespace for XPath queries
-            var nsManager = XmlHelper.CreateTableauXmlNamespaceManager("iwsOnline");
+            NamespaceManager = XmlHelper.CreateTableauXmlNamespaceManager("iwsOnline");
 
             //Get the project attributes
-            var projectNode = xmlNode.SelectSingleNode("iwsOnline:project", nsManager);
-            this.ProjectId = projectNode.Attributes["id"].Value;
-            this.ProjectName = projectNode.Attributes["name"].Value;
+            var projectNode = xmlNode.SelectSingleNode("iwsOnline:project", NamespaceManager);
+            if (projectNode != null)
+            {
+                this.ProjectId = projectNode.Attributes["id"].Value;
+                this.ProjectName = projectNode.Attributes["name"].Value;
+            }
 
             //Get the owner attributes
-            var ownerNode = xmlNode.SelectSingleNode("iwsOnline:owner", nsManager);
-            this.OwnerId = ownerNode.Attributes["id"].Value;
+            var ownerNode = xmlNode.SelectSingleNode("iwsOnline:owner", NamespaceManager);
+            if (ownerNode != null)
+            {
+                this.OwnerId = ownerNode.Attributes["id"].Value;
+            }
 
             //See if there are tags
-            var tagsNode = xmlNode.SelectSingleNode("iwsOnline:tags", nsManager);
+            var tagsNode = xmlNode.SelectSingleNode("iwsOnline:tags", NamespaceManager);
             if (tagsNode != null)
             {
                 this.TagsSet = new SiteTagsSet(tagsNode);
@@ -71,7 +95,7 @@ namespace TableauAPI.ServerData
         public bool IsTaggedWith(string tagText)
         {
             var tagSet = this.TagsSet;
-            if(tagSet == null)
+            if (tagSet == null)
             {
                 return false;
             }

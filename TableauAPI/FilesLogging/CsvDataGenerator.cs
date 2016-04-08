@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
@@ -9,23 +10,10 @@ namespace TableauAPI.FilesLogging
     /// </summary>
     internal class CsvDataGenerator
     {
-        List<string> _knownKeys = new List<string>();
-        List<CsvRowValuePairs> _customerActions = new List<CsvRowValuePairs>();
+        private readonly List<string> _knownKeys = new List<string>();
+        private readonly List<CsvRowValuePairs> _customerActions = new List<CsvRowValuePairs>();
 
-        public int Count
-        {
-            get
-            {
-                return _customerActions.Count;
-            }
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public CsvDataGenerator()
-        {
-        }
+        public int Count => _customerActions.Count;
 
         /// <summary>
         /// Takes in an array of string of the format
@@ -36,13 +24,13 @@ namespace TableauAPI.FilesLogging
         {
             var keys = new string [parseLines.Length];
             var values = new string[parseLines.Length];
-            for (int idx = 0; idx < parseLines.Length; idx++)
+            for (var idx = 0; idx < parseLines.Length; idx++)
             {
-                string thisLine = parseLines[idx];
-                int idxFindSplitter = thisLine.IndexOf(":");
+                var thisLine = parseLines[idx];
+                var idxFindSplitter = thisLine.IndexOf(":", StringComparison.Ordinal);
                 Debug.Assert(idxFindSplitter > 0, ": must be there, and must be at least 2nd char");
-                string thisKey = thisLine.Substring(0, idxFindSplitter);
-                string thisValue = thisLine.Substring(idxFindSplitter + 1);
+                var thisKey = thisLine.Substring(0, idxFindSplitter);
+                var thisValue = thisLine.Substring(idxFindSplitter + 1);
 
                 keys[idx] = thisKey.Trim().ToLower();
                 values[idx] = thisValue.Trim();
@@ -58,7 +46,7 @@ namespace TableauAPI.FilesLogging
         public void AddKeyValuePairs(string [] keys, string [] values)
         {
             //Normalize the key names, and make sure they are in our existing list of keys
-            for(int idxKey = 0; idxKey < keys.Length; idxKey++)
+            for(var idxKey = 0; idxKey < keys.Length; idxKey++)
             {
                 //Cannonicalize it
                 var thisKey = keys[idxKey];
@@ -79,9 +67,9 @@ namespace TableauAPI.FilesLogging
         /// <summary>
         /// Generates the text of the CSV file that has columns/rows for all the actions loggs
         /// </summary>
-        /// <param name="addRowColumn"></param>
+        /// <param name="addRowIdColumn">true if we add the row-id column; false otherwise.</param>
         /// <returns></returns>
-        public string GenerateCSVText(bool addRowIdColumn)
+        public string GenerateCsvText(bool addRowIdColumn)
         {
             var sb = new StringBuilder();
             //--------------------------------------------------
@@ -91,30 +79,30 @@ namespace TableauAPI.FilesLogging
             //If we want to count rows (for ordering), then add the column
             if (addRowIdColumn)
             {
-                AppendCSVValue(sb, "row-id", headerNotFirstItem);
+                _AppendCSVValue(sb, "row-id", headerNotFirstItem);
             }
             foreach(var keyName in _knownKeys)
             {
-                AppendCSVValue(sb, keyName, headerNotFirstItem);
+                _AppendCSVValue(sb, keyName, headerNotFirstItem);
             }
-            EndCSVLine(sb);
+            _EndCSVLine(sb);
 
             //For each content row, look up the values for each column
-            int idxRowCount = 1;
+            var idxRowCount = 1;
             foreach(var row in _customerActions)
             {
                 var notFirstItem = new SimpleLatch();
                 //Include row count?
                 if (addRowIdColumn)
                 {
-                    AppendCSVValue(sb, idxRowCount.ToString(), notFirstItem);
+                    _AppendCSVValue(sb, idxRowCount.ToString(), notFirstItem);
                 }
                 //Add each of the column values, in the same order as the header row
                 foreach (var columnName in _knownKeys)
                 {
-                    AppendCSVValue(sb, row.GetColumnValue(columnName), notFirstItem);
+                    _AppendCSVValue(sb, row.GetColumnValue(columnName), notFirstItem);
                 }
-                EndCSVLine(sb);
+                _EndCSVLine(sb);
                 idxRowCount++;
             }
 
@@ -122,23 +110,25 @@ namespace TableauAPI.FilesLogging
         }
 
         /// <summary>
+        /// Generates a CSV file
+        /// </summary>
+        /// <param name="filePath"></param>
+        internal void GenerateCsvFile(string filePath)
+        {
+            var csvContents = GenerateCsvText(true);
+            System.IO.File.WriteAllText(filePath, csvContents, Encoding.UTF8);
+        }
+
+        /// <summary>
         /// Ends a CSV item
         /// </summary>
         /// <param name="sb"></param>
-        /// <param name="isFirstItem"></param>
-//    private static void EndCSVLine(StringBuilder sb, ref bool isFirstItem)
-        private static void EndCSVLine(StringBuilder sb)
+        private static void _EndCSVLine(StringBuilder sb)
         {
             sb.AppendLine();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sb"></param>
-        /// <param name="appendValue"></param>
-        /// <param name="isFirstItem"></param>
-        private static void AppendCSVValue(StringBuilder sb, string appendValue, SimpleLatch notFirstItem)
+        private static void _AppendCSVValue(StringBuilder sb, string appendValue, SimpleLatch notFirstItem)
         {
             //Normalize the input
             if (appendValue == null)
@@ -154,7 +144,7 @@ namespace TableauAPI.FilesLogging
             var escapedValue = appendValue;
 
             var needsQuoting = new SimpleLatch();
-            escapedValue = ReplaceIfExists(escapedValue, "\"", "\"\"", needsQuoting); //Replace any single " with ""  (CSV convention)
+            escapedValue = _ReplaceIfExists(escapedValue, "\"", "\"\"", needsQuoting); //Replace any single " with ""  (CSV convention)
 
             //escapedValue = escapedValue.Replace("\"", "\"\""); //Replace any single " with ""  (CSV convention)
             escapedValue = escapedValue.Replace("\n", " "); //Remove newlines
@@ -181,17 +171,17 @@ namespace TableauAPI.FilesLogging
         /// <param name="replace"></param>
         /// <param name="triggerIfFound"></param>
         /// <returns></returns>
-        private static string ReplaceIfExists(string text, string find, string replace, SimpleLatch triggerIfFound)
+        private static string _ReplaceIfExists(string text, string find, string replace, SimpleLatch triggerIfFound)
         {
             if (text == null) return "";
             //
-            if(text.IndexOf(find) == -1)
+            if(text.IndexOf(find, StringComparison.Ordinal) == -1)
             {
                 return text;
             }
 
             //If there's text to replace, then replace it
-            string outText = text.Replace(find, replace);
+            var outText = text.Replace(find, replace);
 
             //If the text changed, trigger the latch
             if (outText != text)
@@ -201,17 +191,7 @@ namespace TableauAPI.FilesLogging
             }
 
             return outText;
-        }
-
-        /// <summary>
-        /// Generates a CSV file
-        /// </summary>
-        /// <param name="filePath"></param>
-        internal void GenerateCSVFile(string filePath)
-        {
-            string csvContents = GenerateCSVText(true);
-            System.IO.File.WriteAllText(filePath, csvContents, Encoding.UTF8);
-        }
+        }        
     }
 }
  

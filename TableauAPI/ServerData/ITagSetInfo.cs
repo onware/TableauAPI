@@ -8,7 +8,7 @@
         /// <summary>
         /// True of if the content has the specified tag
         /// </summary>
-        /// <param name="tag"></param>
+        /// <param name="tagText"></param>
         /// <returns></returns>
         bool IsTaggedWith(string tagText);
 

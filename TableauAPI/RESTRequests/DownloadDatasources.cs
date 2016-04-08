@@ -54,12 +54,11 @@ namespace TableauAPI.RESTRequests
         }
 
         /// <summary>
-        /// 
+        /// Execute the REST API call.
         /// </summary>
-        /// <param name="serverName"></param>
         public List<SiteDatasource> ExecuteRequest()
         {
-            var statusLog = _onlineSession.StatusLog;
+            var statusLog = OnlineSession.StatusLog;
             var downloadedContent = new List<SiteDatasource>();
 
             //Depending on the HTTP download file type we want different file extensions
@@ -76,7 +75,7 @@ namespace TableauAPI.RESTRequests
             foreach (var dsInfo in datasources)
             {
                 //Local path save the workbook
-                string urlDownload = _onlineUrls.Url_DatasourceDownload(_onlineSession, dsInfo);
+                string urlDownload = _onlineUrls.Url_DatasourceDownload(OnlineSession, dsInfo);
                 statusLog.AddStatus("Starting Datasource download " + dsInfo.Name);
                 try
                 {

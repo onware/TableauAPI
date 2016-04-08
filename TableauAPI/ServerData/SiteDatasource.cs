@@ -29,9 +29,7 @@ namespace TableauAPI.ServerData
             get
             {
                 var dataConnections = _dataConnections;
-                if (dataConnections == null) return null;
-
-                return dataConnections.AsReadOnly();
+                return dataConnections?.AsReadOnly();
             }
         }
 
@@ -41,13 +39,13 @@ namespace TableauAPI.ServerData
         /// <param name="datasourceNode"></param>
         public SiteDatasource(XmlNode datasourceNode) : base(datasourceNode)
         {
-            if(datasourceNode.Name.ToLower() != "datasource")
+            if (datasourceNode.Name.ToLower() != "datasource")
             {
                 AppDiagnostics.Assert(false, "Not a datasource");
                 throw new Exception("Unexpected content - not datasource");
             }
             //Get the underlying data source type
-            this.Type = datasourceNode.Attributes["type"].Value;
+            Type = datasourceNode.Attributes?["type"].Value;
 
         }
 
@@ -57,7 +55,7 @@ namespace TableauAPI.ServerData
         /// <returns></returns>
         public override string ToString()
         {
-            return "Datasource: " + this.Name + "/" + this.Type + "/" + this.Id;
+            return "Datasource: " + Name + "/" + Type + "/" + Id;
         }
 
         /// <summary>
@@ -66,11 +64,7 @@ namespace TableauAPI.ServerData
         /// <param name="connections"></param>
         void IEditDataConnectionsSet.SetDataConnections(IEnumerable<SiteConnection> connections)
         {
-            if (connections == null)
-            {
-                _dataConnections = null;
-            }
-            _dataConnections = new List<SiteConnection>(connections);
+            _dataConnections = connections == null ? null : new List<SiteConnection>(connections);
         }
     }
 }

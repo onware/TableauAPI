@@ -13,7 +13,8 @@ namespace TableauAPI.RESTHelpers
         /// Keeps only the members of the set that have a matching project id
         /// </summary>
         /// <param name="items"></param>
-        /// <param name="projectId"></param>
+        /// <param name="project"></param>
+        /// <param name="nullMeansNoFilter"></param>
         /// <returns></returns>
         public static ICollection<T> KeepOnlyProjectMembers(ICollection<T> items, SiteProject project, bool nullMeansNoFilter)
         {

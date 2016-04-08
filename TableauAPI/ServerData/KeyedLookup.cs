@@ -7,7 +7,7 @@ namespace TableauAPI.ServerData
     /// </summary>
     internal class KeyedLookup<T> where T : IHasSiteItemId
     {
-        Dictionary<string, T> _dictionary = new Dictionary<string, T>();
+        private readonly Dictionary<string, T> _dictionary = new Dictionary<string, T>();
         public void AddItem(string key, T item)
         {
             _dictionary.Add(key, item);

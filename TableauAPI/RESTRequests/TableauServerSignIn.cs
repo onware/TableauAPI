@@ -90,6 +90,12 @@ namespace TableauAPI.RESTRequests
                 return _logInUserId;
             }
         }
+
+        public string UserName
+        {
+            get { return _userName; }
+        }
+
         /// <summary>
         /// 
         /// </summary>

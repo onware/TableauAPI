@@ -26,8 +26,7 @@ namespace TableauAPI.RESTRequests
             get
             {
                 var connections = _connections;
-                if (connections == null) return null;
-                return connections.AsReadOnly();
+                return connections?.AsReadOnly();
             }
         }
 
@@ -36,6 +35,7 @@ namespace TableauAPI.RESTRequests
         /// </summary>
         /// <param name="onlineUrls"></param>
         /// <param name="login"></param>
+        /// <param name="datasourceId"></param>
         public DownloadDatasourceConnections(TableauServerUrls onlineUrls, TableauServerSignIn login, string datasourceId)
             : base(login)
         {
@@ -53,12 +53,12 @@ namespace TableauAPI.RESTRequests
             var dsConnections = new List<SiteConnection>();
 
             //Create a web request, in including the users logged-in auth information in the request headers
-            var urlQuery = _onlineUrls.Url_DatasourceConnectionsList(_onlineSession, _datasourceId);
+            var urlQuery = _onlineUrls.Url_DatasourceConnectionsList(OnlineSession, _datasourceId);
             var webRequest = CreateLoggedInWebRequest(urlQuery);
             webRequest.Method = "GET";
 
-            _onlineSession.StatusLog.AddStatus("Web request: " + urlQuery, -10);
-            var response = GetWebReponseLogErrors(webRequest, "get datasources's connections list");
+            OnlineSession.StatusLog.AddStatus("Web request: " + urlQuery, -10);
+            var response = GetWebResponseLogErrors(webRequest, "get datasources's connections list");
             var xmlDoc = GetWebResponseAsXml(response);
 
             //Get all the workbook nodes
@@ -76,7 +76,7 @@ namespace TableauAPI.RESTRequests
                 catch
                 {
                     AppDiagnostics.Assert(false, "Workbook  connections parse error");
-                    _onlineSession.StatusLog.AddError("Error parsing workbook: " + itemXml.InnerXml);
+                    OnlineSession.StatusLog.AddError("Error parsing workbook: " + itemXml.InnerXml);
                 }
             } //end: foreach
 

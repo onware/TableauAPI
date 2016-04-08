@@ -5,6 +5,9 @@
     /// </summary>
     public interface IHasProjectId
     {
+        /// <summary>
+        /// Tableau Project ID
+        /// </summary>
         string ProjectId  {get;}
     }
 }

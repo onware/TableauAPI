@@ -50,17 +50,18 @@ namespace TableauAPI.RESTHelpers
         /// </summary>
         protected static System.Xml.XmlDocument GetWebResponseAsXml(WebResponse response)
         {
-            string streamText = "";
-            var responseStream = response.GetResponseStream();
-            using (responseStream)
+            var streamText = string.Empty;
+            using (var responseStream = response.GetResponseStream())
             {
-                var streamReader = new StreamReader(responseStream);
-                using (streamReader)
+                if (responseStream != null)
                 {
-                    streamText = streamReader.ReadToEnd();
-                    streamReader.Close();
+                    var streamReader = new StreamReader(responseStream);
+                    using (streamReader)
+                    {
+                        streamText = streamReader.ReadToEnd();
+                        streamReader.Close();
+                    }
                 }
-                responseStream.Close();
             }
 
             var xmlDoc = new System.Xml.XmlDocument();
@@ -73,17 +74,18 @@ namespace TableauAPI.RESTHelpers
         /// </summary>
         protected static string GetWebResponseAsText(WebResponse response)
         {
-            string streamText = "";
-            var responseStream = response.GetResponseStream();
-            using (responseStream)
+            string streamText = null;
+            using (var responseStream = response.GetResponseStream())
             {
-                var streamReader = new StreamReader(responseStream);
-                using (streamReader)
+                if (responseStream != null)
                 {
-                    streamText = streamReader.ReadToEnd();
-                    streamReader.Close();
+                    var streamReader = new StreamReader(responseStream);
+                    using (streamReader)
+                    {
+                        streamText = streamReader.ReadToEnd();
+                        streamReader.Close();
+                    }
                 }
-                responseStream.Close();
             }
 
             return streamText;

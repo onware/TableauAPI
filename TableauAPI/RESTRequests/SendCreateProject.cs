@@ -68,12 +68,12 @@ namespace TableauAPI.RESTRequests
             //var mimeGenerator = new OnlineMimeXmlPayload(xmlText);
 
             //Create a web request 
-            var urlCreateProject = _onlineUrls.Url_CreateProject(_onlineSession);
+            var urlCreateProject = _onlineUrls.Url_CreateProject(OnlineSession);
             var webRequest =this.CreateLoggedInWebRequest(urlCreateProject, "POST");
             TableauServerRequestBase.SendPostContents(webRequest, xmlText);
         
             //Get the response
-            var response = GetWebReponseLogErrors(webRequest, "create project");
+            var response = GetWebResponseLogErrors(webRequest, "create project");
             using (response)
             {
                 var xmlDoc = GetWebResponseAsXml(response);

@@ -32,7 +32,7 @@ namespace TableauAPI.RESTRequests
         protected override string  UrlForUsersListRequest(int pageSize, int pageNumber)
         {
             //The URL to get us the data
-            return _onlineUrls.Url_UsersListInGroup(_onlineSession, _groupId, pageSize, pageNumber);
+            return _onlineUrls.Url_UsersListInGroup(OnlineSession, _groupId, pageSize, pageNumber);
         }
 
     }

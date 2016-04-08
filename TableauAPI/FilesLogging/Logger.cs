@@ -14,25 +14,25 @@ namespace TableauAPI.FilesLogging
         /// </summary>
         private class StatusItem
         {
-            public readonly string Text;
+            private readonly string _text;
             public readonly DateTime When;
 
             public StatusItem(string text)
             {
-                this.When = DateTime.Now;
-                this.Text = text;
+                When = DateTime.Now;
+                _text = text;
             }
 
             public override string ToString()
             {
-                return this.When.ToString() + ", " + this.Text;
+                return When + ", " + _text;
             }
         }
 
         //Thread lock
-        private object _lockStatus = new object();
+        private readonly object _lockStatus = new object();
 
-        List<StatusItem> _status = new List<StatusItem>();
+        readonly List<StatusItem> _status = new List<StatusItem>();
         public string StatusText
         {
             get
@@ -72,13 +72,7 @@ namespace TableauAPI.FilesLogging
             }
         }
 
-        public int Count
-        {
-            get
-            {
-                return _status.Count;
-            }
-        }
+        public int Count => _status.Count;
 
 
         /// <summary>

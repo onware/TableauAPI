@@ -65,7 +65,7 @@ namespace TableauAPI.RESTRequests
             //Sanity check
             if(string.IsNullOrWhiteSpace(_userId))
             {
-                _onlineSession.StatusLog.AddError("User ID required to query workbooks");            
+                OnlineSession.StatusLog.AddError("User ID required to query workbooks");            
             }
 
             var onlineWorkbooks = new List<SiteWorkbook>();
@@ -96,12 +96,12 @@ namespace TableauAPI.RESTRequests
         {
             int pageSize = _onlineUrls.PageSize;
             //Create a web request, in including the users logged-in auth information in the request headers
-            var urlQuery = _onlineUrls.Url_WorkbooksListForUser(_onlineSession, _userId, pageSize, pageToRequest);
+            var urlQuery = _onlineUrls.Url_WorkbooksListForUser(OnlineSession, _userId, pageSize, pageToRequest);
             var webRequest = CreateLoggedInWebRequest(urlQuery);
             webRequest.Method = "GET";
 
-            _onlineSession.StatusLog.AddStatus("Web request: " + urlQuery, -10);
-            var response = GetWebReponseLogErrors(webRequest, "get workbooks list");
+            OnlineSession.StatusLog.AddStatus("Web request: " + urlQuery, -10);
+            var response = GetWebResponseLogErrors(webRequest, "get workbooks list");
             var xmlDoc = GetWebResponseAsXml(response);
 
             //Get all the workbook nodes
@@ -119,7 +119,7 @@ namespace TableauAPI.RESTRequests
                 catch
                 {
                     AppDiagnostics.Assert(false, "Workbook parse error");
-                    _onlineSession.StatusLog.AddError("Error parsing workbook: " + itemXml.InnerXml);
+                    OnlineSession.StatusLog.AddError("Error parsing workbook: " + itemXml.InnerXml);
                 }
             } //end: foreach
 

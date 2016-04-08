@@ -109,8 +109,8 @@ namespace TableauAPI.RESTRequests
             var webRequest = CreateLoggedInWebRequest(urlQuery);
             webRequest.Method = "GET";
 
-            _onlineSession.StatusLog.AddStatus("Web request: " + urlQuery, -10);
-            var response = GetWebReponseLogErrors(webRequest, "get users list");
+            OnlineSession.StatusLog.AddStatus("Web request: " + urlQuery, -10);
+            var response = GetWebResponseLogErrors(webRequest, "get users list");
             var xmlDoc = GetWebResponseAsXml(response);
 
             //Get all the user nodes
@@ -128,7 +128,7 @@ namespace TableauAPI.RESTRequests
                 catch
                 {
                     AppDiagnostics.Assert(false, "User parse error");
-                    _onlineSession.StatusLog.AddError("Error parsing user: " + itemXml.InnerXml);
+                    OnlineSession.StatusLog.AddError("Error parsing user: " + itemXml.InnerXml);
                 }
             } //end: foreach
 

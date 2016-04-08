@@ -6,7 +6,7 @@ namespace TableauAPI.RESTHelpers
     /// <summary>
     /// Helper functions for REST API functions that download lists
     /// </summary>
-    public static class DownloadPaginationHelper 
+    internal static class DownloadPaginationHelper 
     {
         /// <summary>
         /// Determine the # of pages we need to download from pagination data
@@ -22,12 +22,12 @@ namespace TableauAPI.RESTHelpers
                 throw new Exception("Internal error - expected XML 'pagination' node: " + xNodePagination.Name);
             }
         
-            var totalItemsText = xNodePagination.Attributes["totalAvailable"].Value;
+            var totalItemsText = xNodePagination.Attributes?["totalAvailable"].Value;
             var totalItems = System.Convert.ToInt32(totalItemsText);
-            int numFullPages = totalItems / pageSize;
+            var numFullPages = totalItems / pageSize;
 
             //If we have extra pages that don't align on a page boundary then add one
-            if ((totalItems % pageSize) > 0)
+            if (totalItems % pageSize > 0)
             {
                 return numFullPages + 1;
             }

@@ -5,7 +5,9 @@
     /// </summary>
     public enum ServerVersion
     {
-        server8,
-        server9
+        /// <summary>
+        /// Tableau Server 9.x
+        /// </summary>
+        Server9
     }
 }

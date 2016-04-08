@@ -82,9 +82,9 @@ namespace TableauAPI.RESTRequests
             //ref: http://onlinehelp.tableau.com/current/api/rest_api/en-us/help.htm#REST/rest_api_ref.htm#Delete_Tag_from_Workbook%3FTocPath%3DAPI%2520Reference%7C_____20
 
             //Create a web request 
-            var urlDeleteContentTag = _onlineUrls.Url_DeleteWorkbookTag(_onlineSession, workbookId, tagText);
+            var urlDeleteContentTag = _onlineUrls.Url_DeleteWorkbookTag(OnlineSession, workbookId, tagText);
             var webRequest = this.CreateLoggedInWebRequest(urlDeleteContentTag, "DELETE");
-            var response = GetWebReponseLogErrors(webRequest, "delete tag from content request");         
+            var response = GetWebResponseLogErrors(webRequest, "delete tag from content request");         
         }
 
     }

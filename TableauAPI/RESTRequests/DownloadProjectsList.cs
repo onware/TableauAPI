@@ -79,12 +79,12 @@ namespace TableauAPI.RESTRequests
         {
             int pageSize = _onlineUrls.PageSize;
             //Create a web request, in including the users logged-in auth information in the request headers
-            var urlQuery = _onlineUrls.Url_ProjectsList(_onlineSession, pageSize, pageToRequest);
+            var urlQuery = _onlineUrls.Url_ProjectsList(OnlineSession, pageSize, pageToRequest);
             var webRequest = CreateLoggedInWebRequest(urlQuery);
             webRequest.Method = "GET";
 
-            _onlineSession.StatusLog.AddStatus("Web request: " + urlQuery, -10);
-            var response = GetWebReponseLogErrors(webRequest, "get projects list");
+            OnlineSession.StatusLog.AddStatus("Web request: " + urlQuery, -10);
+            var response = GetWebResponseLogErrors(webRequest, "get projects list");
             var xmlDoc = GetWebResponseAsXml(response);
 
             //Get all the project nodes
@@ -104,7 +104,7 @@ namespace TableauAPI.RESTRequests
                 catch
                 {
                     AppDiagnostics.Assert(false, "Project parse error");
-                    _onlineSession.StatusLog.AddError("Error parsing project: " + itemXml.OuterXml);
+                    OnlineSession.StatusLog.AddError("Error parsing project: " + itemXml.OuterXml);
                 }
             } //end: foreach
 
@@ -124,7 +124,7 @@ namespace TableauAPI.RESTRequests
         {
             if(string.IsNullOrWhiteSpace(project.Id))
             {
-                _onlineSession.StatusLog.AddError(project.Name + " is missing a project ID. Not returned from server! xml=" + xmlNode.OuterXml);
+                OnlineSession.StatusLog.AddError(project.Name + " is missing a project ID. Not returned from server! xml=" + xmlNode.OuterXml);
             }
         }
 

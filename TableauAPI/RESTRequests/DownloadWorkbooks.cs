@@ -59,7 +59,7 @@ namespace TableauAPI.RESTRequests
         /// <param name="serverName"></param>
         public ICollection<SiteWorkbook> ExecuteRequest()
         {
-            var statusLog = _onlineSession.StatusLog;
+            var statusLog = OnlineSession.StatusLog;
             var downloadedContent = new List<SiteWorkbook>();
 
             var workbooks = _workbooks;
@@ -75,7 +75,7 @@ namespace TableauAPI.RESTRequests
             foreach (var contentInfo in workbooks)
             {
                 //Local path save the workbook
-                string urlDownload = _onlineUrls.Url_WorkbookDownload(_onlineSession, contentInfo);
+                string urlDownload = _onlineUrls.Url_WorkbookDownload(OnlineSession, contentInfo);
                 statusLog.AddStatus("Starting Workbook download " + contentInfo.Name + " " + contentInfo.ToString());
                 try
                 {

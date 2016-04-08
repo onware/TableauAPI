@@ -1,5 +1,9 @@
 ﻿using System;
-using System.Net;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using TableauAPI.RESTHelpers;
 
 namespace TableauAPI.RESTRequests
@@ -7,34 +11,35 @@ namespace TableauAPI.RESTRequests
     public class DownloadView : TableauServerSignedInRequestBase
     {
 
-        /// <summary>
-        /// URL manager
-        /// </summary>
         private readonly TableauServerUrls _onlineUrls;
-        private readonly string _userId;
-
         public DownloadView(TableauServerUrls onlineUrls, TableauServerSignIn login) : base(login)
         {
             _onlineUrls = onlineUrls;
-            _userId = login.UserId;
         }
 
-        public string Ticket(string userName)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="workbookId"></param>
+        /// <param name="viewId"></param>
+        /// <returns></returns>
+        public byte[] GetThumbnail(string workbookId, string viewId)
         {
-            var value = string.Empty;
-            using (var webClient = new WebClient())
+            var url = _onlineUrls.Url_ViewThumbnail(workbookId, viewId, OnlineSession);
+            var webRequest = CreateLoggedInWebRequest(url);
+            webRequest.Method = "GET";
+            var response = GetWebResponseLogErrors(webRequest, "get view thumbnail");
+            byte[] thumbnail;
+            using (var stream = response.GetResponseStream())
             {
 
-                // Get the Trusted Ticket
-                webClient.Headers.Add(HttpRequestHeader.ContentType, "application/x-www-form-urlencoded;charset=UTF-8");
-
-                value = webClient.UploadString(
-                    string.Format("{0}/trusted", _onlineUrls.ServerUrlWithProtocol),
-                    string.Format("username={0}&target_site={1}", userName, _onlineUrls.SiteUrlSegement));
+                using (var ms = new MemoryStream())
+                {
+                    stream.CopyTo(ms);
+                    thumbnail = ms.ToArray();
+                }
             }
-            return value == "-1" ? string.Empty : value;
+            return thumbnail;
         }
-
-        
     }
 }

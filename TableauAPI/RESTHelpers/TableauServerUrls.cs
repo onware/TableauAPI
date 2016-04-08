@@ -10,17 +10,10 @@ namespace TableauAPI.RESTHelpers
     /// </summary>
     public class TableauServerUrls : ITableauServerSiteInfo
     {
-        private readonly ServerVersion _serverVersion;
         /// <summary>
         /// What version of Server do we thing we are talking to? (URLs and APIs may differ)
         /// </summary>
-        public ServerVersion ServerVersion
-        {
-            get
-            {
-                return _serverVersion;
-            }
-        }
+        public ServerVersion ServerVersion { get; }
 
         /// <summary>
         /// Url for API login
@@ -31,6 +24,9 @@ namespace TableauAPI.RESTHelpers
         /// Template for URL to acess workbooks list
         /// </summary>
         private readonly string _urlListWorkbooksForUserTemplate;
+        private readonly string _urlViewThumbnailTemplate;
+        private readonly string _urlViewsListForSiteTemplate;
+        private readonly string _urlListViewsForWorkbookTemplate;
         private readonly string _urlListWorkbookConnectionsTemplate;
         private readonly string _urlListDatasourcesTemplate;
         private readonly string _urlListProjectsTemplate;
@@ -52,60 +48,77 @@ namespace TableauAPI.RESTHelpers
         /// Server url with protocol
         /// </summary>
         public readonly string ServerUrlWithProtocol;
-        public readonly string ServerProtocol;
+        
+        /// <summary>
+        /// String representation of Server Protocol
+        /// </summary>
+        public readonly ServerProtocol ServerProtocol;
 
         /// <summary>
         /// Part of the URL that designates the site id
         /// </summary>
         public readonly string SiteUrlSegement;
 
+        /// <summary>
+        /// Server Name
+        /// </summary>
         public readonly string ServerName;
 
-        public readonly int PageSize = 1000;
+        /// <summary>
+        /// Page Size when dealing with large result sets
+        /// </summary>
+        public readonly int PageSize;
+
+        /// <summary>
+        /// Size of chunks uploaded to Tableau server
+        /// </summary>
         public const int UploadFileChunkSize = 8000000; //8MB
+
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="serverNameWithProtocol"></param>
-        /// <param name="siteName"></param>
-        public TableauServerUrls(string protocol, string serverName, string siteName, int pageSize, ServerVersion serverVersion)
+        /// <param name="serverName">Server IP, hostname or FQDN</param>
+        /// <param name="siteName">Tableau Site Name</param>
+        /// <param name="protocol">HTTP protocol</param>
+        /// <param name="pageSize">Page size, defaults to 1000</param>
+        /// <param name="serverVersion">Tableau Server version</param>
+        public TableauServerUrls(ServerProtocol protocol, string serverName, string siteName, int pageSize = 1000, ServerVersion serverVersion = ServerVersion.Server9)
         {
-            //Cannonicalize the protocol
-            protocol = protocol.ToLower();
+            PageSize = 1000;
+            ServerProtocol = protocol;
 
-            this.ServerProtocol = protocol;
-
-            this.PageSize = pageSize;
-            string serverNameWithProtocol = protocol + serverName;
-            this._serverVersion = serverVersion;
-            this.SiteUrlSegement = siteName;
-            this.ServerName = serverName;
-            this.ServerUrlWithProtocol                 = serverNameWithProtocol;
-            this.UrlLogin                              = serverNameWithProtocol + "/api/2.0/auth/signin";
-            this._urlListWorkbooksForUserTemplate      = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/users/{{iwsUserId}}/workbooks?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
-            this._urlListWorkbookConnectionsTemplate   = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/workbooks/{{iwsWorkbookId}}/connections";
-            this._urlListDatasourcesTemplate           = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/datasources?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
-            this._urlListProjectsTemplate              = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/projects?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
-            this._urlListGroupsTemplate                = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/groups?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
-            this._urlListUsersTemplate                 = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/users?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
-            this._urlListUsersInGroupTemplate          = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/groups/{{iwsGroupId}}/users?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}"; 
-            this._urlDownloadDatasourceTemplate        = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/datasources/{{iwsRepositoryId}}/content";
-            this._urlDownloadWorkbookTemplate          = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/workbooks/{{iwsRepositoryId}}/content";
-            this._urlSiteInfoTemplate                  = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}";
-            this._urlInitiateUploadTemplate            = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/fileUploads";
-            this._urlAppendUploadChunkTemplate         = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/fileUploads/{{iwsUploadSession}}";
-            this._urlFinalizeUploadDatasourceTemplate  = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/datasources?uploadSessionId={{iwsUploadSession}}&datasourceType={{iwsDatasourceType}}&overwrite=true";
-            this._urlFinalizeUploadWorkbookTemplate    = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/workbooks?uploadSessionId={{iwsUploadSession}}&workbookType={{iwsWorkbookType}}&overwrite=true";
-            this._urlCreateProjectTemplate             = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/projects";
-            this._urlDeleteWorkbookTagTemplate         = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/workbooks/{{iwsWorkbookId}}/tags/{{iwsTagText}}";
-            this._urlDeleteDatasourceTagTemplate       = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/datasources/{{iwsDatasourceId}}/tags/{{iwsTagText}}";
+            PageSize = pageSize;
+            var serverNameWithProtocol = (protocol == ServerProtocol.Http ? "http://" : "https://") + serverName;
+            ServerVersion = serverVersion;
+            SiteUrlSegement = siteName;
+            ServerName = serverName;
+            ServerUrlWithProtocol = serverNameWithProtocol;
+            UrlLogin = serverNameWithProtocol + "/api/2.0/auth/signin";
+            _urlListWorkbooksForUserTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/users/{{iwsUserId}}/workbooks?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
+            _urlViewsListForSiteTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/views?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
+            _urlViewThumbnailTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/workbooks/{{iwsWorkbookId}}/views/{{iwsViewId}}/previewImage";
+            _urlListViewsForWorkbookTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/workbooks/{{iwsWorkbookId}}/views";
+            _urlListWorkbookConnectionsTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/workbooks/{{iwsWorkbookId}}/connections";
+            _urlListDatasourcesTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/datasources?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
+            _urlListProjectsTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/projects?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
+            _urlListGroupsTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/groups?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
+            _urlListUsersTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/users?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
+            _urlListUsersInGroupTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/groups/{{iwsGroupId}}/users?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
+            _urlDownloadDatasourceTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/datasources/{{iwsRepositoryId}}/content";
+            _urlDownloadWorkbookTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/workbooks/{{iwsRepositoryId}}/content";
+            _urlSiteInfoTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}";
+            _urlInitiateUploadTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/fileUploads";
+            _urlAppendUploadChunkTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/fileUploads/{{iwsUploadSession}}";
+            _urlFinalizeUploadDatasourceTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/datasources?uploadSessionId={{iwsUploadSession}}&datasourceType={{iwsDatasourceType}}&overwrite=true";
+            _urlFinalizeUploadWorkbookTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/workbooks?uploadSessionId={{iwsUploadSession}}&workbookType={{iwsWorkbookType}}&overwrite=true";
+            _urlCreateProjectTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/projects";
+            _urlDeleteWorkbookTagTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/workbooks/{{iwsWorkbookId}}/tags/{{iwsTagText}}";
+            _urlDeleteDatasourceTagTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/datasources/{{iwsDatasourceId}}/tags/{{iwsTagText}}";
 
             //Any server version specific things we want to do?
             switch (serverVersion)
             {
-                case ServerVersion.server8:
-                    throw new Exception("This app does not support v8 Server");
-                case ServerVersion.server9:
+                case ServerVersion.Server9:
                     break;
                 default:
                     AppDiagnostics.Assert(false, "Unknown server version");
@@ -113,67 +126,61 @@ namespace TableauAPI.RESTHelpers
             }
         }
 
-        //Parse out the http:// or https://
-        private static string GetProtocolFromUrl(string url)
+        private static ServerProtocol GetProtocolFromUrl(string url)
         {
             const string protocolIndicator = "://";
-            int idxProtocol = url.IndexOf(protocolIndicator);
-            if(idxProtocol < 1)
+            int idxProtocol = url.IndexOf(protocolIndicator, StringComparison.Ordinal);
+            if (idxProtocol < 1)
             {
                 throw new Exception("No protocol found in " + url);
             }
 
             string protocol = url.Substring(0, idxProtocol + protocolIndicator.Length);
 
-            return protocol.ToLower();
+            return protocol.ToLower().Equals("https") ? ServerProtocol.Https : ServerProtocol.Http;
         }
 
         /// <summary>
         /// Parse out the server-user and site name from the content URL
         /// </summary>
-        /// <param name="userContentUrl">e.g. https://online.tableausoftware.com/t/tableausupport/workbooks</param>
-        /// 
+        /// <param name="userContentUrl">e.g. https://online.tableausoftware.com/t/tableausupport/workbooks </param>
+        /// <param name="pageSize">Size of page to use when interacting with the Tableau Server</param>
         /// <returns></returns>
         public static TableauServerUrls FromContentUrl(string userContentUrl, int pageSize)
         {
             userContentUrl = userContentUrl.Trim();
-            string foundProtocol = GetProtocolFromUrl(userContentUrl);
+            var foundProtocol = GetProtocolFromUrl(userContentUrl);
 
             //Find where the server name ends
-            string urlAfterProtocol = userContentUrl.Substring(foundProtocol.Length);
+            string urlAfterProtocol = userContentUrl.Substring(userContentUrl.IndexOf("://", StringComparison.Ordinal) + 3);
             var urlParts = urlAfterProtocol.Split('/');
             string serverName = urlParts[0];
 
             string siteUrlSegment;
             ServerVersion serverVersion;
             //Check for the site specifier.  Infer the server version based on this URL
-            if(urlParts[1] == "t")
-            {
-                siteUrlSegment = urlParts[2];
-                serverVersion = ServerVersion.server8;
-            }
-            else if((urlParts[1] == "#") && (urlParts[2] == "site"))
+            if ((urlParts[1] == "#") && (urlParts[2] == "site"))
             {
                 siteUrlSegment = urlParts[3];
-                serverVersion = ServerVersion.server9;
+                serverVersion = ServerVersion.Server9;
             }
             else if (urlParts[1] == "#")
             {
                 siteUrlSegment = ""; //Default site
-                serverVersion = ServerVersion.server9;
+                serverVersion = ServerVersion.Server9;
             }
             else
             {
-                throw new Exception("Expected /t site splitter in url");
+                throw new Exception("Could not infer version of Tableau Server.");
             }
-         
+
             return new TableauServerUrls(foundProtocol, serverName, siteUrlSegment, pageSize, serverVersion);
         }
 
         /// <summary>
         /// The URL to get site info
         /// </summary>
-        /// <param name="logInInfo"></param>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
         /// <returns></returns>
         public string Url_SiteInfo(TableauServerSignIn logInInfo)
         {
@@ -186,7 +193,7 @@ namespace TableauAPI.RESTHelpers
         /// <summary>
         /// The URL to start na upload
         /// </summary>
-        /// <param name="logInInfo"></param>
+        /// <param name="logInInfo">Authentication information</param>
         /// <returns></returns>
         public string Url_InitiateFileUpload(TableauServerSignIn logInInfo)
         {
@@ -199,7 +206,8 @@ namespace TableauAPI.RESTHelpers
         /// <summary>
         /// The URL to start a upload
         /// </summary>
-        /// <param name="logInInfo"></param>
+        /// <param name="logInInfo">Authentication information</param>
+        /// <param name="uploadSession">ID for the upload session</param>
         /// <returns></returns>
         public string Url_AppendFileUploadChunk(TableauServerSignIn logInInfo, string uploadSession)
         {
@@ -230,11 +238,11 @@ namespace TableauAPI.RESTHelpers
         }
 
         /// <summary>
-        /// URL to finish publishing a datasource
+        /// URL to finish publishing a workbook
         /// </summary>
         /// <param name="logInInfo"></param>
         /// <param name="uploadSession"></param>
-        /// <param name="datasourceType"></param>
+        /// <param name="workbookType"></param>
         /// <returns></returns>
         public string Url_FinalizeWorkbookPublish(TableauServerSignIn logInInfo, string uploadSession, string workbookType)
         {
@@ -248,9 +256,55 @@ namespace TableauAPI.RESTHelpers
         }
 
         /// <summary>
+        /// URL for the View thumbnail.
+        /// </summary>
+        /// <param name="workbookId"></param>
+        /// <param name="viewId"></param>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public string Url_ViewThumbnail(string workbookId, string viewId, TableauServerSignIn session)
+        {
+            var workingText = _urlViewThumbnailTemplate.Replace("{{iwsSiteId}}", session.SiteId);
+            workingText = workingText.Replace("{{iwsWorkbookId}}", workbookId);
+            workingText = workingText.Replace("{{iwsViewId}}", viewId);
+            ValidateTemplateReplaceComplete(workingText);
+            return workingText;
+        }
+
+        /// <summary>
+        /// URL for the Views list
+        /// </summary>
+        /// <param name="workbookId"></param>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public string Url_ViewsListForWorkbook(string workbookId, TableauServerSignIn session)
+        {
+            var workingText = _urlListViewsForWorkbookTemplate;
+            workingText = workingText.Replace("{{iwsSiteId}}", session.SiteId);
+            workingText = workingText.Replace("{{iwsWorkbookId}}", workbookId);
+            ValidateTemplateReplaceComplete(workingText);
+
+            return workingText;
+        }
+
+        /// <summary>
+        /// URL for the Views list
+        /// </summary>
+        /// <returns></returns>
+        public string Url_ViewsListForSite(TableauServerSignIn session, int pageSize, int pageNumber = 1)
+        {
+            string workingText = _urlViewsListForSiteTemplate;
+            workingText = workingText.Replace("{{iwsSiteId}}", session.SiteId);
+            workingText = workingText.Replace("{{iwsPageSize}}", pageSize.ToString());
+            workingText = workingText.Replace("{{iwsPageNumber}}", pageNumber.ToString());
+            ValidateTemplateReplaceComplete(workingText);
+
+            return workingText;
+        }
+
+        /// <summary>
         /// URL for the Workbooks list
         /// </summary>
-        /// <param name="siteUrlSegment"></param>
         /// <returns></returns>
         public string Url_WorkbooksListForUser(TableauServerSignIn session, string userId, int pageSize, int pageNumber = 1)
         {
@@ -267,7 +321,6 @@ namespace TableauAPI.RESTHelpers
         /// <summary>
         /// URL for the Workbook's data source connections list
         /// </summary>
-        /// <param name="siteUrlSegment"></param>
         /// <returns></returns>
         public string Url_WorkbookConnectionsList(TableauServerSignIn session, string workbookId)
         {
@@ -294,7 +347,6 @@ namespace TableauAPI.RESTHelpers
         /// <summary>
         /// URL for the Datasources list
         /// </summary>
-        /// <param name="siteUrlSegment"></param>
         /// <returns></returns>
         public string Url_DatasourcesList(TableauServerSignIn session, int pageSize, int pageNumber = 1)
         {
@@ -310,7 +362,6 @@ namespace TableauAPI.RESTHelpers
         /// <summary>
         /// URL for creating a project
         /// </summary>
-        /// <param name="siteUrlSegment"></param>
         /// <returns></returns>
         public string Url_CreateProject(TableauServerSignIn session)
         {
@@ -343,7 +394,7 @@ namespace TableauAPI.RESTHelpers
         /// URL for deleting a tag from a datasource
         /// </summary>
         /// <param name="session"></param>
-        /// <param name="workbookId"></param>
+        /// <param name="datasourceId"></param>
         /// <param name="tagText">Tag we want to delete</param>
         /// <returns></returns>
         public string Url_DeleteDatasourceTag(TableauServerSignIn session, string datasourceId, string tagText)
@@ -361,7 +412,6 @@ namespace TableauAPI.RESTHelpers
         /// <summary>
         /// URL for the Projects list
         /// </summary>
-        /// <param name="siteUrlSegment"></param>
         /// <returns></returns>
         public string Url_ProjectsList(TableauServerSignIn session, int pageSize, int pageNumber = 1)
         {
@@ -377,7 +427,6 @@ namespace TableauAPI.RESTHelpers
         /// <summary>
         /// URL for the Groups list
         /// </summary>
-        /// <param name="siteUrlSegment"></param>
         /// <returns></returns>
         public string Url_GroupsList(TableauServerSignIn session, int pageSize, int pageNumber = 1)
         {
@@ -473,27 +522,17 @@ namespace TableauAPI.RESTHelpers
 
         string ITableauServerSiteInfo.ServerName
         {
-            get 
+            get
             {
-                return this.ServerName; 
-            }
-        }
-
-        ServerProtocol ITableauServerSiteInfo.Protocol
-        {
-            get 
-            {
-                if (this.ServerProtocol == "https://") return global::TableauAPI.RESTHelpers.ServerProtocol.https;
-                if (this.ServerProtocol == "http://") return global::TableauAPI.RESTHelpers.ServerProtocol.http;
-                throw new Exception("Unknown protocol " + this.ServerProtocol);
+                return ServerName;
             }
         }
 
         string ITableauServerSiteInfo.SiteId
         {
-            get 
+            get
             {
-                return this.SiteUrlSegement;
+                return SiteUrlSegement;
             }
         }
 
@@ -501,7 +540,7 @@ namespace TableauAPI.RESTHelpers
         {
             get
             {
-                return this.ServerUrlWithProtocol;
+                return ServerUrlWithProtocol;
             }
         }
 

@@ -5,9 +5,19 @@
     /// </summary>
     public interface ITableauServerSiteInfo
     {
+        /// <summary>
+        /// Return the server name
+        /// </summary>
         string ServerName { get; }
+
+        /// <summary>
+        /// Return the server name with http:// or https://
+        /// </summary>
         string ServerNameWithProtocol { get; }
-        ServerProtocol Protocol { get; }
+
+        /// <summary>
+        /// Site Identifier
+        /// </summary>
         string SiteId { get; }
     }
 }

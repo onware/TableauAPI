@@ -10,22 +10,23 @@ namespace TableauAPI.RESTHelpers
     /// </summary>
     public abstract class TableauServerSignedInRequestBase : TableauServerRequestBase
     {
-        protected readonly TableauServerSignIn _onlineSession;
+        /// <summary>
+        /// Current Tableau Server Authentication
+        /// </summary>
+        protected readonly TableauServerSignIn OnlineSession;
 
-        public TaskStatusLogs StatusLog
-        {
-            get
-            {
-                return _onlineSession.StatusLog;
-            }
-        }
+        /// <summary>
+        /// Returns the Status Log for this request.
+        /// </summary>
+        public TaskStatusLogs StatusLog => OnlineSession.StatusLog;
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="login"></param>
-        public TableauServerSignedInRequestBase(TableauServerSignIn login)
+        protected TableauServerSignedInRequestBase(TableauServerSignIn login)
         {
-            _onlineSession = login;
+            OnlineSession = login;
         }
 
 
@@ -37,7 +38,7 @@ namespace TableauAPI.RESTHelpers
         /// <param name="baseFilename"></param>
         /// <param name="downloadTypeMapper"></param>
         /// <returns>The path to the downloaded file</returns>
-        protected string DownloadFile(string urlDownload, string downloadToDirectory, string baseFilename, DownloadPayloadTypeHelper downloadTypeMapper)
+        internal string DownloadFile(string urlDownload, string downloadToDirectory, string baseFilename, DownloadPayloadTypeHelper downloadTypeMapper)
         {
             //Lets keep track of how long it took
             var startDownload = DateTime.Now;
@@ -46,16 +47,14 @@ namespace TableauAPI.RESTHelpers
             {
                 outputPath =  DownloadFile_inner(urlDownload, downloadToDirectory, baseFilename, downloadTypeMapper);
             }
-            catch (Exception exDownload)
+            catch (Exception)
             {
-                this.StatusLog.AddError("Download failed after " + (DateTime.Now - startDownload).TotalSeconds.ToString("#.#") + " seconds. " + urlDownload);
-
-                var failedDownload = DateTime.Now;
-                throw exDownload;
+                StatusLog.AddError("Download failed after " + (DateTime.Now - startDownload).TotalSeconds.ToString("#.#") + " seconds. " + urlDownload);
+                throw;
             }
 
             var finishDownload = DateTime.Now;
-            this.StatusLog.AddStatus("Download success duration " + (finishDownload - startDownload).TotalSeconds.ToString("#.#") + " seconds. " + urlDownload, -10);
+            StatusLog.AddStatus("Download success duration " + (finishDownload - startDownload).TotalSeconds.ToString("#.#") + " seconds. " + urlDownload, -10);
             return outputPath;
         }
 
@@ -64,7 +63,8 @@ namespace TableauAPI.RESTHelpers
         /// </summary>
         /// <param name="urlDownload"></param>
         /// <param name="downloadToDirectory"></param>
-        /// <param name="baseFileName">Filename without extension</param>
+        /// <param name="baseFilename">Filename without extension</param>
+        /// <param name="downloadTypeMapper"></param>
         /// <returns>The path to the downloaded file</returns>
         private string DownloadFile_inner(string urlDownload, string downloadToDirectory, string baseFilename, DownloadPayloadTypeHelper downloadTypeMapper)
         {
@@ -72,12 +72,12 @@ namespace TableauAPI.RESTHelpers
             //Strip off an extension if its there
             baseFilename =  FileIOHelper.GenerateWindowsSafeFilename(System.IO.Path.GetFileNameWithoutExtension(baseFilename));
 
-            var webClient = this.CreateLoggedInWebClient();
+            var webClient = CreateLoggedInWebClient();
             using(webClient)
             { 
                 //Choose a temp file name to download to
                 var starterName = System.IO.Path.Combine(downloadToDirectory, baseFilename + ".tmp");
-                _onlineSession.StatusLog.AddStatus("Attempting file download: " + urlDownload, -10);
+                OnlineSession.StatusLog.AddStatus("Attempting file download: " + urlDownload, -10);
                 webClient.DownloadFile(urlDownload, starterName); //Download the file
 
                 //Look up the correct file extension based on the content type downloaded
@@ -97,7 +97,7 @@ namespace TableauAPI.RESTHelpers
         /// <returns></returns>
         protected WebClient CreateLoggedInWebClient()
         {
-            _onlineSession.StatusLog.AddStatus("Web client being created", -10);
+            OnlineSession.StatusLog.AddStatus("Web client being created", -10);
 
             var webClient = new TableauServerWebClient(); //Create a WebClient object with a large TimeOut value so that larger content can be downloaded
             AppendLoggedInHeadersForRequest(webClient.Headers);
@@ -113,7 +113,7 @@ namespace TableauAPI.RESTHelpers
         /// <returns></returns>
         protected WebRequest CreateLoggedInWebRequest(string url, string protocol = "GET", Nullable<int> requestTimeout = null)
         {
-            _onlineSession.StatusLog.AddStatus("Attempt web request: " + url, -10);
+            OnlineSession.StatusLog.AddStatus("Attempt web request: " + url, -10);
 
             var webRequest = WebRequest.Create(url);
             webRequest.Method = protocol;
@@ -135,10 +135,11 @@ namespace TableauAPI.RESTHelpers
         /// <param name="url"></param>
         /// <param name="protocol">e.g. "PUT" "POST" </param>
         /// <param name="mimeToSend">Mime data we are goign to send</param>
+        /// <param name="requestTimeout">timeout in milliseconds</param>
         /// <returns></returns>
-        protected WebRequest CreateAndSendMimeLoggedInRequest(string url, string protocol, MimeWriterBase mimeToSend, Nullable<int> requestTimeout = null)
+        internal WebRequest CreateAndSendMimeLoggedInRequest(string url, string protocol, MimeWriterBase mimeToSend, int? requestTimeout = null)
         {
-            var webRequest = this.CreateLoggedInWebRequest(url, protocol, requestTimeout); 
+            var webRequest = CreateLoggedInWebRequest(url, protocol, requestTimeout); 
 
             //var uploadChunkAsMime = new OnlineMimeUploadChunk(uploadDataBuffer, numBytes);
             var uploadMimeChunk = mimeToSend.GenerateMimeEncodedChunk();
@@ -160,8 +161,8 @@ namespace TableauAPI.RESTHelpers
         /// <param name="webHeaders"></param>
         private void AppendLoggedInHeadersForRequest(WebHeaderCollection webHeaders)
         {
-            webHeaders.Add("X-Tableau-Auth", _onlineSession.LogInAuthToken);
-            _onlineSession.StatusLog.AddStatus("Append header X-Tableau-Auth: " + _onlineSession.LogInAuthToken, -20);
+            webHeaders.Add("X-Tableau-Auth", OnlineSession.LogInAuthToken);
+            OnlineSession.StatusLog.AddStatus("Append header X-Tableau-Auth: " + OnlineSession.LogInAuthToken, -20);
         }
 
         /// <summary>
@@ -169,8 +170,9 @@ namespace TableauAPI.RESTHelpers
         /// This allows us to get error log data with detailed information
         /// </summary>
         /// <param name="webRequest"></param>
+        /// <param name="description"></param>
         /// <returns></returns>
-        protected WebResponse GetWebReponseLogErrors(WebRequest webRequest, string description)
+        protected WebResponse GetWebResponseLogErrors(WebRequest webRequest, string description)
         {
             string requestUri = webRequest.RequestUri.ToString();
             try
@@ -179,8 +181,8 @@ namespace TableauAPI.RESTHelpers
             }
             catch (WebException webException)
             {
-                AttemptToLogWebException(webException, description + " (" + requestUri + ") ", this.StatusLog);
-                throw webException;
+                AttemptToLogWebException(webException, description + " (" + requestUri + ") ", StatusLog);
+                throw;
             }
         }
 
@@ -189,6 +191,7 @@ namespace TableauAPI.RESTHelpers
         /// Attempt to log any detailed information we find about the failed web request
         /// </summary>
         /// <param name="webException"></param>
+        /// <param name="description"></param>
         /// <param name="onlineStatusLog"></param>
         private static void AttemptToLogWebException(WebException webException, string description, TaskStatusLogs onlineStatusLog)
         {
@@ -210,7 +213,6 @@ namespace TableauAPI.RESTHelpers
             catch (Exception ex)
             {
                 onlineStatusLog.AddError("Error in web request exception: " + ex.Message);
-                return;
             }
         }
 
