@@ -11,33 +11,30 @@ namespace TableauAPI.RESTRequests
     /// </summary>
     public class DownloadWorkbookConnections : TableauServerSignedInRequestBase
     {
-        /// <summary>
-        /// URL manager
-        /// </summary>
         private readonly TableauServerUrls _onlineUrls;
         private readonly string _workbookId;
-
+        private List<SiteConnection> _connections;
+        
         /// <summary>
         /// Workbooks we've parsed from server results
         /// </summary>
-        private List<SiteConnection> _connections;
         public ICollection<SiteConnection> Connections
         {
             get
             {
                 var connections = _connections;
-                if (connections == null) return null;
-                return connections.AsReadOnly();
+                return connections?.AsReadOnly();
             }
         }
 
         /// <summary>
         /// Constructor: Call when we want to query the workbooks on behalf of the currently logged in user
         /// </summary>
-        /// <param name="onlineUrls"></param>
-        /// <param name="login"></param>
-        public DownloadWorkbookConnections(TableauServerUrls onlineUrls, TableauServerSignIn login, string workbookId)
-            : base(login)
+        /// <param name="onlineUrls">Tableau Server Information</param>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <param name="workbookId">Workbook ID</param>
+        public DownloadWorkbookConnections(TableauServerUrls onlineUrls, TableauServerSignIn logInInfo, string workbookId)
+            : base(logInInfo)
         {
             _workbookId = workbookId;
             _onlineUrls = onlineUrls;
@@ -45,9 +42,8 @@ namespace TableauAPI.RESTRequests
 
 
         /// <summary>
-        /// 
+        /// Execute request for Workbook connections.
         /// </summary>
-        /// <param name="serverName"></param>
         public void ExecuteRequest()
         {
             var wbConnections = new List<SiteConnection>();

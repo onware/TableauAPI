@@ -10,32 +10,35 @@ namespace TableauAPI.ServerData
     /// </summary>
     public class SiteGroup : IHasSiteItemId
     {
+        /// <summary>
+        /// Group ID
+        /// </summary>
         public readonly string Id;
-        public readonly string Name;
-        List<SiteUser> _usersInGroup;
-//    public readonly string DomainName;
 
+        /// <summary>
+        /// Name of the Group
+        /// </summary>
+        public readonly string Name;
+
+        
         /// <summary>
         /// Any developer/diagnostic notes we want to indicate
         /// </summary>
         public readonly string DeveloperNotes;
 
+        private readonly List<SiteUser> _usersInGroup;
         /// <summary>
         /// Returns the list of users associated with this group
         /// </summary>
-        public ICollection<SiteUser> Users
-        {
-            get
-            {
-                return _usersInGroup.AsReadOnly();
-            }
-        }
+        public ICollection<SiteUser> Users => _usersInGroup.AsReadOnly();
 
         /// <summary>
-        /// Constructor
+        /// Constructs an instance of SiteGroup based on XML from the Tableau server,
+        /// and associates a collection of SiteUsers with it
         /// </summary>
         /// <param name="projectNode"></param>
-        public SiteGroup(XmlNode projectNode, IEnumerable<SiteUser> usersToPlaceInGroup )
+        /// <param name="usersToPlaceInGroup"></param>
+        public SiteGroup(XmlNode projectNode, IEnumerable<SiteUser> usersToPlaceInGroup)
         {
             //If we were passed in a set of users, store them
             var usersList = new List<SiteUser>();
@@ -52,15 +55,17 @@ namespace TableauAPI.ServerData
                 throw new Exception("Unexpected content - not group");
             }
 
-            this.Id = projectNode.Attributes["id"].Value;
-            this.Name = projectNode.Attributes["name"].Value;
-//        this.DomainName = projectNode.Attributes["description"].Value;
+            Id = projectNode.Attributes?["id"].Value;
+            Name = projectNode.Attributes?["name"].Value;
         }
 
-
+        /// <summary>
+        /// Name and ID of the Group
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
-            return "Group: " + this.Name + "/" + this.Id;
+            return "Group: " + Name + "/" + Id;
         }
 
         /// <summary>
@@ -78,9 +83,9 @@ namespace TableauAPI.ServerData
             _usersInGroup.AddRange(usersList);
         }
 
-        string IHasSiteItemId.Id
-        {
-            get { return this.Id; }
-        }
+        /// <summary>
+        /// Group ID
+        /// </summary>
+        string IHasSiteItemId.Id => Id;
     }
 }

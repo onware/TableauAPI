@@ -78,7 +78,6 @@
     </Compile>
     <Compile Include="RESTHelpers\UploadBehaviorProjects.cs" />
     <Compile Include="RESTHelpers\XmlHelper.cs" />
-    <Compile Include="RESTRequests\DownloadDatasourceConnections.cs" />
     <Compile Include="RESTRequests\DownloadDatasources.cs" />
     <Compile Include="RESTRequests\DownloadDatasourcesList.cs" />
     <Compile Include="RESTRequests\DownloadGroupsList.cs" />
@@ -91,11 +90,10 @@
     <Compile Include="RESTRequests\DownloadViewsForSiteList.cs" />
     <Compile Include="RESTRequests\DownloadViewsForWorkbookList.cs" />
     <Compile Include="RESTRequests\DownloadWorkbookConnections.cs" />
-    <Compile Include="RESTRequests\DownloadWorkbooks.cs" />
+    <Compile Include="RESTRequests\DownloadWorkbook.cs" />
     <Compile Include="RESTRequests\DownloadWorkbooksList.cs" />
     <Compile Include="RESTRequests\TrustedUrls.cs" />
     <Compile Include="RESTRequests\SendCreateProject.cs" />
-    <Compile Include="RESTRequests\SendDeleteDatasourceTag.cs" />
     <Compile Include="RESTRequests\SendDeleteWorkbookTag.cs" />
     <Compile Include="RESTRequests\SendPostLogInCommand.cs" />
     <Compile Include="RESTRequests\TableauServerSignIn.cs" />

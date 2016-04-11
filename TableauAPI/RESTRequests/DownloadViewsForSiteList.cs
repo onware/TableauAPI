@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Xml;
 using TableauAPI.FilesLogging;
 using TableauAPI.RESTHelpers;
@@ -8,38 +7,54 @@ using TableauAPI.ServerData;
 
 namespace TableauAPI.RESTRequests
 {
+    /// <summary>
+    /// Request for Views on a Site from the Tableau REST API
+    /// </summary>
     public class DownloadViewsForSiteList : TableauServerSignedInRequestBase
     {
 
-        /// <summary>
-        /// URL manager
-        /// </summary>
         private readonly TableauServerUrls _onlineUrls;
         private readonly string _userId;
-
         private List<SiteView> _views;
+
+        /// <summary>
+        /// List of Views from a Tableau site
+        /// </summary>
         public ICollection<SiteView> Views
         {
             get
             {
                 var views = _views;
-                if (views == null) return null;
-                return views.AsReadOnly();
+                return views?.AsReadOnly();
             }
         }
 
-        public DownloadViewsForSiteList(TableauServerUrls onlineUrls, TableauServerSignIn login) : base(login)
+        /// <summary>
+        /// Create a request to download Views for a site.
+        /// </summary>
+        /// <param name="onlineUrls">Tableau Server Information</param>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        public DownloadViewsForSiteList(TableauServerUrls onlineUrls, TableauServerSignIn logInInfo) : base(logInInfo)
         {
             _onlineUrls = onlineUrls;
-            _userId = login.UserId;
+            _userId = logInInfo.UserId;
         }
 
-        public DownloadViewsForSiteList(TableauServerUrls onlineUrls, TableauServerSignIn login, string userId) : base(login)
+        /// <summary>
+        /// Create a request to download Views for a site on behalf of a given user.
+        /// </summary>
+        /// <param name="onlineUrls">Tableau Server Information</param>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <param name="userId">User ID whom we should retrieve site Views for</param>
+        public DownloadViewsForSiteList(TableauServerUrls onlineUrls, TableauServerSignIn logInInfo, string userId) : base(logInInfo)
         {
             _onlineUrls = onlineUrls;
             _userId = userId;
         }
 
+        /// <summary>
+        /// Execute the request for Site Views
+        /// </summary>
         public void ExecuteRequest()
         {
             if (string.IsNullOrWhiteSpace(_userId))
@@ -62,6 +77,8 @@ namespace TableauAPI.RESTRequests
                 }
             }
         }
+
+        #region Private Methods
 
         private void _ExecuteRequest_ForPage(List<SiteView> onlineViews, int pageToRequest, out int totalNumberPages)
         {
@@ -93,5 +110,8 @@ namespace TableauAPI.RESTRequests
                 xmlDoc.SelectSingleNode("//iwsOnline:pagination", nsManager),
                 pageSize);
         }
+
+        #endregion
+
     }
 }

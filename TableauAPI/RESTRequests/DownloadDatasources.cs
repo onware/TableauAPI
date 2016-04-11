@@ -7,54 +7,40 @@ using TableauAPI.ServerData;
 namespace TableauAPI.RESTRequests
 {
     /// <summary>
-    /// Manages the download of a set of data sources from a Tableau Server site
+    /// Manages the download of a set of data sources from a Tableau REST API and saves it to disk
     /// </summary>
     public class DownloadDatasources : TableauServerSignedInRequestBase
     {
-        /// <summary>
-        /// URL manager
-        /// </summary>
+
         private readonly TableauServerUrls _onlineUrls;
-
-        /// <summary>
-        /// Datasources we've parsed from server results
-        /// </summary>
         private readonly IEnumerable<SiteDatasource> _datasources;
-
-        /// <summary>
-        /// Local directory to save to
-        /// </summary>
         private readonly string _localSavePath;
-
-        /// <summary>
-        /// If not NULL, put downloads into directories named like the projects they belong to
-        /// </summary>
         private readonly IProjectsList _downloadToProjectDirectories;
 
         /// <summary>
-        /// Constructor
+        /// Create the request for to download Data sources from the Tableau REST API
         /// </summary>
-        /// <param name="onlineUrls"></param>
-        /// <param name="login"></param>
-        /// <param name="Datasources"></param>
-        /// <param name="localSavePath"></param>
-        /// <param name="projectsList"></param>
+        /// <param name="onlineUrls">Tableau Server Information</param>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <param name="datasources">List of Tableau Data sources to save to disk</param>
+        /// <param name="localSavePath">File system location where data sources should be saved</param>
+        /// <param name="projectsList">List of projects for which we should pull data sources from</param>
         public DownloadDatasources(
-            TableauServerUrls onlineUrls, 
-            TableauServerSignIn login, 
-            IEnumerable<SiteDatasource> Datasources,
+            TableauServerUrls onlineUrls,
+            TableauServerSignIn logInInfo,
+            IEnumerable<SiteDatasource> datasources,
             string localSavePath,
             IProjectsList projectsList)
-            : base(login)
+            : base(logInInfo)
         {
             _onlineUrls = onlineUrls;
-            _datasources = Datasources;
+            _datasources = datasources;
             _localSavePath = localSavePath;
             _downloadToProjectDirectories = projectsList;
         }
 
         /// <summary>
-        /// Execute the REST API call.
+        /// Execute the REST API call for a list of data sources
         /// </summary>
         public List<SiteDatasource> ExecuteRequest()
         {
@@ -91,7 +77,7 @@ namespace TableauAPI.RESTRequests
                     statusLog.AddStatus("Finished Datasource download " + fileDownloadedNoPath);
 
                     //Add to the list of our downloaded data sources
-                    if(!string.IsNullOrEmpty(fileDownloaded))
+                    if (!string.IsNullOrEmpty(fileDownloaded))
                     {
                         downloadedContent.Add(dsInfo);
                     }
@@ -101,7 +87,7 @@ namespace TableauAPI.RESTRequests
                         statusLog.AddError("Download error, no local file path for downloaded content");
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     statusLog.AddError("Error during Datasource download " + dsInfo.Name + "\r\n  " + urlDownload + "\r\n  " + ex.ToString());
                 }

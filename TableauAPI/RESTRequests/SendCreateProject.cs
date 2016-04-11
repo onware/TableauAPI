@@ -6,21 +6,26 @@ using TableauAPI.ServerData;
 
 namespace TableauAPI.RESTRequests
 {
+    /// <summary>
+    /// Create a Project REST API request
+    /// </summary>
     public class SendCreateProject : TableauServerSignedInRequestBase
     {
-        /// <summary>
-        /// URL manager
-        /// </summary>
         private readonly TableauServerUrls _onlineUrls;
-
         private readonly string _projectName;
         private readonly string _projectDesciption = "";
 
+        /// <summary>
+        /// Create an instance of a Create Project REST API request.
+        /// </summary>
+        /// <param name="onlineUrls">Tableau Server Information</param>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <param name="projectName">Project Name</param>
         public SendCreateProject(
-            TableauServerUrls onlineUrls, 
-            TableauServerSignIn login,
+            TableauServerUrls onlineUrls,
+            TableauServerSignIn logInInfo,
             string projectName)
-            : base(login)
+            : base(logInInfo)
         {
             _onlineUrls = onlineUrls;
             _projectName = projectName;
@@ -29,25 +34,24 @@ namespace TableauAPI.RESTRequests
         /// <summary>
         /// Create a project on server
         /// </summary>
-        /// <param name="serverName"></param>
         public SiteProject ExecuteRequest()
         {
             try
             {
-                var newProj = CreateProject(_projectName, _projectDesciption);
-                this.StatusLog.AddStatus("Project created. " + newProj.ToString());
+                var newProj = _CreateProject(_projectName, _projectDesciption);
+                StatusLog.AddStatus("Project created. " + newProj);
                 return newProj;
             }
             catch (Exception exProject)
             {
-                this.StatusLog.AddError("Error attempting to create project '" + _projectName + "', " + exProject.Message);
+                StatusLog.AddError("Error attempting to create project '" + _projectName + "', " + exProject.Message);
                 return null;
             }
         }
 
+        #region Private Methods
 
-
-        private SiteProject CreateProject(string projectName, string projectDescription)
+        private SiteProject _CreateProject(string projectName, string projectDescription)
         {
             //ref: http://onlinehelp.tableau.com/current/api/rest_api/en-us/help.htm#REST/rest_api_ref.htm#Create_Project%3FTocPath%3DAPI%2520Reference%7C_____12  
             var sb = new StringBuilder();
@@ -69,16 +73,16 @@ namespace TableauAPI.RESTRequests
 
             //Create a web request 
             var urlCreateProject = _onlineUrls.Url_CreateProject(OnlineSession);
-            var webRequest =this.CreateLoggedInWebRequest(urlCreateProject, "POST");
-            TableauServerRequestBase.SendPostContents(webRequest, xmlText);
-        
+            var webRequest = CreateLoggedInWebRequest(urlCreateProject, "POST");
+            SendPostContents(webRequest, xmlText);
+
             //Get the response
             var response = GetWebResponseLogErrors(webRequest, "create project");
             using (response)
             {
                 var xmlDoc = GetWebResponseAsXml(response);
 
-            
+
                 //Get all the workbook nodes
                 var nsManager = XmlHelper.CreateTableauXmlNamespaceManager("iwsOnline");
                 var xNodeProject = xmlDoc.SelectSingleNode("//iwsOnline:project", nsManager);
@@ -92,10 +96,11 @@ namespace TableauAPI.RESTRequests
                     StatusLog.AddError("Data source upload, error parsing XML resposne " + parseXml.Message + "\r\n" + xNodeProject.InnerXml);
                     return null;
                 }
-            
+
             }
         }
 
+        #endregion
 
     }
 }

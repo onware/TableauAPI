@@ -8,33 +8,27 @@ using TableauAPI.ServerData;
 namespace TableauAPI.RESTRequests
 {
     /// <summary>
-    /// Downloads the list of data sources
+    /// Downloads the list of data sources from the Tableau REST API
     /// </summary>
     public class DownloadDatasourcesList : TableauServerSignedInRequestBase
     {
-        /// <summary>
-        /// URL manager
-        /// </summary>
         private readonly TableauServerUrls _onlineUrls;
-
+        private List<SiteDatasource> _datasources;
+        
         /// <summary>
         /// Workbooks we've parsed from server results
         /// </summary>
-        private List<SiteDatasource> _datasources;
         public ICollection<SiteDatasource> Datasources
         {
             get
             {
                 var ds = _datasources;
-                if (ds == null) return null;
-                return ds.AsReadOnly();
+                return ds?.AsReadOnly();
             }
         }
 
-//    private readonly OnlineUser _user;
-
         /// <summary>
-        /// Constructor
+        /// Create a request to get a list of Datasources from the Tableau REST API
         /// </summary>
         /// <param name="onlineUrls"></param>
         /// <param name="login"></param>
@@ -42,13 +36,11 @@ namespace TableauAPI.RESTRequests
             : base(login)
         {
             _onlineUrls = onlineUrls;
-//        _user = user;
         }
 
         /// <summary>
         /// Request the data from Online
         /// </summary>
-        /// <param name="serverName"></param>
         public void ExecuteRequest()
         {
 
@@ -59,7 +51,7 @@ namespace TableauAPI.RESTRequests
             {
                 try
                 {
-                    ExecuteRequest_ForPage(onlineDatasources, thisPage, out numberPages);
+                    _ExecuteRequest_ForPage(onlineDatasources, thisPage, out numberPages);
                 }
                 catch(Exception exPageRequest)
                 {
@@ -69,13 +61,15 @@ namespace TableauAPI.RESTRequests
             _datasources = onlineDatasources;
         }
 
+        #region Private Methods
+
         /// <summary>
         /// Get a page's worth of Data Sources
         /// </summary>
         /// <param name="onlineDatasources"></param>
         /// <param name="pageToRequest">Page # we are requesting (1 based)</param>
         /// <param name="totalNumberPages">Total # of pages of data that Server can return us</param>
-        private void ExecuteRequest_ForPage(List<SiteDatasource> onlineDatasources, int pageToRequest, out int totalNumberPages)
+        private void _ExecuteRequest_ForPage(List<SiteDatasource> onlineDatasources, int pageToRequest, out int totalNumberPages)
         {
             int pageSize =_onlineUrls.PageSize; 
             //Create a web request, in including the users logged-in auth information in the request headers
@@ -113,5 +107,8 @@ namespace TableauAPI.RESTRequests
                 xmlDoc.SelectSingleNode("//iwsOnline:pagination", nsManager),
                 pageSize);
         }
+
+        #endregion
+
     }
 }

@@ -1,26 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TableauAPI.RESTHelpers;
 
 namespace TableauAPI.RESTRequests
 {
+
+    /// <summary>
+    /// Create a class containing Trusted Urls for use when a client is trusted by a Tableau server.
+    /// See https://onlinehelp.tableau.com/current/server/en-us/trusted_auth.htm for information.
+    /// </summary>
     public class TrustedUrls : TableauServerSignedInRequestBase
     {
         private readonly TableauServerUrls _onlineUrls;
         private readonly string _workbookId;
         private readonly string _viewId;
-
         private Dictionary<string, string> _reportParameters;
 
-        public TrustedUrls(string workbookId, string viewId, TableauServerUrls onlineUrls, TableauServerSignIn login) : base(login)
+        /// <summary>
+        /// Creates an instance of the Trusted URLs API helpers.
+        /// </summary>
+        /// <param name="workbookId">Workbook ID</param>
+        /// <param name="viewId">View ID</param>
+        /// <param name="onlineUrls">Tableau Server Connection</param>
+        /// <param name="loginInfo">Tableau Sign In Information</param>
+        public TrustedUrls(string workbookId, string viewId, TableauServerUrls onlineUrls, TableauServerSignIn loginInfo) : base(loginInfo)
         {
             _onlineUrls = onlineUrls;
             _workbookId = workbookId;
             _viewId = viewId;
         }
 
-        public void AddReportParameter(string name, string value)
+        /// <summary>
+        /// Add a parameter for a Tableau Server view
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        public void AddViewParameter(string name, string value)
         {
             if (_reportParameters == null)
             {
@@ -30,6 +45,10 @@ namespace TableauAPI.RESTRequests
             _reportParameters.Add(name, value);
         }
 
+        /// <summary>
+        /// With the provided view parameters, get a URL for a Tableau view to be exported as a PDF.
+        /// </summary>
+        /// <returns></returns>
         public string GetExportPdfUrl()
         {
             var ticketRequest = new TableauServerTicket(_onlineUrls, OnlineSession);
@@ -40,7 +59,11 @@ namespace TableauAPI.RESTRequests
             return url;
         }
 
-        public string GetThumbnailUrl()
+        /// <summary>
+        /// With the provided view paramaeters, get a URL for a Tableau view as a preview image.
+        /// </summary>
+        /// <returns></returns>
+        public string GetPreviewImageUrl()
         {
             var ticketRequest = new TableauServerTicket(_onlineUrls, OnlineSession);
             var ticket = ticketRequest.Ticket();
@@ -49,6 +72,8 @@ namespace TableauAPI.RESTRequests
             url = _AddParamtersToUrl(url);
             return url;
         }
+
+        #region Private Methods
 
         private string _AddParamtersToUrl(string url)
         {
@@ -60,6 +85,8 @@ namespace TableauAPI.RESTRequests
 
             return url;
         }
+
+#endregion
 
     }
 }

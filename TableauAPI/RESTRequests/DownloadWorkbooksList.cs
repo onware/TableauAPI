@@ -12,54 +12,49 @@ namespace TableauAPI.RESTRequests
     /// </summary>
     public class DownloadWorkbooksList : TableauServerSignedInRequestBase
     {
-        /// <summary>
-        /// URL manager
-        /// </summary>
         private readonly TableauServerUrls _onlineUrls;
         private readonly string _userId;
 
+        private List<SiteWorkbook> _workbooks;
         /// <summary>
         /// Workbooks we've parsed from server results
         /// </summary>
-        private List<SiteWorkbook> _workbooks;
         public ICollection<SiteWorkbook> Workbooks
         {
             get
             {
                 var wb = _workbooks;
-                if (wb == null) return null;
-                return wb.AsReadOnly();
+                return wb?.AsReadOnly();
             }
         }
 
         /// <summary>
         /// Constructor: Call when we want to query the workbooks on behalf of the currently logged in user
         /// </summary>
-        /// <param name="onlineUrls"></param>
-        /// <param name="login"></param>
-        public DownloadWorkbooksList(TableauServerUrls onlineUrls, TableauServerSignIn login)
-            : base(login)
+        /// <param name="onlineUrls">Tableau Server Information</param>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        public DownloadWorkbooksList(TableauServerUrls onlineUrls, TableauServerSignIn logInInfo)
+            : base(logInInfo)
         {
             _onlineUrls = onlineUrls;
-            _userId = login.UserId;
+            _userId = logInInfo.UserId;
         }
 
         /// <summary>
         /// Constructor: Call when we want to query the Workbooks on behalf of an explicitly specified user
         /// </summary>
-        /// <param name="onlineUrls"></param>
-        /// <param name="login"></param>
-        /// <param name="user"></param>
-        public DownloadWorkbooksList(TableauServerUrls onlineUrls, TableauServerSignIn login, string userId) : base(login)
+        /// <param name="onlineUrls">Tableau Server Information</param>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <param name="userId">User ID of person we are downloading on behalf of</param>
+        public DownloadWorkbooksList(TableauServerUrls onlineUrls, TableauServerSignIn logInInfo, string userId) : base(logInInfo)
         {
             _onlineUrls = onlineUrls;
             _userId = userId;
         }
 
         /// <summary>
-        /// 
+        /// Execute request for Workbook listings
         /// </summary>
-        /// <param name="serverName"></param>
         public void ExecuteRequest()
         {
             //Sanity check
@@ -75,7 +70,7 @@ namespace TableauAPI.RESTRequests
             {
                 try
                 {
-                    ExecuteRequest_ForPage(onlineWorkbooks, thisPage, out numberPages);
+                    _ExecuteRequest_ForPage(onlineWorkbooks, thisPage, out numberPages);
                 }
                 catch (Exception exPageRequest)
                 {
@@ -86,13 +81,15 @@ namespace TableauAPI.RESTRequests
             _workbooks = onlineWorkbooks;
         }
 
+        #region Private methods
+
         /// <summary>
         /// Get a page's worth of Workbook listings
         /// </summary>
         /// <param name="onlineWorkbooks"></param>
         /// <param name="pageToRequest">Page # we are requesting (1 based)</param>
         /// <param name="totalNumberPages">Total # of pages of data that Server can return us</param>
-        private void ExecuteRequest_ForPage(List<SiteWorkbook> onlineWorkbooks, int pageToRequest, out int totalNumberPages)
+        private void _ExecuteRequest_ForPage(List<SiteWorkbook> onlineWorkbooks, int pageToRequest, out int totalNumberPages)
         {
             int pageSize = _onlineUrls.PageSize;
             //Create a web request, in including the users logged-in auth information in the request headers
@@ -130,6 +127,8 @@ namespace TableauAPI.RESTRequests
                 xmlDoc.SelectSingleNode("//iwsOnline:pagination", nsManager),
                 pageSize);
         }
+
+        #endregion
 
     }
 }

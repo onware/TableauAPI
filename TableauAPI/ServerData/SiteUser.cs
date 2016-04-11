@@ -9,16 +9,28 @@ namespace TableauAPI.ServerData
     /// </summary>
     public class SiteUser : IHasSiteItemId
     {
+        /// <summary>
+        /// User Name
+        /// </summary>
         public readonly string Name;
+
+        /// <summary>
+        /// User's ID
+        /// </summary>
         public readonly string Id;
+
+        /// <summary>
+        /// Role on the current Tableau site
+        /// </summary>
         public readonly string SiteRole;
+        
         /// <summary>
         /// Any developer/diagnostic notes we want to indicate
         /// </summary>
         public readonly string DeveloperNotes;
 
         /// <summary>
-        /// Constructor
+        /// Create a SiteUser from XML returned by the Tableau server
         /// </summary>
         /// <param name="userNode"></param>
         public SiteUser(XmlNode userNode)
@@ -29,19 +41,23 @@ namespace TableauAPI.ServerData
                 throw new Exception("Unexpected content - not user");
             }
 
-            this.Id = userNode.Attributes["id"].Value;
-            this.Name = userNode.Attributes["name"].Value;
-            this.SiteRole = userNode.Attributes["siteRole"].Value;
+            Id = userNode.Attributes?["id"].Value;
+            Name = userNode.Attributes?["name"].Value;
+            SiteRole = userNode.Attributes?["siteRole"].Value;
         }
 
+        /// <summary>
+        /// Returns the Name, ID and Role for the current User.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
-            return "User: " + this.Name + "/" + this.Id + "/" + this.SiteRole;
+            return "User: " + Name + "/" + Id + "/" + SiteRole;
         }
 
-        string IHasSiteItemId.Id
-        {
-            get { return this.Id; }
-        }
+        /// <summary>
+        /// User's ID
+        /// </summary>
+        string IHasSiteItemId.Id => Id;
     }
 }

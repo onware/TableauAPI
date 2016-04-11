@@ -12,8 +12,15 @@ namespace TableauAPI.RESTRequests
     /// </summary>
     public abstract class DownloadUsersListBase : TableauServerSignedInRequestBase
     {
+        private List<SiteUser> _users;
+        
         /// <summary>
-        /// Constructor
+        /// Tableau server information
+        /// </summary>
+        protected readonly TableauServerUrls _onlineUrls;
+        
+        /// <summary>
+        /// Assist with the build out of an implementing object.
         /// </summary>
         /// <param name="onlineUrls"></param>
         /// <param name="login"></param>
@@ -22,8 +29,7 @@ namespace TableauAPI.RESTRequests
         {
             _onlineUrls = onlineUrls;
         }
-
-
+        
         /// <summary>
         /// Derrived classes must implement.  This will be the URL we call to request the list of users. 
         /// </summary>
@@ -31,24 +37,11 @@ namespace TableauAPI.RESTRequests
         /// <param name="pageNumber">The current page number of results we want the server to return us data for</param>
         /// <returns></returns>
         protected abstract string  UrlForUsersListRequest(int pageSize, int pageNumber);
-
-
+        
         /// <summary>
-        /// URL manager
+        /// Users we've parsed from server results
         /// </summary>
-        protected readonly TableauServerUrls _onlineUrls;
-
-        /// <summary>
-        /// Workbooks we've parsed from server results
-        /// </summary>
-        private List<SiteUser> _users;
-        public IEnumerable<SiteUser> Users
-        {
-            get
-            {
-                return _users.AsReadOnly();
-            }
-        }
+        public IEnumerable<SiteUser> Users => _users.AsReadOnly();
 
 
         /// <summary>
@@ -72,9 +65,8 @@ namespace TableauAPI.RESTRequests
 
 
         /// <summary>
-        /// 
+        /// Execute request for Users
         /// </summary>
-        /// <param name="serverName"></param>
         public void ExecuteRequest()
         {
             var onlineUser = new List<SiteUser>();
@@ -84,7 +76,7 @@ namespace TableauAPI.RESTRequests
             {
                 try
                 {
-                    ExecuteRequest_ForPage(onlineUser, thisPage, out numberPages);
+                    _ExecuteRequest_ForPage(onlineUser, thisPage, out numberPages);
                 }
                 catch (Exception exPageRequest)
                 {
@@ -95,13 +87,15 @@ namespace TableauAPI.RESTRequests
             _users = onlineUser;
         }
 
+        #region Private Methods
+
         /// <summary>
         /// Get a page's worth of Users listings
         /// </summary>
         /// <param name="onlineUsers"></param>
         /// <param name="pageToRequest">Page # we are requesting (1 based)</param>
         /// <param name="totalNumberPages">Total # of pages of data that Server can return us</param>
-        private void ExecuteRequest_ForPage(List<SiteUser> onlineUsers, int pageToRequest, out int totalNumberPages)
+        private void _ExecuteRequest_ForPage(List<SiteUser> onlineUsers, int pageToRequest, out int totalNumberPages)
         {
             int pageSize = _onlineUrls.PageSize;
             var urlQuery = UrlForUsersListRequest(pageSize, pageToRequest);
@@ -139,6 +133,8 @@ namespace TableauAPI.RESTRequests
                 xmlDoc.SelectSingleNode("//iwsOnline:pagination", nsManager),
                 pageSize);
         }
+
+        #endregion
 
     }
 }

@@ -3,22 +3,30 @@ using TableauAPI.RESTHelpers;
 
 namespace TableauAPI.RESTRequests
 {
+
+    /// <summary>
+    /// Retrieves a Tableau Server Trusted Authentication Ticket.
+    /// </summary>
     public class TableauServerTicket : TableauServerSignedInRequestBase
     {
-        /// <summary>
-        /// URL manager
-        /// </summary>
         private readonly TableauServerUrls _onlineUrls;
         private readonly string _userName;
 
-
-
+        /// <summary>
+        /// Creates an instance of the Tableau Server Ticket API helper.
+        /// </summary>
+        /// <param name="onlineUrls"></param>
+        /// <param name="login"></param>
         public TableauServerTicket(TableauServerUrls onlineUrls, TableauServerSignIn login) : base(login)
         {
             _onlineUrls = onlineUrls;
             _userName = login.UserName;
         }
 
+        /// <summary>
+        /// Return a one-time use Ticket to access Tableau server without the end user needing to authenticate.
+        /// </summary>
+        /// <returns></returns>
         public string Ticket()
         {
             var value = string.Empty;

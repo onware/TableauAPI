@@ -38,7 +38,7 @@ namespace TableauAPI.ServerData
         public readonly string DeveloperNotes;
 
         /// <summary>
-        /// Constructor
+        /// Create an instance of a SiteConnection from XML returned by the Tableau server
         /// </summary>
         /// <param name="projectNode"></param>
         public SiteConnection(XmlNode projectNode)

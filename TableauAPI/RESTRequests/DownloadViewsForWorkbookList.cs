@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Xml;
 using TableauAPI.FilesLogging;
 using TableauAPI.RESTHelpers;
@@ -8,41 +7,59 @@ using TableauAPI.ServerData;
 
 namespace TableauAPI.RESTRequests
 {
+    /// <summary>
+    /// Request to download views for a workbook
+    /// </summary>
     public class DownloadViewsForWorkbookList : TableauServerSignedInRequestBase
     {
 
-        /// <summary>
-        /// URL manager
-        /// </summary>
         private readonly TableauServerUrls _onlineUrls;
         private readonly string _userId;
         private readonly string _workbookId;
-
         private List<SiteView> _views;
+
+        /// <summary>
+        /// Returns list of Views for the workbook
+        /// </summary>
         public ICollection<SiteView> Views
         {
             get
             {
                 var views = _views;
-                if (views == null) return null;
-                return views.AsReadOnly();
+                return views?.AsReadOnly();
             }
         }
 
-        public DownloadViewsForWorkbookList(string workbookId, TableauServerUrls onlineUrls, TableauServerSignIn login) : base(login)
+        /// <summary>
+        /// Create a request to retrieve Views for a Workbook from the Tableau REST API on behalf of the current user
+        /// </summary>
+        /// <param name="workbookId">Workbook ID</param>
+        /// <param name="onlineUrls">Tableau Server Information</param>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        public DownloadViewsForWorkbookList(string workbookId, TableauServerUrls onlineUrls, TableauServerSignIn logInInfo) : base(logInInfo)
         {
             _workbookId = workbookId;
             _onlineUrls = onlineUrls;
-            _userId = login.UserId;
+            _userId = logInInfo.UserId;
         }
 
-        public DownloadViewsForWorkbookList(string workbookId, TableauServerUrls onlineUrls, TableauServerSignIn login, string userId) : base(login)
+        /// <summary>
+        /// Create a request to retrieve Views for a Workbook from the Tableau REST API on behalf of a given user
+        /// </summary>
+        /// <param name="workbookId">Workbook ID</param>
+        /// <param name="onlineUrls">Tableau Server Information</param>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <param name="userId">User ID of user whom we should get Views for</param>
+        public DownloadViewsForWorkbookList(string workbookId, TableauServerUrls onlineUrls, TableauServerSignIn logInInfo, string userId) : base(logInInfo)
         {
             _workbookId = workbookId;
             _onlineUrls = onlineUrls;
             _userId = userId;
         }
 
+        /// <summary>
+        /// Execute request for Workbook Views
+        /// </summary>
         public void ExecuteRequest()
         {
             if (string.IsNullOrWhiteSpace(_userId))
@@ -52,7 +69,6 @@ namespace TableauAPI.RESTRequests
 
             try
             {
-                var pageSize = _onlineUrls.PageSize;
                 var urlQuery = _onlineUrls.Url_ViewsListForWorkbook(_workbookId, OnlineSession);
                 var webRequest = CreateLoggedInWebRequest(urlQuery);
                 webRequest.Method = "GET";

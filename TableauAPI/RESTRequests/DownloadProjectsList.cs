@@ -8,35 +8,30 @@ using TableauAPI.ServerData;
 namespace TableauAPI.RESTRequests
 {
     /// <summary>
-    /// The list of a Tableau Server Site's projects we have downloaded
+    /// Request for a list of Projects form the Tableau REST API
     /// </summary>
     public class DownloadProjectsList : TableauServerSignedInRequestBase, IProjectsList
     {
 
-        /// <summary>
-        /// URL manager
-        /// </summary>
         private readonly TableauServerUrls _onlineUrls;
+        private List<SiteProject> _projects;
 
         /// <summary>
         /// Projects we've parsed from server results
         /// </summary>
-        private List<SiteProject> _projects;
         public IEnumerable<SiteProject> Projects
         {
             get
             {
                 var ds = _projects;
-                if (ds == null) return null;
-                return ds.AsReadOnly();
+                return ds?.AsReadOnly();
             }
         }
 
-
         /// <summary>
-        /// Constructor
+        /// Create an instance of a request for Projects
         /// </summary>
-        /// <param name="onlineUrls"></param>
+        /// <param name="onlineUrls">Tableau Server Information</param>
         /// <param name="login"></param>
         public DownloadProjectsList(TableauServerUrls onlineUrls, TableauServerSignIn login)
             : base(login)
@@ -45,9 +40,8 @@ namespace TableauAPI.RESTRequests
         }
 
         /// <summary>
-        /// Request the data from Online
+        /// Execute the request for the list of Projects
         /// </summary>
-        /// <param name="serverName"></param>
         public void ExecuteRequest()
         {
             var onlineProjects = new List<SiteProject>();
@@ -68,6 +62,50 @@ namespace TableauAPI.RESTRequests
 
             _projects = onlineProjects;
         }
+
+        /// <summary>
+        /// Finds a project with matching name
+        /// </summary>
+        /// <param name="findProjectName"></param>
+        /// <returns></returns>
+        public SiteProject FindProjectWithName(string findProjectName)
+        {
+            foreach (var proj in _projects)
+            {
+                if (proj.Name == findProjectName)
+                {
+                    return proj;
+                }
+            }
+
+            return null; //Not found
+        }
+
+        /// <summary>
+        /// Returns a Project with a given ID
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        SiteProject IProjectsList.FindProjectWithId(string projectId)
+        {
+            foreach (var proj in _projects)
+            {
+                if (proj.Id == projectId) { return proj; }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Adds a project to the list
+        /// </summary>
+        /// <param name="newProject"></param>
+        internal void AddProject(SiteProject newProject)
+        {
+            _projects.Add(newProject);
+        }
+        
+        #region Private Methods
 
         /// <summary>
         /// Get a page's worth of Projects listing
@@ -99,7 +137,7 @@ namespace TableauAPI.RESTRequests
                     var proj = new SiteProject(itemXml);
                     onlineProjects.Add(proj);
 
-                    SanityCheckProject(proj, itemXml);
+                    _SanityCheckProject(proj, itemXml);
                 }
                 catch
                 {
@@ -119,56 +157,15 @@ namespace TableauAPI.RESTRequests
         /// <summary>
         /// Does sanity checking and error logging on missing data in projects
         /// </summary>
-        /// <param name="project"></param>
-        private void SanityCheckProject(SiteProject project, XmlNode xmlNode)
+        private void _SanityCheckProject(SiteProject project, XmlNode xmlNode)
         {
-            if(string.IsNullOrWhiteSpace(project.Id))
+            if (string.IsNullOrWhiteSpace(project.Id))
             {
                 OnlineSession.StatusLog.AddError(project.Name + " is missing a project ID. Not returned from server! xml=" + xmlNode.OuterXml);
             }
         }
 
-
-        /// <summary>
-        /// Finds a project with matching name
-        /// </summary>
-        /// <param name="findProjectName"></param>
-        /// <returns></returns>
-        public SiteProject FindProjectWithName(string findProjectName)
-        {
-            foreach(var proj in _projects)
-            {
-                if(proj.Name == findProjectName)
-                {
-                    return proj;
-                }
-            }
-
-            return null; //Not found
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="projectId"></param>
-        /// <returns></returns>
-        SiteProject IProjectsList.FindProjectWithId(string projectId)
-        {
-            foreach(var proj in _projects)
-            {
-                if (proj.Id == projectId) { return proj; }
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Adds a project to the list
-        /// </summary>
-        /// <param name="newProject"></param>
-        internal void AddProject(SiteProject newProject)
-        {
-            _projects.Add(newProject);
-        }
+        #endregion
+        
     }
 }

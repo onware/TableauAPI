@@ -4,40 +4,29 @@ using TableauAPI.RESTHelpers;
 namespace TableauAPI.RESTRequests
 {
     /// <summary>
-    /// Sends a request to DELETE a tag from a site's workbook
+    /// Sends a request to delete a tag from a site's workbook
     /// </summary>
     public class SendDeleteWorkbookTag : TableauServerSignedInRequestBase
     {
-        /// <summary>
-        /// URL manager
-        /// </summary>
         private readonly TableauServerUrls _onlineUrls;
-
-        /// <summary>
-        /// ID for the content
-        /// </summary>
         private readonly string _contentId;
-
-        /// <summary>
-        /// Tag we want to delete
-        /// </summary>
         private readonly string _tagText;
 
         /// <summary>
-        /// Constructor
+        /// Create an instance of a Delete Workbook Tag request
         /// </summary>
-        /// <param name="onlineUrls"></param>
-        /// <param name="login"></param>
-        /// <param name="workbookId"></param>
-        /// <param name="tagText"></param>
+        /// <param name="onlineUrls">Tableau Server Information</param>
+        /// <param name="logInInfoIn">Tableau Sign In Information</param>
+        /// <param name="workbookId">Workbook ID</param>
+        /// <param name="tagText">Tag</param>
         public SendDeleteWorkbookTag(
-            TableauServerUrls onlineUrls, 
-            TableauServerSignIn login,
+            TableauServerUrls onlineUrls,
+            TableauServerSignIn logInInfoIn,
             string workbookId,
             string tagText)
-            : base(login)
+            : base(logInInfoIn)
         {
-            if(string.IsNullOrWhiteSpace(tagText))
+            if (string.IsNullOrWhiteSpace(tagText))
             {
                 throw new ArgumentException("Not allowed to delete a blank tag");
             }
@@ -53,39 +42,35 @@ namespace TableauAPI.RESTRequests
         }
 
         /// <summary>
-        /// Delete the tag
+        /// Delete the tag from the workbook.
         /// </summary>
-        /// <param name="serverName"></param>
         public void ExecuteRequest()
         {
             try
             {
                 //Attempt the delete
-                DeleteTagFromContent(_contentId, _tagText);
-                this.StatusLog.AddStatus("Tag deleted from workbook "  + _contentId + "/" + _tagText);
+                _DeleteTagFromContent(_contentId, _tagText);
+                StatusLog.AddStatus("Tag deleted from workbook " + _contentId + "/" + _tagText);
             }
             catch (Exception exProject)
             {
-                this.StatusLog.AddError("Error attempting to delete content tag " + _contentId + "/" + _tagText + "', " + exProject.Message);
-                return;
+                StatusLog.AddError("Error attempting to delete content tag " + _contentId + "/" + _tagText + "', " + exProject.Message);
             }
         }
 
+        #region Private Methods
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="workbookId"></param>
-        /// <param name="tagText"></param>
-        private void DeleteTagFromContent(string workbookId, string tagText)
+        private void _DeleteTagFromContent(string workbookId, string tagText)
         {
             //ref: http://onlinehelp.tableau.com/current/api/rest_api/en-us/help.htm#REST/rest_api_ref.htm#Delete_Tag_from_Workbook%3FTocPath%3DAPI%2520Reference%7C_____20
 
             //Create a web request 
             var urlDeleteContentTag = _onlineUrls.Url_DeleteWorkbookTag(OnlineSession, workbookId, tagText);
-            var webRequest = this.CreateLoggedInWebRequest(urlDeleteContentTag, "DELETE");
-            var response = GetWebResponseLogErrors(webRequest, "delete tag from content request");         
+            var webRequest = CreateLoggedInWebRequest(urlDeleteContentTag, "DELETE");
+            GetWebResponseLogErrors(webRequest, "delete tag from content request");
         }
+
+        #endregion
 
     }
 }

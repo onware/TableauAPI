@@ -10,16 +10,28 @@ namespace TableauAPI.ServerData
     /// </summary>
     public class SiteProject : IHasSiteItemId
     {
+        /// <summary>
+        /// ID of the Project
+        /// </summary>
         public readonly string Id;
+
+        /// <summary>
+        /// Name of the Project
+        /// </summary>
         public readonly string Name;
+
+        /// <summary>
+        /// Description of the Project
+        /// </summary>
         public readonly string Description;
+
         /// <summary>
         /// Any developer/diagnostic notes we want to indicate
         /// </summary>
         public readonly string DeveloperNotes;
 
         /// <summary>
-        /// Constructor
+        /// Creates an instance of a SiteProject from XML returned by the Tableau server
         /// </summary>
         /// <param name="projectNode"></param>
         public SiteProject(XmlNode projectNode)
@@ -32,37 +44,46 @@ namespace TableauAPI.ServerData
                 throw new Exception("Unexpected content - not project");
             }
 
-            this.Id = projectNode.Attributes["id"].Value;
-            this.Name = projectNode.Attributes["name"].Value;
+            Id = projectNode.Attributes?["id"].Value;
+            Name = projectNode.Attributes?["name"].Value;
 
-            var descriptionNode = projectNode.Attributes["description"];
+            var descriptionNode = projectNode.Attributes?["description"];
             if(descriptionNode != null)
             {
-                this.Description = descriptionNode.Value;
+                Description = descriptionNode.Value;
             }
             else
             {
-                this.Description = "";
+                Description = "";
                 sbDevNotes.AppendLine("Project is missing description attribute");
             }
 
-            this.DeveloperNotes = sbDevNotes.ToString();
+            DeveloperNotes = sbDevNotes.ToString();
         }
 
+        /// <summary>
+        /// Creates an instance of a SiteProject with name and ID
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="Id"></param>
         public SiteProject(string name, string Id)
         {
-            this.Name = name;
+            Name = name;
             this.Id = Id;
         }
 
+        /// <summary>
+        /// Returns Name and ID of Projec.t
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
-            return "Project: " + this.Name + "/" + this.Id;
+            return "Project: " + Name + "/" + Id;
         }
 
-        string IHasSiteItemId.Id
-        {
-            get { return this.Id; }
-        }
+        /// <summary>
+        /// Project ID
+        /// </summary>
+        string IHasSiteItemId.Id => Id;
     }
 }

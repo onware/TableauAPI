@@ -16,27 +16,29 @@ namespace TableauAPI.RESTRequests
         private readonly TableauServerUrls _onlineUrls;
         private readonly string _userName;
         private readonly string _password;
-        public readonly string SiteUrlSegment;
+        private readonly string _siteUrlSegment;
         private string _logInCookies;
         private string _logInToken;
         private string _logInSiteId;
         private string _logInUserId;
+
+        /// <summary>
+        /// Status Log for the current Sign In Session
+        /// </summary>
         public readonly TaskStatusLogs StatusLog;
-
-
-
+        
         /// <summary>
         /// Synchronous call to test and make sure sign in works
         /// </summary>
-        /// <param name="url"></param>
-        /// <param name="userId"></param>
-        /// <param name="userPassword"></param>
-        /// <param name="statusLog"></param>
-        public static void VerifySignInPossible(string url, string userId, string userPassword, TaskStatusLogs statusLog)
+        /// <param name="url">Tableau site url</param>
+        /// <param name="username">Tableau username</param>
+        /// <param name="userPassword">Tableau user's password</param>
+        /// <param name="statusLog">Status log</param>
+        public static void VerifySignInPossible(string url, string username, string userPassword, TaskStatusLogs statusLog)
         {
             var urlManager = TableauServerUrls.FromContentUrl(url, 1000);
-            var signIn = new TableauServerSignIn(urlManager, userId, userPassword, statusLog);
-            bool success = signIn.ExecuteRequest();
+            var signIn = new TableauServerSignIn(urlManager, username, userPassword, statusLog);
+            var success = signIn.ExecuteRequest();
 
             if(!success)
             {
@@ -45,68 +47,58 @@ namespace TableauAPI.RESTRequests
         }
 
         /// <summary>
-        /// Constructor
+        /// Create a sign in manager for the given user
         /// </summary>
-        /// <param name="onlineUrls"></param>
-        /// <param name="userName"></param>
-        /// <param name="password"></param>
-        /// <param name="statusLog"></param>
-        public TableauServerSignIn(TableauServerUrls onlineUrls, string userName, string password, TaskStatusLogs statusLog)
+        /// <param name="url">Tableau site url</param>
+        /// <param name="username">Tableau username</param>
+        /// <param name="password">Tableau user's password</param>
+        /// <param name="statusLog">Status log</param>
+        public TableauServerSignIn(TableauServerUrls url, string username, string password, TaskStatusLogs statusLog)
         {
             if (statusLog == null) { statusLog = new TaskStatusLogs(); }
-            this.StatusLog = statusLog;
+            StatusLog = statusLog;
 
-            _onlineUrls = onlineUrls;
-            _userName = userName;
+            _onlineUrls = url;
+            _userName = username;
             _password = password;
-            SiteUrlSegment = onlineUrls.SiteUrlSegement;
-        }
-
-        public string LogInCookies
-        {
-            get
-            {
-                return _logInCookies;
-            }
-        }
-        public string LogInAuthToken
-        {
-            get
-            {
-                return _logInToken;
-            }
-        }
-        public string SiteId
-        {
-            get
-            {
-                return _logInSiteId;
-            }
-        }
-        public string UserId
-        {
-            get
-            {
-                return _logInUserId;
-            }
-        }
-
-        public string UserName
-        {
-            get { return _userName; }
+            _siteUrlSegment = url.SiteUrlSegement;
         }
 
         /// <summary>
-        /// 
+        /// Returns the current user's login cookies.
         /// </summary>
-        /// <param name="serverName"></param>
+        public string LogInCookies => _logInCookies;
+
+        /// <summary>
+        /// Returns the current user's login token.
+        /// </summary>
+        public string LogInAuthToken => _logInToken;
+
+        /// <summary>
+        /// Returns the current site the user is authenticated against.
+        /// </summary>
+        public string SiteId => _logInSiteId;
+
+        /// <summary>
+        /// Returns the user's ID.
+        /// </summary>
+        public string UserId => _logInUserId;
+
+        /// <summary>
+        /// Return the current user's username.
+        /// </summary>
+        public string UserName => _userName;
+
+        /// <summary>
+        /// Executes the authentication request against the Tableau server
+        /// </summary>
         public bool ExecuteRequest()
         {
             var webRequest = WebRequest.Create(_onlineUrls.UrlLogin);
             string bodyText = xmlLogIn;
             bodyText = bodyText.Replace("{{iwsUserName}}", _userName);
             bodyText = bodyText.Replace("{{iwsPassword}}", _password);
-            bodyText = bodyText.Replace("{{iwsSiteUrl}}", SiteUrlSegment);
+            bodyText = bodyText.Replace("{{iwsSiteUrl}}", _siteUrlSegment);
             AssertTemplateFullyReplaced(bodyText);
 
             //===============================================================================================
@@ -118,8 +110,8 @@ namespace TableauAPI.RESTRequests
             }
             catch (Exception exSendRequest)
             {
-                this.StatusLog.AddError("Error sending sign in request: " + exSendRequest.ToString());
-                throw exSendRequest;
+                StatusLog.AddError("Error sending sign in request: " + exSendRequest);
+                throw;
             }
 
 
@@ -133,8 +125,8 @@ namespace TableauAPI.RESTRequests
             }
             catch(Exception exResponse)
             {
-                this.StatusLog.AddError("Error returned from sign in response: " + exResponse.ToString());
-                throw exResponse;
+                StatusLog.AddError("Error returned from sign in response: " + exResponse);
+                throw;
             }
 
             var allHeaders = response.Headers;
@@ -151,8 +143,8 @@ namespace TableauAPI.RESTRequests
             }
             catch (Exception exSignInResponse)
             {
-                this.StatusLog.AddError("Error returned from sign in xml response: " + exSignInResponse.ToString());
-                throw exSignInResponse;
+                StatusLog.AddError("Error returned from sign in xml response: " + exSignInResponse);
+                throw;
             }
 
             var nsManager = XmlHelper.CreateTableauXmlNamespaceManager("iwsOnline");
@@ -167,7 +159,7 @@ namespace TableauAPI.RESTRequests
             string userId = null;
             if(userNode != null)
             {
-                var userIdAttribute =  userNode.Attributes["id"];
+                var userIdAttribute =  userNode.Attributes?["id"];
                 if(userIdAttribute != null)
                 {
                     userId = userIdAttribute.Value;
@@ -178,11 +170,11 @@ namespace TableauAPI.RESTRequests
             //Output some status text...
             if(!string.IsNullOrWhiteSpace(userId))
             {
-                this.StatusLog.AddStatus("Log-in returned user id: '" + userId + "'", -10);
+                StatusLog.AddStatus("Log-in returned user id: '" + userId + "'", -10);
             }
             else
             {
-                this.StatusLog.AddStatus("No User Id returned from log-in request");
+                StatusLog.AddStatus("No User Id returned from log-in request");
                 return false;  //Failed sign in
             }
 

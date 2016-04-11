@@ -9,16 +9,20 @@ namespace TableauAPI.ServerData
     /// </summary>
     public class SiteTag
     {
+        /// <summary>
+        /// The Tag Label
+        /// </summary>
         public readonly string Label;
+        
         /// <summary>
         /// Any developer/diagnostic notes we want to indicate
         /// </summary>
         public readonly string DeveloperNotes;
 
         /// <summary>
-        /// Constructor
+        /// Create an instance of a Site Tag from XML returned by the Tableau server
         /// </summary>
-        /// <param name="userNode"></param>
+        /// <param name="tagNode"></param>
         public SiteTag(XmlNode tagNode)
         {
             if (tagNode.Name.ToLower() != "tag")
@@ -27,12 +31,16 @@ namespace TableauAPI.ServerData
                 throw new Exception("Unexpected content - not tag");
             }
 
-            this.Label = tagNode.Attributes["label"].Value;
+            Label = tagNode.Attributes?["label"].Value;
         }
 
+        /// <summary>
+        /// The label for the current tag.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
-            return "Tag: " + this.Label;
+            return "Tag: " + Label;
         }
 
     }

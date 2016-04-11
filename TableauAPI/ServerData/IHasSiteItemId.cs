@@ -5,6 +5,9 @@
     /// </summary>
     internal interface IHasSiteItemId
     {
+        /// <summary>
+        /// Site Item ID
+        /// </summary>
         string Id  {get;}
     }
 }

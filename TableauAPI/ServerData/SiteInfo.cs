@@ -7,12 +7,31 @@ namespace TableauAPI.ServerData
     /// <summary>
     /// Information about a Site in Server
     /// </summary>
-    public class SiteinfoSite
+    public class SiteInfoSite
     {
+        /// <summary>
+        /// Site ID
+        /// </summary>
         public readonly string Id;
+
+        /// <summary>
+        /// Name of Site
+        /// </summary>
         public readonly string Name;
+
+        /// <summary>
+        /// Server relative URL of Site
+        /// </summary>
         public readonly string ContentUrl;
+
+        /// <summary>
+        /// ContentOnly or ContentAndUsers
+        /// </summary>
         public readonly string AdminMode;
+
+        /// <summary>
+        /// Active or Suspended
+        /// </summary>
         public readonly string State;
 
         /// <summary>
@@ -20,7 +39,11 @@ namespace TableauAPI.ServerData
         /// </summary>
         public readonly string DeveloperNotes;
 
-        public SiteinfoSite(XmlNode content)
+        /// <summary>
+        /// Creates an instance of SiteInfoSite from XML returned by the Tableau server
+        /// </summary>
+        /// <param name="content">XML content returned by Tableau server</param>
+        public SiteInfoSite(XmlNode content)
         {
             if(content.Name.ToLower() != "site")
             {
@@ -28,11 +51,11 @@ namespace TableauAPI.ServerData
                 throw new Exception("Unexpected content - not site");
             }
 
-            this.Name = content.Attributes["name"].Value;
-            this.Id = content.Attributes["id"].Value;
-            this.ContentUrl = content.Attributes["contentUrl"].Value;
-            this.AdminMode = content.Attributes["adminMode"].Value;
-            this.State = content.Attributes["state"].Value;
+            Name = content.Attributes?["name"].Value;
+            Id = content.Attributes?["id"].Value;
+            ContentUrl = content.Attributes?["contentUrl"].Value;
+            AdminMode = content.Attributes?["adminMode"].Value;
+            State = content.Attributes?["state"].Value;
         }
     }
 }

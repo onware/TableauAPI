@@ -37,13 +37,24 @@ namespace TableauAPI.ServerData
         /// </summary>
         public readonly SiteTagsSet TagsSet;
 
+        /// <summary>
+        /// Any developer/diagnostic notes we want to indicate
+        /// </summary>
         public readonly string DeveloperNotes;
+
+        /// <summary>
+        /// XML Namespace manager for the document
+        /// </summary>
         protected readonly XmlNamespaceManager NamespaceManager;
 
+        /// <summary>
+        /// Assists with the assistance of constructing an document which returns SiteDocumentBase
+        /// </summary>
+        /// <param name="xmlNode"></param>
         protected SiteDocumentBase(XmlNode xmlNode)
         {
-            this.Name = xmlNode.Attributes["name"].Value;
-            this.Id = xmlNode.Attributes["id"].Value;
+            Name = xmlNode.Attributes?["name"].Value;
+            Id = xmlNode.Attributes?["id"].Value;
 
             //Note: [2015-10-28] Datasources presently don't return this information
             //        this.ContentUrl = xmlNode.Attributes["contentUrl"].Value;
@@ -55,22 +66,22 @@ namespace TableauAPI.ServerData
             var projectNode = xmlNode.SelectSingleNode("iwsOnline:project", NamespaceManager);
             if (projectNode != null)
             {
-                this.ProjectId = projectNode.Attributes["id"].Value;
-                this.ProjectName = projectNode.Attributes["name"].Value;
+                ProjectId = projectNode.Attributes?["id"].Value;
+                ProjectName = projectNode.Attributes?["name"].Value;
             }
 
             //Get the owner attributes
             var ownerNode = xmlNode.SelectSingleNode("iwsOnline:owner", NamespaceManager);
             if (ownerNode != null)
             {
-                this.OwnerId = ownerNode.Attributes["id"].Value;
+                OwnerId = ownerNode.Attributes?["id"].Value;
             }
 
             //See if there are tags
             var tagsNode = xmlNode.SelectSingleNode("iwsOnline:tags", NamespaceManager);
             if (tagsNode != null)
             {
-                this.TagsSet = new SiteTagsSet(tagsNode);
+                TagsSet = new SiteTagsSet(tagsNode);
             }
         }
 
@@ -81,7 +92,7 @@ namespace TableauAPI.ServerData
         {
             get
             {
-                var tagSet = this.TagsSet;
+                var tagSet = TagsSet;
                 if (tagSet == null) return "";
                 return tagSet.TagSetText;
             }
@@ -89,12 +100,17 @@ namespace TableauAPI.ServerData
 
         string IHasProjectId.ProjectId
         {
-            get { return this.ProjectId; }
+            get { return ProjectId; }
         }
 
+        /// <summary>
+        /// true if the document is tagged with the provided tag; false otherwise.
+        /// </summary>
+        /// <param name="tagText"></param>
+        /// <returns></returns>
         public bool IsTaggedWith(string tagText)
         {
-            var tagSet = this.TagsSet;
+            var tagSet = TagsSet;
             if (tagSet == null)
             {
                 return false;
@@ -102,9 +118,6 @@ namespace TableauAPI.ServerData
             return TagsSet.IsTaggedWith(tagText);
         }
 
-        string IHasSiteItemId.Id
-        {
-            get { return this.Id; }
-        }
+        string IHasSiteItemId.Id => Id;
     }
 }

@@ -12,15 +12,11 @@ namespace TableauAPI.ServerData
     public class SiteDatasource : SiteDocumentBase, IEditDataConnectionsSet
     {
         /// <summary>
-        /// The underlying source of the data (e.g. SQL Server? MySQL? Excel? CSV?)
+        /// The underlying source of the data (e.g. SQL Server, MySQL, Excel, CSV)
         /// </summary>
         public readonly string Type;
 
-        /// <summary>
-        /// If set, contains the set of data connections embedded in this workbooks
-        /// </summary>
         private List<SiteConnection> _dataConnections;
-
         /// <summary>
         /// Return a set of data connections (if they were downloaded)
         /// </summary>
@@ -34,7 +30,7 @@ namespace TableauAPI.ServerData
         }
 
         /// <summary>
-        /// Constructor
+        /// Creates an instance of a Datasource from XML returned by the Tableau server
         /// </summary>
         /// <param name="datasourceNode"></param>
         public SiteDatasource(XmlNode datasourceNode) : base(datasourceNode)
@@ -50,7 +46,7 @@ namespace TableauAPI.ServerData
         }
 
         /// <summary>
-        /// Text description
+        /// Datasource description
         /// </summary>
         /// <returns></returns>
         public override string ToString()

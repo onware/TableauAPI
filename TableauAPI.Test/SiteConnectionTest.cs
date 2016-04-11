@@ -49,7 +49,7 @@ namespace TableauAPI.Test
                 foreach (var view in viewQuery.Views)
                 {
                     var thumbnailQuery = new DownloadView(url, signIn);
-                    var result = thumbnailQuery.GetThumbnail(workbook.Id, view.Id);
+                    var result = thumbnailQuery.GetPreviewImage(workbook.Id, view.Id);
                     Assert.AreNotEqual(0, result.Length);
                 }
             }
@@ -101,10 +101,10 @@ namespace TableauAPI.Test
             var viewQuery = new DownloadViewsForWorkbookList(workbook.Id, url, signIn);
             viewQuery.ExecuteRequest();
             var view = viewQuery.Views.First();
-            var a = new TrustedUrls(workbook.Id, view.Id, url, signIn);
+            var a = new TrustedUrls(workbook.Name.Replace(" ", ""), view.Name.Replace(" ", ""), url, signIn);
             var exportPdfUrl = a.GetExportPdfUrl();
             Assert.IsFalse(string.IsNullOrEmpty(exportPdfUrl));
-            var thumbnailUrl = a.GetThumbnailUrl();
+            var thumbnailUrl = a.GetPreviewImageUrl();
             Assert.IsFalse(string.IsNullOrEmpty(thumbnailUrl));
 
             var client = new WebClient();
@@ -114,18 +114,20 @@ namespace TableauAPI.Test
             Assert.IsTrue(data.Any());
 
             data = null;
-            data = client.DownloadData(thumbnailUrl);
+            
+            var downloadView = new DownloadView(url, signIn);
+            data = downloadView.GetPreviewImage(workbook.Id, view.Id);
             Assert.IsNotNull(data);
             Assert.IsTrue(data.Any());
 
-            a.AddReportParameter("Gabba", "1");
-            a.AddReportParameter("Hey", "2");
+            a.AddViewParameter("Gabba", "1");
+            a.AddViewParameter("Hey", "2");
 
             exportPdfUrl = a.GetExportPdfUrl();
             Assert.IsTrue(exportPdfUrl.Contains("?"));
             Assert.IsTrue(exportPdfUrl.EndsWith("Gabba=1&Hey=2"));
 
-            thumbnailUrl = a.GetThumbnailUrl();
+            thumbnailUrl = a.GetPreviewImageUrl();
             Assert.IsTrue(thumbnailUrl.Contains("?"));
             Assert.IsTrue(thumbnailUrl.EndsWith("Gabba=1&Hey=2"));
         }

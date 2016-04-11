@@ -5,41 +5,39 @@ using TableauAPI.ServerData;
 
 namespace TableauAPI.RESTRequests
 {
+    /// <summary>
+    /// Request to download Site Info from the Tableau REST API
+    /// </summary>
     public class DownloadSiteInfo : TableauServerSignedInRequestBase
     {
-        /// <summary>
-        /// URL manager
-        /// </summary>
         private readonly TableauServerUrls _onlineUrls;
+        private SiteInfoSite _onlineSiteInfoSite;
+
         /// <summary>
         /// Workbooks we've parsed from server results
         /// </summary>
-        private SiteinfoSite _onlineSite;
-        public SiteinfoSite Site
+        public SiteInfoSite SiteInfoSite
         {
             get
             {
-                return _onlineSite;
+                return _onlineSiteInfoSite;
             }
         }
 
         /// <summary>
-        /// Constructor
+        /// Create an instance of a request for Site information from the Tableau REST API
         /// </summary>
-        /// <param name="onlineUrls"></param>
-        /// <param name="login"></param>
-        /// <param name="user"></param>
-        public DownloadSiteInfo(TableauServerUrls onlineUrls, TableauServerSignIn login)
-            : base(login)
+        /// <param name="onlineUrls">Tableau Server Information</param>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        public DownloadSiteInfo(TableauServerUrls onlineUrls, TableauServerSignIn logInInfo)
+            : base(logInInfo)
         {
             _onlineUrls = onlineUrls;
-//        _user = user;
         }
 
         /// <summary>
-        /// 
+        /// Execute the request for Site Information
         /// </summary>
-        /// <param name="serverName"></param>
         public void ExecuteRequest()
         {
             var statusLog = OnlineSession.StatusLog;
@@ -65,8 +63,8 @@ namespace TableauAPI.RESTRequests
                 try
                 {
                     numberSites++;
-                    var site = new SiteinfoSite(contentXml);
-                    _onlineSite = site;
+                    var site = new SiteInfoSite(contentXml);
+                    _onlineSiteInfoSite = site;
 
                     statusLog.AddStatus("Site info: " + site.Name + "/" + site.Id + "/" + site.State);
                 }

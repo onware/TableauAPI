@@ -21,7 +21,7 @@ namespace TableauAPI.ServerData
         public T FindItem(string key)
         {
             T outItem;
-            bool found = _dictionary.TryGetValue(key, out outItem);
+            var found = _dictionary.TryGetValue(key, out outItem);
             if(!found)
             {
                 return default(T);

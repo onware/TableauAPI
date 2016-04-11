@@ -12,19 +12,16 @@ namespace TableauAPI.ServerData
     /// </summary>
     public class SiteTagsSet : ITagSetInfo
     {
-        IReadOnlyList<SiteTag> _tags;
-        public IEnumerable<SiteTag> Tags
-        {
-            get
-            {
-                return _tags;
-            }
-        }
+        private readonly IReadOnlyList<SiteTag> _tags;
+        /// <summary>
+        /// If set, returns an enumerable collection of SiteTag objects
+        /// </summary>
+        public IEnumerable<SiteTag> Tags => _tags;
 
         /// <summary>
-        /// Constructor
+        /// Creates a collection of SiteTag objects from XML returned by the Tableau server
         /// </summary>
-        /// <param name="userNode"></param>
+        /// <param name="tagsNode"></param>
         public SiteTagsSet(XmlNode tagsNode)
         {
             if (tagsNode.Name.ToLower() != "tags")
@@ -40,22 +37,25 @@ namespace TableauAPI.ServerData
             var tags = new List<SiteTag>();
             //Get the project tags
             var tagsSet = tagsNode.SelectNodes("iwsOnline:tag", nsManager);
-            foreach(var tagNode in tagsSet)
+            if (tagsSet != null)
             {
-                var newTag = new SiteTag((XmlNode) tagNode);
-                tags.Add(newTag);
+                foreach (var tagNode in tagsSet)
+                {
+                    var newTag = new SiteTag((XmlNode)tagNode);
+                    tags.Add(newTag);
 
+                }
             }
             _tags = tags.AsReadOnly();
         }
 
         /// <summary>
-        /// String representation
+        /// List of tags as a string
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return "tags: " + this.TagSetText;
+            return "tags: " + TagSetText;
         }
 
 
@@ -85,7 +85,7 @@ namespace TableauAPI.ServerData
         }
 
         /// <summary>
-        /// True of the specified tag can be found in the set
+        /// true if the specified tag can be found in the set; false otherwise
         /// </summary>
         /// <param name="tag"></param>
         /// <returns></returns>
@@ -93,15 +93,15 @@ namespace TableauAPI.ServerData
         {
             var tagSet = _tags;
             //No tags?
-            if(tagSet == null)
+            if (tagSet == null)
             {
                 return false;
             }
 
             //Look for hte tag
-            foreach(var thisTag in tagSet)
+            foreach (var thisTag in tagSet)
             {
-                if(thisTag.Label == tag)
+                if (thisTag.Label == tag)
                 {
                     return true;
                 }

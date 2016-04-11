@@ -9,7 +9,7 @@ namespace TableauAPI.RESTRequests
     /// <summary>
     /// Downloads a set of workbooks from server
     /// </summary>
-    public class DownloadWorkbooks : TableauServerSignedInRequestBase
+    public class DownloadWorkbook : TableauServerSignedInRequestBase
     {
         /// <summary>
         /// URL manager
@@ -34,18 +34,18 @@ namespace TableauAPI.RESTRequests
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="onlineUrls"></param>
-        /// <param name="login"></param>
-        /// <param name="workbooks"></param>
-        /// <param name="localSavePath"></param>
-        /// <param name="projectsList"></param>
-        public DownloadWorkbooks(
+        /// <param name="onlineUrls">Tableau Server Information</param>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <param name="workbooks">IEnumerable of SiteWorkbook objects</param>
+        /// <param name="localSavePath">Local path where the workbooks should be saved</param>
+        /// <param name="projectsList">IEnumerable of SiteProject objects</param>
+        public DownloadWorkbook(
             TableauServerUrls onlineUrls, 
-            TableauServerSignIn login, 
+            TableauServerSignIn logInInfo, 
             IEnumerable<SiteWorkbook> workbooks,
             string localSavePath,
             IProjectsList projectsList)
-            : base(login)
+            : base(logInInfo)
         {
             _onlineUrls = onlineUrls;
             _workbooks = workbooks;
@@ -54,9 +54,8 @@ namespace TableauAPI.RESTRequests
         }
 
         /// <summary>
-        /// 
+        /// Execute request for Workbooks
         /// </summary>
-        /// <param name="serverName"></param>
         public ICollection<SiteWorkbook> ExecuteRequest()
         {
             var statusLog = OnlineSession.StatusLog;

@@ -12,44 +12,48 @@ namespace TableauAPI.ServerData
     /// </summary>
     public class SiteWorkbook : SiteDocumentBase, IEditDataConnectionsSet
     {
+        /// <summary>
+        /// true if tabs are shown on the Workbook; false otherwise.
+        /// </summary>
         public readonly bool ShowTabs;
-        //Note: [2015-10-28] Datasources presently don't return this information, so we need to make this workbook specific
+
+        /// <summary>
+        /// Relative URL to access the Workbook
+        /// </summary>
+        ///<remark>Note: [2015-10-28] Datasources presently don't return this information, so we need to make this workbook specific</remark>
         public readonly string ContentUrl;
 
 
+        private List<SiteConnection> _dataConnections;
         /// <summary>
         /// If set, contains the set of data connections embedded in this workbooks
         /// </summary>
-        private List<SiteConnection> _dataConnections;
-
         public ReadOnlyCollection<SiteConnection> DataConnections
         {
             get
             {
                 var dataConnections = _dataConnections;
-                if (dataConnections == null) return null;
-
-                return dataConnections.AsReadOnly();
+                return dataConnections?.AsReadOnly();
             }
         }
 
         /// <summary>
-        /// Constructor
+        /// Create a SiteWorkbook from XML returned by the Tableau server
         /// </summary>
-        /// <param name="workbookNode"></param>
+        /// <param name="workbookNode">XML node representing a Workbook</param>
         public SiteWorkbook(XmlNode workbookNode) : base(workbookNode)
         {
-            if(workbookNode.Name.ToLower() != "workbook")
+            if (workbookNode.Name.ToLower() != "workbook")
             {
                 AppDiagnostics.Assert(false, "Not a workbook");
                 throw new Exception("Unexpected content - not workbook");
             }
 
             //Note: [2015-10-28] Datasources presently don't return this information, so we need to make this workbook specific
-            this.ContentUrl = workbookNode.Attributes["contentUrl"].Value;
+            ContentUrl = workbookNode.Attributes?["contentUrl"].Value;
 
             //Do we have tabs?
-            this.ShowTabs = XmlHelper.SafeParseXmlAttribute_Bool(workbookNode, "showTabs", false);
+            ShowTabs = XmlHelper.SafeParseXmlAttribute_Bool(workbookNode, "showTabs", false);
         }
 
 
@@ -65,14 +69,10 @@ namespace TableauAPI.ServerData
         /// <summary>
         /// Interface for inserting the set of data connections associated with this content
         /// </summary>
-        /// <param name="connections"></param>
+        /// <param name="connections">List of data connections to be associated them with the workbook</param>
         void IEditDataConnectionsSet.SetDataConnections(IEnumerable<SiteConnection> connections)
         {
-            if(connections == null)
-            {
-                _dataConnections = null;
-            }
-            _dataConnections = new List<SiteConnection>(connections);
+            _dataConnections = connections == null ? null : new List<SiteConnection>(connections);
         }
     }
 }

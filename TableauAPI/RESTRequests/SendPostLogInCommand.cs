@@ -7,9 +7,6 @@ namespace TableauAPI.RESTRequests
     /// </summary>
     public class SendPostLogInCommand : TableauServerSignedInRequestBase
     {
-        /// <summary>
-        /// URL manager
-        /// </summary>
         private readonly TableauServerUrls _onlineUrls;
         private readonly string _postLoginCommandUrl;
 
@@ -17,25 +14,25 @@ namespace TableauAPI.RESTRequests
         /// <summary>
         /// The result from running the command
         /// </summary>
-        public string CommandResult
-        {
-            get
-            {
-                return _commandResult;
-            }
-        }
+        public string CommandResult => _commandResult;
 
-        public SendPostLogInCommand(TableauServerUrls onlineUrls, TableauServerSignIn login, string commandUrl)
-            : base(login)
+        /// <summary>
+        /// Connect to Tableau and execute a command
+        /// </summary>
+        /// <param name="onlineUrls"></param>
+        /// <param name="logInInfo"></param>
+        /// <param name="commandUrl"></param>
+        public SendPostLogInCommand(TableauServerUrls onlineUrls, TableauServerSignIn logInInfo, string commandUrl)
+            : base(logInInfo)
         {
             _onlineUrls = onlineUrls;
             _postLoginCommandUrl = commandUrl;
         }
 
         /// <summary>
-        /// 
+        /// Execute a custom command on the Tableau server.
         /// </summary>
-        /// <param name="serverName"></param>
+        /// <returns>XML response from server as string.</returns>
         public string ExecuteRequest()
         {
             string url = _postLoginCommandUrl;
