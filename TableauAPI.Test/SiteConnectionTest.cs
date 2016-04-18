@@ -106,6 +106,8 @@ namespace TableauAPI.Test
             Assert.IsFalse(string.IsNullOrEmpty(exportPdfUrl));
             var thumbnailUrl = a.GetPreviewImageUrl();
             Assert.IsFalse(string.IsNullOrEmpty(thumbnailUrl));
+            var viewUrl = a.GetTrustedViewUrl();
+            Assert.IsFalse(string.IsNullOrEmpty(viewUrl));
 
             var client = new WebClient();
 

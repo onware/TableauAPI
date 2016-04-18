@@ -73,6 +73,20 @@ namespace TableauAPI.RESTRequests
             return url;
         }
 
+        /// <summary>
+        /// With the provided view parameters, get a URL for a Tableau view to be exported as a PDF.
+        /// </summary>
+        /// <returns></returns>
+        public string GetTrustedViewUrl()
+        {
+            var ticketRequest = new TableauServerTicket(_onlineUrls, OnlineSession);
+            var ticket = ticketRequest.Ticket();
+
+            var url = $"{_onlineUrls.ServerUrlWithProtocol}/trusted/{ticket}/t/{_onlineUrls.SiteUrlSegement}/views/{_workbookId}/{_viewId}";
+            url = _AddParamtersToUrl(url);
+            return url;
+        }
+
         #region Private Methods
 
         private string _AddParamtersToUrl(string url)
