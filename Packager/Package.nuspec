@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>TableauAPI</id>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <authors>LightHorse Innovation Corporation</authors>
     <owners>LightHorse Innovation Corporation</owners>
     <licenseUrl>https://github.com/lighthorseinnovation/TableauAPI/blob/master/LICENSE.txt</licenseUrl>
@@ -10,7 +10,7 @@
     <iconUrl>https://raw.githubusercontent.com/lighthorseinnovation/TableauAPI/master/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>An implementation of the Tableau REST API in C# distributed as a NuGet package.</description>
-    <releaseNotes>Initial release. This exposes many of the common REST API calls (see https://onlinehelp.tableau.com/current/api/rest_api/en-us/help.htm) wrapped in .NET.</releaseNotes>
+    <releaseNotes>Fixed bug on URL generation for the GetPreviewImage() method on the DownloadView request.</releaseNotes>
     <copyright>Copyright 2016 Tableau, LightHorse Innovation Corporation</copyright>
     <tags>Tableau REST API</tags>
   </metadata>
