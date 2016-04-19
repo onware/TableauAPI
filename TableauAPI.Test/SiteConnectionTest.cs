@@ -132,6 +132,60 @@ namespace TableauAPI.Test
             thumbnailUrl = a.GetPreviewImageUrl();
             Assert.IsTrue(thumbnailUrl.Contains("?"));
             Assert.IsTrue(thumbnailUrl.EndsWith("Gabba=1&Hey=2"));
+
+            a.HideToolbar = true;
+            viewUrl = a.GetTrustedViewUrl();
+            Assert.IsTrue(viewUrl.EndsWith("&:toolbar=no"));
+
+            a.HideToolbar = null;
+            viewUrl = a.GetTrustedViewUrl();
+            Assert.IsFalse(viewUrl.EndsWith("&:toolbar=no"));
+
+            a.HideToolbar = false;
+            viewUrl = a.GetTrustedViewUrl();
+            Assert.IsFalse(viewUrl.EndsWith("&:toolbar=no"));
+
+            a.HideTabs = true;
+            viewUrl = a.GetTrustedViewUrl();
+            Assert.IsTrue(viewUrl.EndsWith("&:tabs=no"));
+
+            a.HideTabs = null;
+            viewUrl = a.GetTrustedViewUrl();
+            Assert.IsFalse(viewUrl.EndsWith("&:tabs=no"));
+
+            a.HideTabs = false;
+            viewUrl = a.GetTrustedViewUrl();
+            Assert.IsFalse(viewUrl.EndsWith("&:tabs=no"));
+
+            a = new TrustedUrls(workbook.Name.Replace(" ", ""), view.Name.Replace(" ", ""), url, signIn);
+            a.HideToolbar = true;
+            viewUrl = a.GetTrustedViewUrl();
+            Assert.IsTrue(viewUrl.EndsWith("?:toolbar=no"));
+
+            a.HideToolbar = null;
+            viewUrl = a.GetTrustedViewUrl();
+            Assert.IsFalse(viewUrl.EndsWith("?:toolbar=no"));
+
+            a.HideToolbar = false;
+            viewUrl = a.GetTrustedViewUrl();
+            Assert.IsFalse(viewUrl.EndsWith("?:toolbar=no"));
+
+            a.HideTabs = true;
+            viewUrl = a.GetTrustedViewUrl();
+            Assert.IsTrue(viewUrl.EndsWith("?:tabs=no"));
+
+            a.HideTabs = null;
+            viewUrl = a.GetTrustedViewUrl();
+            Assert.IsFalse(viewUrl.EndsWith("?:tabs=no"));
+
+            a.HideTabs = false;
+            viewUrl = a.GetTrustedViewUrl();
+            Assert.IsFalse(viewUrl.EndsWith("?:tabs=no"));
+
+            a.HideToolbar = true;
+            a.HideTabs = true;
+            viewUrl = a.GetTrustedViewUrl();
+            Assert.IsTrue(viewUrl.EndsWith("?:tabs=no&:toolbar=no"));
         }
     }
 }

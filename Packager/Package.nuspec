@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>TableauAPI</id>
-    <version>1.1.2</version>
+    <version>1.1.4</version>
     <authors>LightHorse Innovation Corporation</authors>
     <owners>LightHorse Innovation Corporation</owners>
     <licenseUrl>https://github.com/lighthorseinnovation/TableauAPI/blob/master/LICENSE.txt</licenseUrl>
@@ -10,7 +10,7 @@
     <iconUrl>https://raw.githubusercontent.com/lighthorseinnovation/TableauAPI/master/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>An implementation of the Tableau REST API in C# distributed as a NuGet package.</description>
-    <releaseNotes>Added additional method to TrustedUrls class to return a URL for a trusted Tableau View to be used for embedding in a site using the API.</releaseNotes>
+    <releaseNotes>Addition of properties on TrustedUrl class to support showing/hiding of toolbar and tabs on a Viz JavaScript object.</releaseNotes>
     <copyright>Copyright 2016 Tableau, LightHorse Innovation Corporation</copyright>
     <tags>Tableau REST API</tags>
   </metadata>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TableauAPI.RESTHelpers;
 
@@ -15,6 +16,16 @@ namespace TableauAPI.RESTRequests
         private readonly string _workbookId;
         private readonly string _viewId;
         private Dictionary<string, string> _reportParameters;
+
+        /// <summary>
+        /// Tabs hidden if true; visible otherwise.
+        /// </summary>
+        public bool? HideTabs { get; set; }
+
+        /// <summary>
+        /// Toolbar hidden if true; visible otherwise.
+        /// </summary>
+        public bool? HideToolbar { get; set; }
 
         /// <summary>
         /// Creates an instance of the Trusted URLs API helpers.
@@ -82,7 +93,7 @@ namespace TableauAPI.RESTRequests
             var ticketRequest = new TableauServerTicket(_onlineUrls, OnlineSession);
             var ticket = ticketRequest.Ticket();
 
-            var url = $"{_onlineUrls.ServerUrlWithProtocol}/trusted/{ticket}/t/{_onlineUrls.SiteUrlSegement}/views/{_workbookId}/{_viewId}";
+            var url = $"{_onlineUrls.ServerUrlWithProtocol}/trusted/{ticket}/t/{_onlineUrls.SiteUrlSegement}/views/{_workbookId}/{_viewId}?:embed=yes";
             url = _AddParamtersToUrl(url);
             return url;
         }
@@ -94,13 +105,49 @@ namespace TableauAPI.RESTRequests
             if (_reportParameters != null && _reportParameters.Any())
             {
                 var parameters = string.Join("&", _reportParameters.Select(x => $"{x.Key}={x.Value}"));
-                url = url + "?" + parameters;
+                if (!url.Contains("?"))
+                {
+                    url += "?";
+                }
+                url += parameters;
+            }
+
+            if (HideTabs.GetValueOrDefault())
+            {
+                if (!url.Contains("?"))
+                {
+                    url += "?:tabs=no";
+                }
+                else
+                {
+                    if (url.Substring(url.Length - 1) != "?")
+                    {
+                        url += "&";
+                    }
+                    url += ":tabs=no";
+                }
+            }
+
+            if (HideToolbar.GetValueOrDefault())
+            {
+                if (!url.Contains("?"))
+                {
+                    url += "?:toolbar=no";
+                }
+                else
+                {
+                    if (url.Substring(url.Length - 1) != "?")
+                    {
+                        url += "&";
+                    }
+                    url += ":toolbar=no";
+                }
             }
 
             return url;
         }
 
-#endregion
+        #endregion
 
     }
 }
