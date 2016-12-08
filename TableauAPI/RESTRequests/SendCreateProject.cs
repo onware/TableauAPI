@@ -74,7 +74,7 @@ namespace TableauAPI.RESTRequests
             //Create a web request 
             var urlCreateProject = _onlineUrls.Url_CreateProject(OnlineSession);
             var webRequest = CreateLoggedInWebRequest(urlCreateProject, "POST");
-            SendPostContents(webRequest, xmlText);
+            SendRequestContents(webRequest, xmlText);
 
             //Get the response
             var response = GetWebResponseLogErrors(webRequest, "create project");

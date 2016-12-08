@@ -30,6 +30,11 @@ namespace TableauAPI.ServerData
         public readonly string DeveloperNotes;
 
         /// <summary>
+        /// The last login date of the user
+        /// </summary>
+        public readonly DateTime? LastLogin;
+
+        /// <summary>
         /// Create a SiteUser from XML returned by the Tableau server
         /// </summary>
         /// <param name="userNode"></param>
@@ -44,6 +49,9 @@ namespace TableauAPI.ServerData
             Id = userNode.Attributes?["id"].Value;
             Name = userNode.Attributes?["name"].Value;
             SiteRole = userNode.Attributes?["siteRole"].Value;
+            var lastLogin = userNode.Attributes["lastLogin"]?.Value;
+            if (lastLogin != null)
+                LastLogin = Convert.ToDateTime(lastLogin);
         }
 
         /// <summary>

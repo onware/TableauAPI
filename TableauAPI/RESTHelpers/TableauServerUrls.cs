@@ -43,6 +43,7 @@ namespace TableauAPI.RESTHelpers
         private readonly string _urlCreateProjectTemplate;
         private readonly string _urlDeleteWorkbookTagTemplate;
         private readonly string _urlDeleteDatasourceTagTemplate;
+        private readonly string _urlUpdateUserTemplate;
 
         /// <summary>
         /// Server url with protocol
@@ -114,6 +115,7 @@ namespace TableauAPI.RESTHelpers
             _urlCreateProjectTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/projects";
             _urlDeleteWorkbookTagTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/workbooks/{{iwsWorkbookId}}/tags/{{iwsTagText}}";
             _urlDeleteDatasourceTagTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/datasources/{{iwsDatasourceId}}/tags/{{iwsTagText}}";
+            _urlUpdateUserTemplate = serverNameWithProtocol + "/api/2.0/sites/{{iwsSiteId}}/users/{{iwsUserId}}";
 
             //Any server version specific things we want to do?
             switch (serverVersion)
@@ -475,6 +477,20 @@ namespace TableauAPI.RESTHelpers
             workingText = workingText.Replace("{{iwsGroupId}}", groupId);
             workingText = workingText.Replace("{{iwsPageSize}}", pageSize.ToString());
             workingText = workingText.Replace("{{iwsPageNumber}}", pageNumber.ToString());
+            _ValidateTemplateReplaceComplete(workingText);
+
+            return workingText;
+        }
+
+        /// <summary>
+        /// URL to get update a user
+        /// </summary>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <param name="userId">User ID</param>
+        public string Url_UpdateUser(TableauServerSignIn logInInfo, string userId)
+        {
+            string workingText = _urlUpdateUserTemplate.Replace("{{iwsSiteId}}", logInInfo.SiteId);
+            workingText = workingText.Replace("{{iwsUserId}}", userId);
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
