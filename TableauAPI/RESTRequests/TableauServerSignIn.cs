@@ -106,7 +106,7 @@ namespace TableauAPI.RESTRequests
             //===============================================================================================
             try
             {
-                SendPostContents(webRequest, bodyText);
+                SendRequestContents(webRequest, bodyText);
             }
             catch (Exception exSendRequest)
             {

@@ -14,9 +14,9 @@ namespace TableauAPI.RESTHelpers
         /// </summary>
         /// <param name="request"></param>
         /// <param name="bodyText"></param>
-        protected static void SendPostContents(WebRequest request, string bodyText)
+        protected static void SendRequestContents(WebRequest request, string bodyText, string method = "POST")
         {
-            request.Method = "POST";
+            request.Method = method;
             // Set the ContentType property of the WebRequest.
             request.ContentType = "application/xml;charset=utf-8";
             // Set the ContentLength property of the WebRequest.
