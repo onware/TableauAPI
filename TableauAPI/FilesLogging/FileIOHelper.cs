@@ -139,5 +139,63 @@ namespace TableauAPI.FilesLogging
 
             return pathWithProject;
         }
+
+        /// <summary>
+        /// If we have Project Mapping information, generate a project based path for the download
+        /// </summary>
+        /// <param name="basePath">File system location which will be the root of project paths.</param>
+        /// <param name="project">Project record.</param>
+        /// <param name="statusLog">Logging object.</param>
+        /// <returns></returns>
+        public static string EnsureProjectBasedPath(string basePath, SiteProject project, TaskStatusLogs statusLog)
+        {
+            //If we have no project list to do lookups in then just return the base path
+            if (project == null)
+            {
+                return basePath;
+            }
+            
+            //Turn the project name into a directory name
+            var safeDirectoryName = GenerateWindowsSafeFilename(project.Name);
+
+            var pathWithProject = Path.Combine(basePath, safeDirectoryName);
+
+            //If needed, create the directory
+            if (!Directory.Exists(pathWithProject))
+            {
+                Directory.CreateDirectory(pathWithProject);
+            }
+
+            return pathWithProject;
+        }
+
+        /// <summary>
+        /// If we have Project Mapping information, generate a project based path for the download
+        /// </summary>
+        /// <param name="basePath">File system location which will be the root of project paths.</param>
+        /// <param name="workbook">Workbook record.</param>
+        /// <param name="statusLog">Logging object.</param>
+        /// <returns></returns>
+        public static string EnsureProjectBasedPath(string basePath, SiteWorkbook workbook, TaskStatusLogs statusLog)
+        {
+            //If we have no project list to do lookups in then just return the base path
+            if (workbook == null)
+            {
+                return basePath;
+            }
+
+            //Turn the project name into a directory name
+            var safeDirectoryName = GenerateWindowsSafeFilename(workbook.Name);
+
+            var pathWithProject = Path.Combine(basePath, safeDirectoryName);
+
+            //If needed, create the directory
+            if (!Directory.Exists(pathWithProject))
+            {
+                Directory.CreateDirectory(pathWithProject);
+            }
+
+            return pathWithProject;
+        }
     }
 }

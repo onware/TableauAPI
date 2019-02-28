@@ -22,12 +22,13 @@ namespace TableauAPI.RESTRequests
         /// </summary>
         /// <param name="onlineUrls">Tableau Server Information</param>
         /// <param name="logInInfo">Tableau Sign In Information</param>
-        /// <param name="user">User to update</param>
-        public SendUpdateUserSiteRole(TableauServerUrls onlineUrls, TableauServerSignIn logInInfo, string userID, string siteRole)
+        /// <param name="userId">User to update</param>
+        /// <param name="siteRole"></param>
+        public SendUpdateUserSiteRole(TableauServerUrls onlineUrls, TableauServerSignIn logInInfo, string userId, string siteRole)
             : base(logInInfo)
         {
             _onlineUrls = onlineUrls;
-            _userID = userID;
+            _userID = userId;
             _siteRole = siteRole;
         }
 

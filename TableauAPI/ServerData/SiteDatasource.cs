@@ -16,6 +16,33 @@ namespace TableauAPI.ServerData
         /// </summary>
         public readonly string Type;
 
+        /// <summary>
+        /// Relative URL to access the Workbook
+        /// </summary>
+        ///<remark>Note: [2015-10-28] Datasources presently don't return this information, so we need to make this workbook specific</remark>
+        public readonly string ContentUrl;
+        /// <summary>
+        /// Web page url
+        /// </summary>
+        public readonly string WebpageUrl;
+        /// <summary>
+        /// Description of the workbook
+        /// </summary>
+        public readonly string Description;
+        /// <summary>
+        /// Creation date
+        /// </summary>
+        public readonly string CreatedAt;
+        /// <summary>
+        /// Update date
+        /// </summary>
+        public readonly string UpdatedAt;
+
+        /// <summary>
+        /// Is certified
+        /// </summary>
+        public readonly string IsCertified;
+
         private List<SiteConnection> _dataConnections;
         /// <summary>
         /// Return a set of data connections (if they were downloaded)
@@ -40,9 +67,19 @@ namespace TableauAPI.ServerData
                 AppDiagnostics.Assert(false, "Not a datasource");
                 throw new Exception("Unexpected content - not datasource");
             }
+
             //Get the underlying data source type
             Type = datasourceNode.Attributes?["type"].Value;
+            ContentUrl = datasourceNode.Attributes?["contentUrl"].Value;
+            WebpageUrl = datasourceNode.Attributes?["webpageUrl"].Value;
+            CreatedAt = datasourceNode.Attributes?["createdAt"].Value;
+            UpdatedAt = datasourceNode.Attributes?["updatedAt"].Value;
+            IsCertified = datasourceNode.Attributes?["isCertified"].Value;
 
+            if (datasourceNode.Attributes != null && datasourceNode.Attributes["description"] != null)
+            {
+                Description = datasourceNode.Attributes?["description"].Value;
+            }
         }
 
         /// <summary>

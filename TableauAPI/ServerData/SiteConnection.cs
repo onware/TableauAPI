@@ -38,6 +38,11 @@ namespace TableauAPI.ServerData
         public readonly string DeveloperNotes;
 
         /// <summary>
+        /// Password embed
+        /// </summary>
+        public readonly string EmbedPassword;
+
+        /// <summary>
         /// Create an instance of a SiteConnection from XML returned by the Tableau server
         /// </summary>
         /// <param name="projectNode"></param>
@@ -45,7 +50,7 @@ namespace TableauAPI.ServerData
         {
             var sbDevNotes = new StringBuilder();
 
-            if(projectNode.Name.ToLower() != "connection")
+            if (projectNode.Name.ToLower() != "connection")
             {
                 AppDiagnostics.Assert(false, "Not a connection");
                 throw new Exception("Unexpected content - not connection");
@@ -57,6 +62,7 @@ namespace TableauAPI.ServerData
             ServerAddress = XmlHelper.SafeParseXmlAttribute(projectNode, "serverAddress", "");
             ServerPort = XmlHelper.SafeParseXmlAttribute(projectNode, "serverPort", "");
             UserName = XmlHelper.SafeParseXmlAttribute(projectNode, "userName", "");
+            EmbedPassword = XmlHelper.SafeParseXmlAttribute(projectNode, "embedPassword", "");
 
             DeveloperNotes = sbDevNotes.ToString();
         }

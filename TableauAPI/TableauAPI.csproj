@@ -12,6 +12,10 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,7 +31,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\..\..\Builds\Connectivities\TableauAPI\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -78,6 +82,7 @@
     </Compile>
     <Compile Include="RESTHelpers\UploadBehaviorProjects.cs" />
     <Compile Include="RESTHelpers\XmlHelper.cs" />
+    <Compile Include="RESTRequests\DownloadDatasource.cs" />
     <Compile Include="RESTRequests\DownloadDatasources.cs" />
     <Compile Include="RESTRequests\DownloadDatasourcesList.cs" />
     <Compile Include="RESTRequests\DownloadGroupsList.cs" />
@@ -89,9 +94,11 @@
     <Compile Include="RESTRequests\DownloadView.cs" />
     <Compile Include="RESTRequests\DownloadViewsForSiteList.cs" />
     <Compile Include="RESTRequests\DownloadViewsForWorkbookList.cs" />
-    <Compile Include="RESTRequests\DownloadWorkbookConnections.cs" />
     <Compile Include="RESTRequests\DownloadWorkbook.cs" />
+    <Compile Include="RESTRequests\DownloadWorkbookConnections.cs" />
+    <Compile Include="RESTRequests\DownloadWorkbooks.cs" />
     <Compile Include="RESTRequests\DownloadWorkbooksList.cs" />
+    <Compile Include="RESTRequests\ObtainWorkbook.cs" />
     <Compile Include="RESTRequests\SendUpdateUserSiteRole.cs" />
     <Compile Include="RESTRequests\TrustedUrls.cs" />
     <Compile Include="RESTRequests\SendCreateProject.cs" />
@@ -118,8 +125,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(ProjectDir)$(OutDir)*.dll" "$(SolutionDir)Packager\lib" /Y
-xcopy "$(ProjectDir)$(OutDir)*.pdb" "$(SolutionDir)Packager\lib" /Y</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

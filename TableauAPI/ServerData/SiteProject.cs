@@ -31,6 +31,21 @@ namespace TableauAPI.ServerData
         public readonly string DeveloperNotes;
 
         /// <summary>
+        /// Creation date
+        /// </summary>
+        public readonly string CreatedAt;
+
+        /// <summary>
+        /// Update date
+        /// </summary>
+        public readonly string UpdatedAt;
+
+        /// <summary>
+        /// Update date
+        /// </summary>
+        public readonly string ContentPermission;
+
+        /// <summary>
         /// Creates an instance of a SiteProject from XML returned by the Tableau server
         /// </summary>
         /// <param name="projectNode"></param>
@@ -38,27 +53,39 @@ namespace TableauAPI.ServerData
         {
             var sbDevNotes = new StringBuilder();
 
-            if(projectNode.Name.ToLower() != "project")
+            if (projectNode.Name.ToLower() != "project")
             {
                 AppDiagnostics.Assert(false, "Not a project");
                 throw new Exception("Unexpected content - not project");
             }
 
+            if (projectNode.Attributes != null && projectNode.Attributes["contentPermission"] != null)
+            {
+                ContentPermission = projectNode.Attributes?["contentPermission"].Value;
+            }
+
+            if (projectNode.Attributes != null && projectNode.Attributes["description"] != null)
+            {
+                Description = projectNode.Attributes?["description"].Value;
+            }
+
             Id = projectNode.Attributes?["id"].Value;
             Name = projectNode.Attributes?["name"].Value;
+            CreatedAt = projectNode.Attributes?["createdAt"].Value;
+            UpdatedAt = projectNode.Attributes?["updatedAt"].Value;
 
-            var descriptionNode = projectNode.Attributes?["description"];
-            if(descriptionNode != null)
-            {
-                Description = descriptionNode.Value;
-            }
-            else
-            {
-                Description = "";
-                sbDevNotes.AppendLine("Project is missing description attribute");
-            }
+            //var descriptionNode = projectNode.Attributes?["description"];
+            //if (descriptionNode != null)
+            //{
+            //    Description = descriptionNode.Value;
+            //}
+            //else
+            //{
+            //    Description = "";
+            //    sbDevNotes.AppendLine("Project is missing description attribute");
+            //}
 
-            DeveloperNotes = sbDevNotes.ToString();
+            //DeveloperNotes = sbDevNotes.ToString();
         }
 
         /// <summary>

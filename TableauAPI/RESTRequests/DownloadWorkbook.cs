@@ -19,38 +19,26 @@ namespace TableauAPI.RESTRequests
         /// <summary>
         /// Workbooks we've parsed from server results
         /// </summary>
-        private readonly IEnumerable<SiteWorkbook> _workbooks;
+        private readonly SiteWorkbook _workbook;
 
         /// <summary>
         /// Local path where we are going to save downloaded workbooks to
         /// </summary>
         private readonly string _localSavePath;
-
-        /// <summary>
-        /// If not NULL, put downloads into directories named like the projects they belong to
-        /// </summary>
-        private readonly IProjectsList _downloadToProjectDirectories;
-
+        
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="onlineUrls">Tableau Server Information</param>
         /// <param name="logInInfo">Tableau Sign In Information</param>
-        /// <param name="workbooks">IEnumerable of SiteWorkbook objects</param>
+        /// <param name="workbook">IEnumerable of SiteWorkbook objects</param>
         /// <param name="localSavePath">Local path where the workbooks should be saved</param>
-        /// <param name="projectsList">IEnumerable of SiteProject objects</param>
-        public DownloadWorkbook(
-            TableauServerUrls onlineUrls, 
-            TableauServerSignIn logInInfo, 
-            IEnumerable<SiteWorkbook> workbooks,
-            string localSavePath,
-            IProjectsList projectsList)
+        public DownloadWorkbook(TableauServerUrls onlineUrls, TableauServerSignIn logInInfo, SiteWorkbook workbook, string localSavePath)
             : base(logInInfo)
         {
             _onlineUrls = onlineUrls;
-            _workbooks = workbooks;
+            _workbook = workbook;
             _localSavePath = localSavePath;
-            _downloadToProjectDirectories = projectsList;
         }
 
         /// <summary>
@@ -61,50 +49,42 @@ namespace TableauAPI.RESTRequests
             var statusLog = OnlineSession.StatusLog;
             var downloadedContent = new List<SiteWorkbook>();
 
-            var workbooks = _workbooks;
-            if (workbooks == null)
+            if (_workbook == null)
             {
-                statusLog.AddError("NULL workbooks. Aborting download.");
+                statusLog.AddError("NULL workbook. Aborting download.");
                 return null;
             }
 
             //Depending on the HTTP download file type we want different file extensions
             var typeMapper = new DownloadPayloadTypeHelper("twbx", "twb");
 
-            foreach (var contentInfo in workbooks)
+            //Local path save the workbook
+            string urlDownload = _onlineUrls.Url_WorkbookDownload(OnlineSession, _workbook);
+            statusLog.AddStatus("Starting Workbook download " + _workbook.Name + " " + _workbook.ToString());
+            try
             {
-                //Local path save the workbook
-                string urlDownload = _onlineUrls.Url_WorkbookDownload(OnlineSession, contentInfo);
-                statusLog.AddStatus("Starting Workbook download " + contentInfo.Name + " " + contentInfo.ToString());
-                try
-                {
-                    //Generate the directory name we want to download into
-                    var pathToSaveTo = FileIOHelper.EnsureProjectBasedPath(
-                        _localSavePath, 
-                        _downloadToProjectDirectories, 
-                        contentInfo, 
-                        this.StatusLog);
+                //Generate the directory name we want to download into
+                var pathToSaveTo = FileIOHelper.EnsureProjectBasedPath(_localSavePath, _workbook, StatusLog);
 
-                    var fileDownloaded = this.DownloadFile(urlDownload, pathToSaveTo, contentInfo.Name, typeMapper);
-                    var fileDownloadedNoPath = System.IO.Path.GetFileName(fileDownloaded);
-                    statusLog.AddStatus("Finished Workbook download " + fileDownloadedNoPath);
+                var fileDownloaded = DownloadFile(urlDownload, pathToSaveTo, _workbook.Name, typeMapper);
+                var fileDownloadedNoPath = System.IO.Path.GetFileName(fileDownloaded);
+                statusLog.AddStatus("Finished Workbook download " + fileDownloadedNoPath);
 
-                    //Add to the list of our downloaded data sources
-                    if (!string.IsNullOrWhiteSpace(fileDownloaded))
-                    {
-                        downloadedContent.Add(contentInfo);
-                    }
-                    else
-                    {
-                        //We should never hit this code; just being defensive
-                        statusLog.AddError("Download error, no local file path for downloaded content");
-                    }
-                }
-                catch (Exception ex)
+                //Add to the list of our downloaded data sources
+                if (!string.IsNullOrWhiteSpace(fileDownloaded))
                 {
-                    statusLog.AddError("Error during Workbook download " + contentInfo.Name + "\r\n  " + urlDownload + "\r\n  " + ex.ToString());
+                    downloadedContent.Add(_workbook);
                 }
-            } //foreach
+                else
+                {
+                    //We should never hit this code; just being defensive
+                    statusLog.AddError("Download error, no local file path for downloaded content");
+                }
+            }
+            catch (Exception ex)
+            {
+                statusLog.AddError("Error during Workbook download " + _workbook.Name + "\r\n  " + urlDownload + "\r\n  " + ex.ToString());
+            }
 
             return downloadedContent;
         }

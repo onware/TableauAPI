@@ -21,6 +21,14 @@ namespace TableauAPI.ServerData
         /// Workbook ID
         /// </summary>
         public readonly string WorkbookId;
+        /// <summary>
+        /// Creation date
+        /// </summary>
+        public readonly string CreatedAt;
+        /// <summary>
+        /// Update date
+        /// </summary>
+        public readonly string UpdatedAt;
 
         private List<SiteConnection> _dataConnections;
 
@@ -49,6 +57,9 @@ namespace TableauAPI.ServerData
             }
 
             this.ContentUrl = xmlNode.Attributes?["contentUrl"].Value;
+            CreatedAt = xmlNode.Attributes?["createdAt"].Value;
+            UpdatedAt = xmlNode.Attributes?["updatedAt"].Value;
+
             var workbookNode = xmlNode.SelectSingleNode("iwsOnline:workbook", NamespaceManager);
             if (workbookNode != null)
             {
