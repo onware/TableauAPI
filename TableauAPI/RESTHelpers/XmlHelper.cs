@@ -64,7 +64,7 @@ namespace TableauAPI.RESTHelpers
         {
             var msTable = new NameTable();
             var ns = new XmlNamespaceManager(msTable);
-            ns.AddNamespace(prefix, "http://tableausoftware.com/api");
+            ns.AddNamespace(prefix, "http://tableau.com/api");
 
             return ns;
         }
@@ -162,14 +162,14 @@ namespace TableauAPI.RESTHelpers
         internal static bool ReadBooleanAttribute(XmlNode xNode, string attributeName, bool defaultValue)
         {
             var attribute = xNode.Attributes?[attributeName];
-            if(attribute == null)
+            if (attribute == null)
             {
                 return defaultValue;
             }
 
             var attributeValue = attribute.Value;
             attributeValue = attributeValue.Trim().ToLower();
-            if(attributeValue == "true")
+            if (attributeValue == "true")
             {
                 return true;
             }

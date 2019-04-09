@@ -7,6 +7,7 @@ using System.Net;
 
 namespace TableauAPI.Test
 {
+    [Ignore]
     [TestClass]
     public class SiteConnectionTest
     {
