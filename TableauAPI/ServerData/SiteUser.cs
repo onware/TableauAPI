@@ -30,6 +30,21 @@ namespace TableauAPI.ServerData
         public readonly string DeveloperNotes;
 
         /// <summary>
+        /// Any developer/diagnostic notes we want to indicate
+        /// </summary>
+        public readonly string FullName;
+
+        /// <summary>
+        /// Any developer/diagnostic notes we want to indicate
+        /// </summary>
+        public readonly string ExternalAuthUserId;
+
+        /// <summary>
+        /// Any developer/diagnostic notes we want to indicate
+        /// </summary>
+        public readonly string AuthSetting;
+
+        /// <summary>
         /// The last login date of the user
         /// </summary>
         public readonly DateTime? LastLogin;
@@ -49,6 +64,10 @@ namespace TableauAPI.ServerData
             Id = userNode.Attributes?["id"].Value;
             Name = userNode.Attributes?["name"].Value;
             SiteRole = userNode.Attributes?["siteRole"].Value;
+            FullName = userNode.Attributes?["fullName"].Value;
+            ExternalAuthUserId = userNode.Attributes?["externalAuthUserId"].Value;
+            AuthSetting = userNode.Attributes?["authSetting"].Value;
+
             var lastLogin = userNode.Attributes["lastLogin"]?.Value;
             if (lastLogin != null)
                 LastLogin = Convert.ToDateTime(lastLogin);
