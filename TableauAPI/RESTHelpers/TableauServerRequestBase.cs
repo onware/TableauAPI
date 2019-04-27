@@ -14,6 +14,7 @@ namespace TableauAPI.RESTHelpers
         /// </summary>
         /// <param name="request"></param>
         /// <param name="bodyText"></param>
+        /// <param name="method"></param>
         protected static void SendRequestContents(WebRequest request, string bodyText, string method = "POST")
         {
             request.Method = method;

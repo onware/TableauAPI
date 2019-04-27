@@ -25,12 +25,7 @@ namespace TableauAPI.RESTRequests
         /// <param name="datasources">List of Tableau Data sources to save to disk</param>
         /// <param name="localSavePath">File system location where data sources should be saved</param>
         /// <param name="projectsList">List of projects for which we should pull data sources from</param>
-        public DownloadDatasources(
-            TableauServerUrls onlineUrls,
-            TableauServerSignIn logInInfo,
-            IEnumerable<SiteDatasource> datasources,
-            string localSavePath,
-            IProjectsList projectsList)
+        public DownloadDatasources(TableauServerUrls onlineUrls, TableauServerSignIn logInInfo, IEnumerable<SiteDatasource> datasources, string localSavePath, IProjectsList projectsList)
             : base(logInInfo)
         {
             _onlineUrls = onlineUrls;

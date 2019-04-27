@@ -45,5 +45,28 @@ namespace TableauAPI.RESTRequests
             }
             return thumbnail;
         }
+
+        /// <summary>
+        /// Return data for a View (CSV format)
+        /// </summary>
+        /// <param name="viewId"></param>
+        /// <returns></returns>
+        public string GetData(string viewId)
+        {
+            var url = _onlineUrls.Url_ViewData(viewId, OnlineSession);
+            var webRequest = CreateLoggedInWebRequest(url);
+            webRequest.Method = "GET";
+            var response = GetWebResponseLogErrors(webRequest, "get view data");
+            byte[] data;
+            using (var stream = response.GetResponseStream())
+            {
+                using (var ms = new MemoryStream())
+                {
+                    stream.CopyTo(ms);
+                    data = ms.ToArray();
+                }
+            }
+            return System.Text.Encoding.UTF8.GetString(data);
+        }
     }
 }
