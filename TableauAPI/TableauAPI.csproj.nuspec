@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>TableauAPI</id>
+    <version>1.2.0</version>
+    <authors>Onware</authors>
+    <owners>Onware</owners>
+    <licenseUrl>https://github.com/onware/TableauAPI/blob/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/onware/TableauAPI</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/onware/TableauAPI/master/logo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>An implementation of the Tableau REST API in C# distributed as a NuGet package.</description>
+    <releaseNotes>Used API updated from V2 to V3.3</releaseNotes>
+    <copyright>Copyright 2019</copyright>
+    <tags>Tableau</tags>
+  </metadata>
+</package>

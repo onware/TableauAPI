@@ -98,7 +98,6 @@
     <Compile Include="RESTRequests\DownloadWorkbookConnections.cs" />
     <Compile Include="RESTRequests\DownloadWorkbooks.cs" />
     <Compile Include="RESTRequests\DownloadWorkbooksList.cs" />
-    <Compile Include="RESTRequests\ObtainWorkbook.cs" />
     <Compile Include="RESTRequests\SendUpdateUserSiteRole.cs" />
     <Compile Include="RESTRequests\TrustedUrls.cs" />
     <Compile Include="RESTRequests\SendCreateProject.cs" />
