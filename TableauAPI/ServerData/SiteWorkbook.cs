@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Security.Cryptography;
 using System.Xml;
 using TableauAPI.FilesLogging;
 using TableauAPI.RESTHelpers;
@@ -22,9 +23,29 @@ namespace TableauAPI.ServerData
         /// </summary>
         ///<remark>Note: [2015-10-28] Datasources presently don't return this information, so we need to make this workbook specific</remark>
         public readonly string ContentUrl;
-
+        /// <summary>
+        /// Web page url
+        /// </summary>
+        public readonly string WebpageUrl;
+        /// <summary>
+        /// Description of the workbook
+        /// </summary>
+        public readonly string Description;
+        /// <summary>
+        /// Creation date
+        /// </summary>
+        public readonly string CreatedAt;
+        /// <summary>
+        /// Update date
+        /// </summary>
+        public readonly string UpdatedAt;
+        /// <summary>
+        /// Size
+        /// </summary>
+        public readonly string Size;
 
         private List<SiteConnection> _dataConnections;
+
         /// <summary>
         /// If set, contains the set of data connections embedded in this workbooks
         /// </summary>
@@ -49,8 +70,21 @@ namespace TableauAPI.ServerData
                 throw new Exception("Unexpected content - not workbook");
             }
 
+            if (workbookNode.Attributes != null && workbookNode.Attributes["description"] != null)
+            {
+                Description = workbookNode.Attributes?["description"].Value;
+            }
+            
             //Note: [2015-10-28] Datasources presently don't return this information, so we need to make this workbook specific
             ContentUrl = workbookNode.Attributes?["contentUrl"].Value;
+
+            WebpageUrl = workbookNode.Attributes?["webpageUrl"].Value;
+
+            CreatedAt = workbookNode.Attributes?["createdAt"].Value;
+
+            UpdatedAt = workbookNode.Attributes?["updatedAt"].Value;
+
+            Size = workbookNode.Attributes?["size"].Value;
 
             //Do we have tabs?
             ShowTabs = XmlHelper.SafeParseXmlAttribute_Bool(workbookNode, "showTabs", false);
