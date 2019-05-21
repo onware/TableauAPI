@@ -46,6 +46,11 @@ namespace TableauAPI.ServerData
         public readonly string ContentPermission;
 
         /// <summary>
+        /// Parent project id
+        /// </summary>
+        public readonly string ParentProjectId;
+
+        /// <summary>
         /// Creates an instance of a SiteProject from XML returned by the Tableau server
         /// </summary>
         /// <param name="projectNode"></param>
@@ -69,23 +74,15 @@ namespace TableauAPI.ServerData
                 Description = projectNode.Attributes?["description"].Value;
             }
 
+            if (projectNode.Attributes != null && projectNode.Attributes["parentProjectId"] != null)
+            {
+                ParentProjectId = projectNode.Attributes?["parentProjectId"].Value;
+            }
+
             Id = projectNode.Attributes?["id"].Value;
             Name = projectNode.Attributes?["name"].Value;
             CreatedAt = projectNode.Attributes?["createdAt"].Value;
             UpdatedAt = projectNode.Attributes?["updatedAt"].Value;
-
-            //var descriptionNode = projectNode.Attributes?["description"];
-            //if (descriptionNode != null)
-            //{
-            //    Description = descriptionNode.Value;
-            //}
-            //else
-            //{
-            //    Description = "";
-            //    sbDevNotes.AppendLine("Project is missing description attribute");
-            //}
-
-            //DeveloperNotes = sbDevNotes.ToString();
         }
 
         /// <summary>

@@ -37,6 +37,7 @@ namespace TableauAPI.RESTHelpers
         private readonly string _urlListUsersInGroupTemplate;
         private readonly string _urlDownloadWorkbookTemplate;
         private readonly string _urlDownloadDatasourceTemplate;
+        private readonly string _urlDatasourceConnectionsTemplate;
         private readonly string _urlSiteInfoTemplate;
         private readonly string _urlInitiateUploadTemplate;
         private readonly string _urlAppendUploadChunkTemplate;
@@ -110,6 +111,7 @@ namespace TableauAPI.RESTHelpers
             _urlListUsersTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/users?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
             _urlListUsersInGroupTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/groups/{{iwsGroupId}}/users?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
             _urlDownloadDatasourceTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/datasources/{{iwsRepositoryId}}/content";
+            _urlDatasourceConnectionsTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/datasources/{{iwsRepositoryId}}/connections";
             _urlDownloadWorkbookTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/workbooks/{{iwsRepositoryId}}/content";
             _urlSiteInfoTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}";
             _urlInitiateUploadTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/fileUploads";
@@ -373,6 +375,22 @@ namespace TableauAPI.RESTHelpers
             string workingText = _urlListWorkbookConnectionsTemplate;
             workingText = workingText.Replace("{{iwsSiteId}}", logInInfo.SiteId);
             workingText = workingText.Replace("{{iwsWorkbookId}}", workbookId);
+            _ValidateTemplateReplaceComplete(workingText);
+
+            return workingText;
+        }
+
+        /// <summary>
+        /// URL for the Workbook's data source connections list
+        /// </summary>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <param name="datasourceId">Datasource ID</param>
+        /// <returns></returns>
+        public string Url_DatasourceConnectionsList(TableauServerSignIn logInInfo, string datasourceId)
+        {
+            string workingText = _urlDatasourceConnectionsTemplate;
+            workingText = workingText.Replace("{{iwsSiteId}}", logInInfo.SiteId);
+            workingText = workingText.Replace("{{iwsRepositoryId}}", datasourceId);
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
