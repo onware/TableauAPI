@@ -44,6 +44,7 @@ namespace TableauAPI.RESTHelpers
         private readonly string _urlFinalizeUploadDatasourceTemplate;
         private readonly string _urlFinalizeUploadWorkbookTemplate;
         private readonly string _urlCreateProjectTemplate;
+        private readonly string _urlCreateUserTemplate;
         private readonly string _urlDeleteWorkbookTagTemplate;
         private readonly string _urlDeleteDatasourceTagTemplate;
         private readonly string _urlUpdateUserTemplate;
@@ -97,41 +98,35 @@ namespace TableauAPI.RESTHelpers
             SiteUrlSegement = siteName;
             ServerName = serverName;
             ServerUrlWithProtocol = serverNameWithProtocol;
-            UrlLogin = serverNameWithProtocol + "/api/3.3/auth/signin";
-            _urlListWorkbooksForUserTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/users/{{iwsUserId}}/workbooks?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
-            _urlViewsListForSiteTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/views?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
-            _urlViewThumbnailTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/workbooks/{{iwsWorkbookId}}/views/{{iwsViewId}}/previewImage";
-            _urlViewDataTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/views/{{iwsViewId}}/data";
-            _urlListViewsForWorkbookTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/workbooks/{{iwsWorkbookId}}/views";
-            _urlListWorkbookConnectionsTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/workbooks/{{iwsWorkbookId}}/connections";
-            _urlWorkbookTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/workbooks/{{iwsWorkbookId}}";
-            _urlListDatasourcesTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/datasources?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
-            _urlListProjectsTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/projects?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
-            _urlListGroupsTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/groups?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
-            _urlListUsersTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/users?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
-            _urlListUsersInGroupTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/groups/{{iwsGroupId}}/users?pageSize={{iwsPageSize}}&pageNumber={{iwsPageNumber}}";
-            _urlDownloadDatasourceTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/datasources/{{iwsRepositoryId}}/content";
-            _urlDatasourceConnectionsTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/datasources/{{iwsRepositoryId}}/connections";
-            _urlDownloadWorkbookTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/workbooks/{{iwsRepositoryId}}/content";
-            _urlSiteInfoTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}";
-            _urlInitiateUploadTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/fileUploads";
-            _urlAppendUploadChunkTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/fileUploads/{{iwsUploadSession}}";
-            _urlFinalizeUploadDatasourceTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/datasources?uploadSessionId={{iwsUploadSession}}&datasourceType={{iwsDatasourceType}}&overwrite=true";
-            _urlFinalizeUploadWorkbookTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/workbooks?uploadSessionId={{iwsUploadSession}}&workbookType={{iwsWorkbookType}}&overwrite=true";
-            _urlCreateProjectTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/projects";
-            _urlDeleteWorkbookTagTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/workbooks/{{iwsWorkbookId}}/tags/{{iwsTagText}}";
-            _urlDeleteDatasourceTagTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/datasources/{{iwsDatasourceId}}/tags/{{iwsTagText}}";
-            _urlUpdateUserTemplate = serverNameWithProtocol + "/api/3.3/sites/{{iwsSiteId}}/users/{{iwsUserId}}";
+            var apiVersion = ServerVersionLookup.APIVersion(serverVersion);
+            UrlLogin = serverNameWithProtocol + $"/api/{apiVersion}/auth/signin";
+            _urlListWorkbooksForUserTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/users/%%iwsUserId%%/workbooks?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
+            _urlViewsListForSiteTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
+            _urlViewThumbnailTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/views/%%iwsViewId%%/previewImage";
+            _urlViewDataTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/data";
+            _urlListViewsForWorkbookTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/views";
+            _urlListWorkbookConnectionsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/connections";
+            _urlWorkbookTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%";
+            _urlListDatasourcesTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
+            _urlListProjectsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/projects?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
+            _urlListGroupsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/groups?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
+            _urlListUsersTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/users?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
+            _urlListUsersInGroupTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/groups/%%iwsGroupId%%/users?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
+            _urlDownloadDatasourceTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources/%%iwsRepositoryId%%/content";
+            _urlDatasourceConnectionsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources/%%iwsRepositoryId%%/connections";
+            _urlDownloadWorkbookTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsRepositoryId%%/content";
+            _urlSiteInfoTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%";
+            _urlInitiateUploadTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/fileUploads";
+            _urlAppendUploadChunkTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/fileUploads/%%iwsUploadSession%%";
+            _urlFinalizeUploadDatasourceTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources?uploadSessionId=%%iwsUploadSession%%&datasourceType=%%iwsDatasourceType%%&overwrite=true";
+            _urlFinalizeUploadWorkbookTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks?uploadSessionId=%%iwsUploadSession%%&workbookType=%%iwsWorkbookType%%&overwrite=true";
+            _urlCreateProjectTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/projects";
+            _urlCreateUserTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/users";
+            _urlDeleteWorkbookTagTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/tags/%%iwsTagText%%";
+            _urlDeleteDatasourceTagTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources/%%iwsDatasourceId%%/tags/%%iwsTagText%%";
+            _urlUpdateUserTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/users/iwsUserId";
 
             //Any server version specific things we want to do?
-            switch (serverVersion)
-            {
-                case ServerVersion.Server9:
-                    break;
-                default:
-                    AppDiagnostics.Assert(false, "Unknown server version");
-                    throw new Exception("Unknown server version");
-            }
         }
 
         private static ServerProtocol _GetProtocolFromUrl(string url)
@@ -192,7 +187,7 @@ namespace TableauAPI.RESTHelpers
         /// <returns></returns>
         public string Url_SiteInfo(TableauServerSignIn logInInfo)
         {
-            string workingText = _urlSiteInfoTemplate.Replace("{{iwsSiteId}}", logInInfo.SiteId);
+            string workingText = _urlSiteInfoTemplate.Replace("%%iwsSiteId%%", logInInfo.SiteId);
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
@@ -205,7 +200,7 @@ namespace TableauAPI.RESTHelpers
         /// <returns></returns>
         public string Url_InitiateFileUpload(TableauServerSignIn logInInfo)
         {
-            string workingText = _urlInitiateUploadTemplate.Replace("{{iwsSiteId}}", logInInfo.SiteId);
+            string workingText = _urlInitiateUploadTemplate.Replace("%%iwsSiteId%%", logInInfo.SiteId);
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
@@ -219,8 +214,8 @@ namespace TableauAPI.RESTHelpers
         /// <returns></returns>
         public string Url_AppendFileUploadChunk(TableauServerSignIn logInInfo, string uploadSessionId)
         {
-            string workingText = _urlAppendUploadChunkTemplate.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsUploadSession}}", uploadSessionId);
+            string workingText = _urlAppendUploadChunkTemplate.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsUploadSession%%", uploadSessionId);
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
@@ -237,9 +232,9 @@ namespace TableauAPI.RESTHelpers
         public string Url_FinalizeDataSourcePublish(TableauServerSignIn logInInfo, string uploadSessionId, string datasourceType)
         {
 
-            string workingText = _urlFinalizeUploadDatasourceTemplate.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsUploadSession}}", uploadSessionId);
-            workingText = workingText.Replace("{{iwsDatasourceType}}", datasourceType);
+            string workingText = _urlFinalizeUploadDatasourceTemplate.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsUploadSession%%", uploadSessionId);
+            workingText = workingText.Replace("%%iwsDatasourceType%%", datasourceType);
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
@@ -255,9 +250,9 @@ namespace TableauAPI.RESTHelpers
         public string Url_FinalizeWorkbookPublish(TableauServerSignIn logInInfo, string uploadSessionId, string workbookType)
         {
 
-            string workingText = _urlFinalizeUploadWorkbookTemplate.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsUploadSession}}", uploadSessionId);
-            workingText = workingText.Replace("{{iwsWorkbookType}}", workbookType);
+            string workingText = _urlFinalizeUploadWorkbookTemplate.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsUploadSession%%", uploadSessionId);
+            workingText = workingText.Replace("%%iwsWorkbookType%%", workbookType);
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
@@ -272,9 +267,9 @@ namespace TableauAPI.RESTHelpers
         /// <returns></returns>
         public string Url_ViewThumbnail(string workbookId, string viewId, TableauServerSignIn logInInfo)
         {
-            var workingText = _urlViewThumbnailTemplate.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsWorkbookId}}", workbookId);
-            workingText = workingText.Replace("{{iwsViewId}}", viewId);
+            var workingText = _urlViewThumbnailTemplate.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsWorkbookId%%", workbookId);
+            workingText = workingText.Replace("%%iwsViewId%%", viewId);
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }
@@ -287,8 +282,8 @@ namespace TableauAPI.RESTHelpers
         /// <returns></returns>
         public string Url_ViewData(string viewId, TableauServerSignIn logInInfo)
         {
-            var workingText = _urlViewDataTemplate.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsViewId}}", viewId);
+            var workingText = _urlViewDataTemplate.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsViewId%%", viewId);
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }
@@ -302,8 +297,8 @@ namespace TableauAPI.RESTHelpers
         public string Url_ViewsListForWorkbook(string workbookId, TableauServerSignIn logInInfo)
         {
             var workingText = _urlListViewsForWorkbookTemplate;
-            workingText = workingText.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsWorkbookId}}", workbookId);
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsWorkbookId%%", workbookId);
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
@@ -320,9 +315,9 @@ namespace TableauAPI.RESTHelpers
         public string Url_ViewsListForSite(TableauServerSignIn logInInfo, int pageSize, int pageNumber = 1)
         {
             string workingText = _urlViewsListForSiteTemplate;
-            workingText = workingText.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsPageSize}}", pageSize.ToString());
-            workingText = workingText.Replace("{{iwsPageNumber}}", pageNumber.ToString());
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsPageSize%%", pageSize.ToString());
+            workingText = workingText.Replace("%%iwsPageNumber%%", pageNumber.ToString());
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
@@ -339,10 +334,10 @@ namespace TableauAPI.RESTHelpers
         public string Url_WorkbooksListForUser(TableauServerSignIn logInInfo, string userId, int pageSize, int pageNumber = 1)
         {
             string workingText = _urlListWorkbooksForUserTemplate;
-            workingText = workingText.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsUserId}}", userId);
-            workingText = workingText.Replace("{{iwsPageSize}}", pageSize.ToString());
-            workingText = workingText.Replace("{{iwsPageNumber}}", pageNumber.ToString());
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsUserId%%", userId);
+            workingText = workingText.Replace("%%iwsPageSize%%", pageSize.ToString());
+            workingText = workingText.Replace("%%iwsPageNumber%%", pageNumber.ToString());
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
@@ -357,8 +352,8 @@ namespace TableauAPI.RESTHelpers
         public string Url_Workbook(TableauServerSignIn logInInfo, string workbookId)
         {
             string workingText = _urlWorkbookTemplate;
-            workingText = workingText.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsWorkbookId}}", workbookId);
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsWorkbookId%%", workbookId);
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
@@ -373,8 +368,8 @@ namespace TableauAPI.RESTHelpers
         public string Url_WorkbookConnectionsList(TableauServerSignIn logInInfo, string workbookId)
         {
             string workingText = _urlListWorkbookConnectionsTemplate;
-            workingText = workingText.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsWorkbookId}}", workbookId);
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsWorkbookId%%", workbookId);
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
@@ -389,8 +384,8 @@ namespace TableauAPI.RESTHelpers
         public string Url_DatasourceConnectionsList(TableauServerSignIn logInInfo, string datasourceId)
         {
             string workingText = _urlDatasourceConnectionsTemplate;
-            workingText = workingText.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsRepositoryId}}", datasourceId);
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsRepositoryId%%", datasourceId);
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
@@ -406,9 +401,9 @@ namespace TableauAPI.RESTHelpers
         public string Url_DatasourcesList(TableauServerSignIn logInInfo, int pageSize, int pageNumber = 1)
         {
             string workingText = _urlListDatasourcesTemplate;
-            workingText = workingText.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsPageSize}}", pageSize.ToString());
-            workingText = workingText.Replace("{{iwsPageNumber}}", pageNumber.ToString());
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsPageSize%%", pageSize.ToString());
+            workingText = workingText.Replace("%%iwsPageNumber%%", pageNumber.ToString());
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
@@ -422,7 +417,21 @@ namespace TableauAPI.RESTHelpers
         public string Url_CreateProject(TableauServerSignIn logInInfo)
         {
             string workingText = _urlCreateProjectTemplate;
-            workingText = workingText.Replace("{{iwsSiteId}}", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            _ValidateTemplateReplaceComplete(workingText);
+
+            return workingText;
+        }
+
+        /// <summary>
+        /// URL for creating a user
+        /// </summary>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <returns></returns>
+        public string Url_CreateUser(TableauServerSignIn logInInfo)
+        {
+            string workingText = _urlCreateUserTemplate;
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
@@ -438,9 +447,9 @@ namespace TableauAPI.RESTHelpers
         public string Url_DeleteWorkbookTag(TableauServerSignIn logInInfo, string workbookId, string tagText)
         {
             string workingText = _urlDeleteWorkbookTagTemplate;
-            workingText = workingText.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsWorkbookId}}", workbookId);
-            workingText = workingText.Replace("{{iwsTagText}}", tagText);
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsWorkbookId%%", workbookId);
+            workingText = workingText.Replace("%%iwsTagText%%", tagText);
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
@@ -456,9 +465,9 @@ namespace TableauAPI.RESTHelpers
         public string Url_DeleteDatasourceTag(TableauServerSignIn logInInfo, string datasourceId, string tagText)
         {
             string workingText = _urlDeleteDatasourceTagTemplate;
-            workingText = workingText.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsDatasourceId}}", datasourceId);
-            workingText = workingText.Replace("{{iwsTagText}}", tagText);
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsDatasourceId%%", datasourceId);
+            workingText = workingText.Replace("%%iwsTagText%%", tagText);
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
@@ -475,9 +484,9 @@ namespace TableauAPI.RESTHelpers
         public string Url_ProjectsList(TableauServerSignIn logInInfo, int pageSize, int pageNumber = 1)
         {
             string workingText = _urlListProjectsTemplate;
-            workingText = workingText.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsPageSize}}", pageSize.ToString());
-            workingText = workingText.Replace("{{iwsPageNumber}}", pageNumber.ToString());
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsPageSize%%", pageSize.ToString());
+            workingText = workingText.Replace("%%iwsPageNumber%%", pageNumber.ToString());
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
@@ -493,9 +502,9 @@ namespace TableauAPI.RESTHelpers
         public string Url_GroupsList(TableauServerSignIn logInInfo, int pageSize, int pageNumber = 1)
         {
             string workingText = _urlListGroupsTemplate;
-            workingText = workingText.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsPageSize}}", pageSize.ToString());
-            workingText = workingText.Replace("{{iwsPageNumber}}", pageNumber.ToString());
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsPageSize%%", pageSize.ToString());
+            workingText = workingText.Replace("%%iwsPageNumber%%", pageNumber.ToString());
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
@@ -509,9 +518,9 @@ namespace TableauAPI.RESTHelpers
         /// <param name="pageNumber">Which page of the results to return. Defaults to 1.</param>/// <returns></returns>
         public string Url_UsersList(TableauServerSignIn logInInfo, int pageSize, int pageNumber = 1)
         {
-            string workingText = _urlListUsersTemplate.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsPageSize}}", pageSize.ToString());
-            workingText = workingText.Replace("{{iwsPageNumber}}", pageNumber.ToString());
+            string workingText = _urlListUsersTemplate.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsPageSize%%", pageSize.ToString());
+            workingText = workingText.Replace("%%iwsPageNumber%%", pageNumber.ToString());
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
@@ -526,10 +535,10 @@ namespace TableauAPI.RESTHelpers
         /// <param name="pageNumber">Which page of the results to return. Defaults to 1.</param>/// <returns></returns>
         public string Url_UsersListInGroup(TableauServerSignIn logInInfo, string groupId, int pageSize, int pageNumber = 1)
         {
-            string workingText = _urlListUsersInGroupTemplate.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsGroupId}}", groupId);
-            workingText = workingText.Replace("{{iwsPageSize}}", pageSize.ToString());
-            workingText = workingText.Replace("{{iwsPageNumber}}", pageNumber.ToString());
+            string workingText = _urlListUsersInGroupTemplate.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsGroupId%%", groupId);
+            workingText = workingText.Replace("%%iwsPageSize%%", pageSize.ToString());
+            workingText = workingText.Replace("%%iwsPageNumber%%", pageNumber.ToString());
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
@@ -542,8 +551,8 @@ namespace TableauAPI.RESTHelpers
         /// <param name="userId">User ID</param>
         public string Url_UpdateUser(TableauServerSignIn logInInfo, string userId)
         {
-            string workingText = _urlUpdateUserTemplate.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsUserId}}", userId);
+            string workingText = _urlUpdateUserTemplate.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("iwsUserId", userId);
             _ValidateTemplateReplaceComplete(workingText);
 
             return workingText;
@@ -558,8 +567,8 @@ namespace TableauAPI.RESTHelpers
         public string Url_WorkbookDownload(TableauServerSignIn logInInfo, SiteWorkbook workbook)
         {
             string workingText = _urlDownloadWorkbookTemplate;
-            workingText = workingText.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsRepositoryId}}", workbook.Id);
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsRepositoryId%%", workbook.Id);
 
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
@@ -574,8 +583,8 @@ namespace TableauAPI.RESTHelpers
         public string Url_DatasourceDownload(TableauServerSignIn logInInfo, SiteDatasource datasource)
         {
             string workingText = _urlDownloadDatasourceTemplate;
-            workingText = workingText.Replace("{{iwsSiteId}}", logInInfo.SiteId);
-            workingText = workingText.Replace("{{iwsRepositoryId}}", datasource.Id);
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsRepositoryId%%", datasource.Id);
 
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
@@ -597,7 +606,7 @@ namespace TableauAPI.RESTHelpers
         /// <returns></returns>
         private static bool _ValidateTemplateReplaceComplete(string str)
         {
-            if (str.Contains("{{iws"))
+            if (str.Contains("%%iws"))
             {
                 AppDiagnostics.Assert(false, "Template has incomplete parts that need to be replaced");
                 return false;
