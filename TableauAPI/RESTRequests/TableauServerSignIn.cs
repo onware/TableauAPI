@@ -94,7 +94,7 @@ namespace TableauAPI.RESTRequests
         /// </summary>
         public bool ExecuteRequest()
         {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
             var webRequest = WebRequest.Create(_onlineUrls.UrlLogin);
             string bodyText = xmlLogIn;
             bodyText = bodyText.Replace("{{iwsUserName}}", _userName);
