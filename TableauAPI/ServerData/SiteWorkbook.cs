@@ -78,7 +78,7 @@ namespace TableauAPI.ServerData
             //Note: [2015-10-28] Datasources presently don't return this information, so we need to make this workbook specific
             ContentUrl = workbookNode.Attributes?["contentUrl"].Value;
 
-            WebpageUrl = workbookNode.Attributes?["webpageUrl"].Value;
+            //WebpageUrl = workbookNode.Attributes?["webpageUrl"].Value;
 
             CreatedAt = workbookNode.Attributes?["createdAt"].Value;
 
