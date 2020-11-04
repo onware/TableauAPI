@@ -48,6 +48,7 @@ namespace TableauAPI.RESTHelpers
         private readonly string _urlDeleteWorkbookTagTemplate;
         private readonly string _urlDeleteDatasourceTagTemplate;
         private readonly string _urlUpdateUserTemplate;
+        private readonly string _urlViewImageTemplate;
 
         /// <summary>
         /// Server url with protocol
@@ -125,6 +126,7 @@ namespace TableauAPI.RESTHelpers
             _urlDeleteWorkbookTagTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/tags/%%iwsTagText%%";
             _urlDeleteDatasourceTagTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources/%%iwsDatasourceId%%/tags/%%iwsTagText%%";
             _urlUpdateUserTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/users/iwsUserId";
+            _urlViewImageTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/image";
 
             //Any server version specific things we want to do?
         }
@@ -269,6 +271,21 @@ namespace TableauAPI.RESTHelpers
         {
             var workingText = _urlViewThumbnailTemplate.Replace("%%iwsSiteId%%", logInInfo.SiteId);
             workingText = workingText.Replace("%%iwsWorkbookId%%", workbookId);
+            workingText = workingText.Replace("%%iwsViewId%%", viewId);
+            _ValidateTemplateReplaceComplete(workingText);
+            return workingText;
+        }
+
+        /// <summary>
+        /// URL for the View Image.
+        /// </summary>
+        /// <param name="workbookId">Workbook ID</param>
+        /// <param name="viewId">View ID</param>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <returns></returns>
+        public string Url_ViewImage(string workbookId, string viewId, TableauServerSignIn logInInfo)
+        {
+            var workingText = _urlViewImageTemplate.Replace("%%iwsSiteId%%", logInInfo.SiteId);
             workingText = workingText.Replace("%%iwsViewId%%", viewId);
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;

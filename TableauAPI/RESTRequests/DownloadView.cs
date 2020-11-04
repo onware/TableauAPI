@@ -47,6 +47,31 @@ namespace TableauAPI.RESTRequests
         }
 
         /// <summary>
+        /// Return an Image for a View
+        /// </summary>
+        /// <param name="workbookId"></param>
+        /// <param name="viewId"></param>
+        /// <returns></returns>
+        public byte[] GetImage(string workbookId, string viewId)
+        {
+            var url = _onlineUrls.Url_ViewImage(workbookId, viewId, OnlineSession);
+            var webRequest = CreateLoggedInWebRequest(url);
+            webRequest.Method = "GET";
+            var response = GetWebResponseLogErrors(webRequest, "get view image");
+            byte[] thumbnail;
+            using (var stream = response.GetResponseStream())
+            {
+
+                using (var ms = new MemoryStream())
+                {
+                    stream.CopyTo(ms);
+                    thumbnail = ms.ToArray();
+                }
+            }
+            return thumbnail;
+        }
+
+        /// <summary>
         /// Return data for a View (CSV format)
         /// </summary>
         /// <param name="viewId"></param>
