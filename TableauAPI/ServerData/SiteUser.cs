@@ -64,7 +64,7 @@ namespace TableauAPI.ServerData
             Id = userNode.Attributes?["id"].Value;
             Name = userNode.Attributes?["name"].Value;
             SiteRole = userNode.Attributes?["siteRole"].Value;
-            FullName = userNode.Attributes?["fullName"].Value;
+            FullName = userNode.Attributes?["fullName"]?.Value;
             ExternalAuthUserId = userNode.Attributes?["externalAuthUserId"].Value;
             AuthSetting = userNode.Attributes?["authSetting"].Value;
 
