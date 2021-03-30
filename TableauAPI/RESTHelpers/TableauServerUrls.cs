@@ -35,6 +35,7 @@ namespace TableauAPI.RESTHelpers
         private readonly string _urlListGroupsTemplate;
         private readonly string _urlListUsersTemplate;
         private readonly string _urlListUsersInGroupTemplate;
+        private readonly string _urlListGroupsForUserTemplate;
         private readonly string _urlDownloadWorkbookTemplate;
         private readonly string _urlDownloadDatasourceTemplate;
         private readonly string _urlDatasourceConnectionsTemplate;
@@ -111,6 +112,7 @@ namespace TableauAPI.RESTHelpers
             _urlListDatasourcesTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlListProjectsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/projects?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlListGroupsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/groups?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
+            _urlListGroupsForUserTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/users/%%iwsUserId%%/groups";
             _urlListUsersTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/users?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlListUsersInGroupTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/groups/%%iwsGroupId%%/users?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlDownloadDatasourceTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources/%%iwsRepositoryId%%/content";
@@ -127,6 +129,7 @@ namespace TableauAPI.RESTHelpers
             _urlDeleteDatasourceTagTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources/%%iwsDatasourceId%%/tags/%%iwsTagText%%";
             _urlUpdateUserTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/users/iwsUserId";
             _urlViewImageTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/image";
+
 
             //Any server version specific things we want to do?
         }
@@ -527,6 +530,7 @@ namespace TableauAPI.RESTHelpers
             return workingText;
         }
 
+
         /// <summary>
         /// URL for the Users list
         /// </summary>
@@ -554,6 +558,26 @@ namespace TableauAPI.RESTHelpers
         {
             string workingText = _urlListUsersInGroupTemplate.Replace("%%iwsSiteId%%", logInInfo.SiteId);
             workingText = workingText.Replace("%%iwsGroupId%%", groupId);
+            workingText = workingText.Replace("%%iwsPageSize%%", pageSize.ToString());
+            workingText = workingText.Replace("%%iwsPageNumber%%", pageNumber.ToString());
+            _ValidateTemplateReplaceComplete(workingText);
+
+            return workingText;
+        }
+
+        /// <summary>
+        /// URL for a User's list of groups
+        /// </summary>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <param name="pageSize">Page size to use when retrieving results from Tableau server</param>
+        /// <param name="pageNumber">Which page of the results to return. Defaults to 1.</param>
+        /// <param name="userId">User ID who's groups we should retrieve</param>
+        /// <returns></returns>
+        public string Url_GroupsListForUser(TableauServerSignIn logInInfo, string userId, int pageSize, int pageNumber = 1)
+        {
+            string workingText = _urlListGroupsForUserTemplate;
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsUserId%%", userId);
             workingText = workingText.Replace("%%iwsPageSize%%", pageSize.ToString());
             workingText = workingText.Replace("%%iwsPageNumber%%", pageNumber.ToString());
             _ValidateTemplateReplaceComplete(workingText);
