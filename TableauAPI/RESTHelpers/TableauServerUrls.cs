@@ -135,7 +135,6 @@ namespace TableauAPI.RESTHelpers
             _urlAddWorkbookToFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%";
             _urlDeleteWorkbookFromFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%/workbooks/%%iwsWorkbookId%%";
             _urlGetFavoritesForUser = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%";
-
         }
 
         private static ServerProtocol _GetProtocolFromUrl(string url)
@@ -640,12 +639,11 @@ namespace TableauAPI.RESTHelpers
         /// </summary>
         /// <param name="logInInfo">Tableau Sign In Information</param>
         /// <returns></returns>
-        public string Url_AddWorkbookToFavorites(TableauServerSignIn logInInfo)
+        public string Url_AddWorkbookToFavorites(string userId, TableauServerSignIn logInInfo)
         {
-            string workingText = _urlDownloadDatasourceTemplate;
+            string workingText = _urlAddWorkbookToFavorites;
             workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
-            workingText = workingText.Replace("%%iwsUserId%%", logInInfo.UserId);
-
+            workingText = workingText.Replace("%%iwsUserId%%", userId);
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }
@@ -656,13 +654,12 @@ namespace TableauAPI.RESTHelpers
         /// <param name="workbookId">The ID of the workbook to remove from the user's favorites.</param>
         /// <param name="logInInfo">Tableau Sign In Information</param>
         /// <returns></returns>
-        public string Url_DeleteWorkbookFromFavorites(string workbookId, TableauServerSignIn logInInfo)
+        public string Url_DeleteWorkbookFromFavorites(string workbookId, string userId, TableauServerSignIn logInInfo)
         {
-            string workingText = _urlDownloadDatasourceTemplate;
+            string workingText = _urlDeleteWorkbookFromFavorites;
             workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
-            workingText = workingText.Replace("%%iwsUserId%%", logInInfo.UserId);
+            workingText = workingText.Replace("%%iwsUserId%%", userId);
             workingText = workingText.Replace("%%iwsWorkbookId%%", workbookId);
-
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }
@@ -672,12 +669,11 @@ namespace TableauAPI.RESTHelpers
         /// </summary>
         /// <param name="logInInfo">Tableau Sign In Information</param>
         /// <returns></returns>
-        public string Url_GetFavoritesForUser(TableauServerSignIn logInInfo)
+        public string Url_GetFavoritesForUser(string userId, TableauServerSignIn logInInfo)
         {
-            string workingText = _urlDownloadDatasourceTemplate;
+            string workingText = _urlGetFavoritesForUser;
             workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
-            workingText = workingText.Replace("%%iwsUserId%%", logInInfo.UserId);
-
+            workingText = workingText.Replace("%%iwsUserId%%", userId);
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }
