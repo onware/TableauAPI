@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using TableauAPI.RESTHelpers;
+using System;
 
 namespace TableauAPI.RESTRequests
 {
@@ -38,7 +39,7 @@ namespace TableauAPI.RESTRequests
 
                 value = webClient.UploadString(
                     string.Format("{0}/trusted", _onlineUrls.ServerUrlWithProtocol),
-                    string.Format("username={0}&target_site={1}", _userName, _onlineUrls.SiteUrlSegement));
+                    string.Format("username={0}&target_site={1}", Uri.EscapeDataString(_userName), _onlineUrls.SiteUrlSegement));
             }
             return value;
         }
