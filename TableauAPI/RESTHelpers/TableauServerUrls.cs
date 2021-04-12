@@ -53,6 +53,8 @@ namespace TableauAPI.RESTHelpers
         private readonly string _urlAddWorkbookToFavorites;
         private readonly string _urlDeleteWorkbookFromFavorites;
         private readonly string _urlGetFavoritesForUser;
+        private readonly string _urlDownloadWorkbookPDF;
+
 
         /// <summary>
         /// Server url with protocol
@@ -135,6 +137,7 @@ namespace TableauAPI.RESTHelpers
             _urlAddWorkbookToFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%";
             _urlDeleteWorkbookFromFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%/workbooks/%%iwsWorkbookId%%";
             _urlGetFavoritesForUser = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%";
+            _urlDownloadWorkbookPDF = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/pdf?type=%%iwsPageType%%/&orientation=%%iwsPageOrientation%%";
         }
 
         private static ServerProtocol _GetProtocolFromUrl(string url)
@@ -674,6 +677,17 @@ namespace TableauAPI.RESTHelpers
             string workingText = _urlGetFavoritesForUser;
             workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
             workingText = workingText.Replace("%%iwsUserId%%", userId);
+            _ValidateTemplateReplaceComplete(workingText);
+            return workingText;
+        }
+
+        public string Url_DownloadWorkbookPDF(TableauServerSignIn loginInfo, string workbookId, string pageType="Letter", string pageOrientation = "Portrait")
+        {
+            string workingText = _urlDownloadWorkbookPDF;
+            workingText = workingText.Replace("%%iwsSiteId%%", loginInfo.SiteId);
+            workingText = workingText.Replace("%%iwsWorkbookId%%", workbookId);
+            workingText = workingText.Replace("%%iwsPageType%%", pageType);
+            workingText = workingText.Replace("%%iwsPageOrientation%%", pageOrientation);
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }
