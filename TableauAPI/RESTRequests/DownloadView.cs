@@ -93,5 +93,24 @@ namespace TableauAPI.RESTRequests
             }
             return System.Text.Encoding.UTF8.GetString(data);
         }
+
+        public byte[] GetPDF(string viewId, string pageType, string pageOrientation)
+        {
+            var url = _onlineUrls.Url_DownloadViewPDF(OnlineSession, viewId);
+            var webRequest = CreateLoggedInWebRequest(url);
+            webRequest.Method = "GET";
+            var response = GetWebResponseLogErrors(webRequest, "get view pdf");
+            byte[] pdf;
+            using (var stream = response.GetResponseStream())
+            {
+
+                using (var ms = new MemoryStream())
+                {
+                    stream.CopyTo(ms);
+                    pdf = ms.ToArray();
+                }
+            }
+            return pdf;
+        }
     }
 }

@@ -139,7 +139,7 @@ namespace TableauAPI.RESTHelpers
             _urlAddWorkbookToFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%";
             _urlDeleteWorkbookFromFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%/workbooks/%%iwsWorkbookId%%";
             _urlGetFavoritesForUser = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%";
-            _urlDownloadViewPDF = $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/pdf?type=%%iwsPageType%%&orientation=%%iwsPageOrientation%%&vf_%%iwsFieldName%%=%%iwsFieldValue%%";
+            _urlDownloadViewPDF = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/pdf?type=%%iwsPageType%%&orientation=%%iwsPageOrientation%%";
             _urlDownloadWorkbookPDF = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/pdf?type=%%iwsPageType%%&orientation=%%iwsPageOrientation%%";
         }
 
@@ -684,15 +684,13 @@ namespace TableauAPI.RESTHelpers
             return workingText;
         }
 
-        public string Url_DownloadViewPDF(TableauServerSignIn loginInfo, string workbookId, string pageType = "Letter", string pageOrientation = "Portrait", string fieldName = "", string fieldValue = "")
+        public string Url_DownloadViewPDF(TableauServerSignIn loginInfo, string workbookId, string pageType = "Letter", string pageOrientation = "Portrait")
         {
-            string workingText = _urlDownloadWorkbookPDF;
+            string workingText = _urlDownloadViewPDF;
             workingText = workingText.Replace("%%iwsSiteId%%", loginInfo.SiteId);
-            workingText = workingText.Replace("%%iwsWorkbookId%%", workbookId);
+            workingText = workingText.Replace("%%iwsViewId%%", workbookId);
             workingText = workingText.Replace("%%iwsPageType%%", pageType);
             workingText = workingText.Replace("%%iwsPageOrientation%%", pageOrientation);
-            workingText = workingText.Replace("%%iwsFieldName%%", fieldName);
-            workingText = workingText.Replace("%%iwsFieldValue%%", fieldValue);
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }
