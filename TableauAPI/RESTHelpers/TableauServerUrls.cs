@@ -684,6 +684,14 @@ namespace TableauAPI.RESTHelpers
             return workingText;
         }
 
+        /// <summary>
+        /// URL to download a PDF for a view
+        /// </summary>
+        /// <param name="loginInfo"></param>
+        /// <param name="workbookId"></param>
+        /// <param name="pageType"></param>
+        /// <param name="pageOrientation"></param>
+        /// <returns></returns>
         public string Url_DownloadViewPDF(TableauServerSignIn loginInfo, string workbookId, PageType pageType, PageOrientation pageOrientation)
         {
             string workingText = _urlDownloadViewPDF;
@@ -695,6 +703,14 @@ namespace TableauAPI.RESTHelpers
             return workingText;
         }
 
+        /// <summary>
+        /// URL to download a PDF for a workbook
+        /// </summary>
+        /// <param name="loginInfo"></param>
+        /// <param name="workbookId"></param>
+        /// <param name="pageType"></param>
+        /// <param name="pageOrientation"></param>
+        /// <returns></returns>
         public string Url_DownloadWorkbookPDF(TableauServerSignIn loginInfo, string workbookId, PageType pageType, PageOrientation pageOrientation)
         {
             string workingText = _urlDownloadWorkbookPDF;

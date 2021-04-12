@@ -95,6 +95,14 @@ namespace TableauAPI.RESTRequests
             return System.Text.Encoding.UTF8.GetString(data);
         }
 
+
+        /// <summary>
+        /// Return PDF for a View 
+        /// </summary>
+        /// <param name="viewId"></param>
+        /// <param name="pageType"></param>
+        /// <param name="pageOrientation"></param>
+        /// <returns></returns>
         public byte[] GetPDF(string viewId, PageType pageType = PageType.Letter, PageOrientation pageOrientation = PageOrientation.Portrait)
         {
             var url = _onlineUrls.Url_DownloadViewPDF(OnlineSession, viewId, pageType, pageOrientation);
