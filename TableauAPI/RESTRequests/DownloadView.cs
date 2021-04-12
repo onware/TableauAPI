@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using TableauAPI.RESTHelpers;
+using TableauAPI.RESTRequests;
 
 namespace TableauAPI.RESTRequests
 {
@@ -94,9 +95,9 @@ namespace TableauAPI.RESTRequests
             return System.Text.Encoding.UTF8.GetString(data);
         }
 
-        public byte[] GetPDF(string viewId, string pageType, string pageOrientation)
+        public byte[] GetPDF(string viewId, PageType pageType = PageType.Letter, PageOrientation pageOrientation = PageOrientation.Portrait)
         {
-            var url = _onlineUrls.Url_DownloadViewPDF(OnlineSession, viewId);
+            var url = _onlineUrls.Url_DownloadViewPDF(OnlineSession, viewId, pageType, pageOrientation);
             var webRequest = CreateLoggedInWebRequest(url);
             webRequest.Method = "GET";
             var response = GetWebResponseLogErrors(webRequest, "get view pdf");

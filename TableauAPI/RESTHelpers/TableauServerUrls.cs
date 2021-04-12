@@ -684,24 +684,24 @@ namespace TableauAPI.RESTHelpers
             return workingText;
         }
 
-        public string Url_DownloadViewPDF(TableauServerSignIn loginInfo, string workbookId, string pageType = "Letter", string pageOrientation = "Portrait")
+        public string Url_DownloadViewPDF(TableauServerSignIn loginInfo, string workbookId, PageType pageType, PageOrientation pageOrientation)
         {
             string workingText = _urlDownloadViewPDF;
             workingText = workingText.Replace("%%iwsSiteId%%", loginInfo.SiteId);
             workingText = workingText.Replace("%%iwsViewId%%", workbookId);
-            workingText = workingText.Replace("%%iwsPageType%%", pageType);
-            workingText = workingText.Replace("%%iwsPageOrientation%%", pageOrientation);
+            workingText = workingText.Replace("%%iwsPageType%%", pageType.ToString());
+            workingText = workingText.Replace("%%iwsPageOrientation%%", pageOrientation.ToString());
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }
 
-        public string Url_DownloadWorkbookPDF(TableauServerSignIn loginInfo, string workbookId, string pageType="Letter", string pageOrientation = "Portrait")
+        public string Url_DownloadWorkbookPDF(TableauServerSignIn loginInfo, string workbookId, PageType pageType, PageOrientation pageOrientation)
         {
             string workingText = _urlDownloadWorkbookPDF;
             workingText = workingText.Replace("%%iwsSiteId%%", loginInfo.SiteId);
             workingText = workingText.Replace("%%iwsWorkbookId%%", workbookId);
-            workingText = workingText.Replace("%%iwsPageType%%", pageType);
-            workingText = workingText.Replace("%%iwsPageOrientation%%", pageOrientation);
+            workingText = workingText.Replace("%%iwsPageType%%", pageType.ToString());
+            workingText = workingText.Replace("%%iwsPageOrientation%%", pageOrientation.ToString());
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }
