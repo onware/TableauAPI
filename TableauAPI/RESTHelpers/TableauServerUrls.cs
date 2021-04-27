@@ -114,7 +114,7 @@ namespace TableauAPI.RESTHelpers
             _urlListWorkbooksForUserTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/users/%%iwsUserId%%/workbooks?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlViewsListForSiteTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlViewThumbnailTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/views/%%iwsViewId%%/previewImage";
-            _urlViewDataTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/data";
+            _urlViewDataTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/data?%%iwsFilterValue%%";
             _urlListViewsForWorkbookTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/views";
             _urlListWorkbookConnectionsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/connections";
             _urlWorkbookTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%";
@@ -316,10 +316,14 @@ namespace TableauAPI.RESTHelpers
         /// <param name="viewId">View ID</param>
         /// <param name="logInInfo">Tableau Sign In Information</param>
         /// <returns></returns>
-        public string Url_ViewData(string viewId, TableauServerSignIn logInInfo)
+        public string Url_ViewData(string viewId, string filterName, string filterValue, TableauServerSignIn logInInfo)
         {
+            var filterText = string.Empty;
+            filterText = _urlViewFilter.Replace("%%iwsFieldName%%", filterName);
+            filterText = filterText.Replace("%%iwsFieldValue%%", filterValue);
             var workingText = _urlViewDataTemplate.Replace("%%iwsSiteId%%", logInInfo.SiteId);
             workingText = workingText.Replace("%%iwsViewId%%", viewId);
+            workingText = workingText.Replace("%%iwsFilterValue%%", filterText);
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }

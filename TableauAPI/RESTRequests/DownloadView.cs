@@ -77,9 +77,9 @@ namespace TableauAPI.RESTRequests
         /// </summary>
         /// <param name="viewId"></param>
         /// <returns></returns>
-        public string GetData(string viewId)
+        public string GetData(string viewId, string filterName = "", string filterValue="")
         {
-            var url = _onlineUrls.Url_ViewData(viewId, OnlineSession);
+            var url = _onlineUrls.Url_ViewData(viewId, filterName, filterValue, OnlineSession);
             var webRequest = CreateLoggedInWebRequest(url);
             webRequest.Method = "GET";
             var response = GetWebResponseLogErrors(webRequest, "get view data");
