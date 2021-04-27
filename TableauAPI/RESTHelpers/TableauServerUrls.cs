@@ -55,6 +55,8 @@ namespace TableauAPI.RESTHelpers
         private readonly string _urlGetFavoritesForUser;
         private readonly string _urlDownloadViewPDF;
         private readonly string _urlDownloadWorkbookPDF;
+        private readonly string _urlViewFilter;
+
     
 
 
@@ -135,12 +137,13 @@ namespace TableauAPI.RESTHelpers
             _urlDeleteWorkbookTagTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/tags/%%iwsTagText%%";
             _urlDeleteDatasourceTagTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources/%%iwsDatasourceId%%/tags/%%iwsTagText%%";
             _urlUpdateUserTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/users/iwsUserId";
-            _urlViewImageTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/image";
+            _urlViewImageTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/image?%%iwsFilterValue%%";
             _urlAddWorkbookToFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%";
             _urlDeleteWorkbookFromFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%/workbooks/%%iwsWorkbookId%%";
             _urlGetFavoritesForUser = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%";
             _urlDownloadViewPDF = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/pdf?type=%%iwsPageType%%&orientation=%%iwsPageOrientation%%";
             _urlDownloadWorkbookPDF = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/pdf?type=%%iwsPageType%%&orientation=%%iwsPageOrientation%%";
+            _urlViewFilter = $"vf_%%iwsFieldName%%=%%iwsFieldValue%%";
         }
 
         private static ServerProtocol _GetProtocolFromUrl(string url)
@@ -295,10 +298,14 @@ namespace TableauAPI.RESTHelpers
         /// <param name="viewId">View ID</param>
         /// <param name="logInInfo">Tableau Sign In Information</param>
         /// <returns></returns>
-        public string Url_ViewImage(string workbookId, string viewId, TableauServerSignIn logInInfo)
+        public string Url_ViewImage(string workbookId, string viewId, string filterName, string filterValue,TableauServerSignIn logInInfo)
         {
+            var filterText = string.Empty;
+            filterText = _urlViewFilter.Replace("%%iwsFieldName%%", filterName);
+            filterText = filterText.Replace("%%iwsFieldValue%%", filterValue);
             var workingText = _urlViewImageTemplate.Replace("%%iwsSiteId%%", logInInfo.SiteId);
             workingText = workingText.Replace("%%iwsViewId%%", viewId);
+            workingText = workingText.Replace("%%iwsFilterValue%%", filterText);
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }
