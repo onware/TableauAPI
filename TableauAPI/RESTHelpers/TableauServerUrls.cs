@@ -50,6 +50,9 @@ namespace TableauAPI.RESTHelpers
         private readonly string _urlDeleteDatasourceTagTemplate;
         private readonly string _urlUpdateUserTemplate;
         private readonly string _urlViewImageTemplate;
+        private readonly string _urlAddWorkbookToFavorites;
+        private readonly string _urlDeleteWorkbookFromFavorites;
+        private readonly string _urlGetFavoritesForUser;
 
         /// <summary>
         /// Server url with protocol
@@ -129,9 +132,9 @@ namespace TableauAPI.RESTHelpers
             _urlDeleteDatasourceTagTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources/%%iwsDatasourceId%%/tags/%%iwsTagText%%";
             _urlUpdateUserTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/users/iwsUserId";
             _urlViewImageTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/image";
-
-
-            //Any server version specific things we want to do?
+            _urlAddWorkbookToFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%";
+            _urlDeleteWorkbookFromFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%/workbooks/%%iwsWorkbookId%%";
+            _urlGetFavoritesForUser = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%";
         }
 
         private static ServerProtocol _GetProtocolFromUrl(string url)
@@ -627,6 +630,50 @@ namespace TableauAPI.RESTHelpers
             workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
             workingText = workingText.Replace("%%iwsRepositoryId%%", datasource.Id);
 
+            _ValidateTemplateReplaceComplete(workingText);
+            return workingText;
+        }
+
+        /// <summary>
+        /// Adds the specified workbook to a user's favorites.
+        /// </summary>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <returns></returns>
+        public string Url_AddWorkbookToFavorites(string userId, TableauServerSignIn logInInfo)
+        {
+            string workingText = _urlAddWorkbookToFavorites;
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsUserId%%", userId);
+            _ValidateTemplateReplaceComplete(workingText);
+            return workingText;
+        }
+
+        /// <summary>
+        /// Deletes a workbook from a user's favorites. If the specified workbook is not a favorite of the specified user, this call has no effect.
+        /// </summary>
+        /// <param name="workbookId">The ID of the workbook to remove from the user's favorites.</param>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <returns></returns>
+        public string Url_DeleteWorkbookFromFavorites(string workbookId, string userId, TableauServerSignIn logInInfo)
+        {
+            string workingText = _urlDeleteWorkbookFromFavorites;
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsUserId%%", userId);
+            workingText = workingText.Replace("%%iwsWorkbookId%%", workbookId);
+            _ValidateTemplateReplaceComplete(workingText);
+            return workingText;
+        }
+
+        /// <summary>
+        /// Returns a list of favorite projects, data sources, views, workbooks, and flows for a user.
+        /// </summary>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <returns></returns>
+        public string Url_GetFavoritesForUser(string userId, TableauServerSignIn logInInfo)
+        {
+            string workingText = _urlGetFavoritesForUser;
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsUserId%%", userId);
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }

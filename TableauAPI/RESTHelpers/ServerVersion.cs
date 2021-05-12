@@ -29,7 +29,10 @@ namespace TableauAPI.RESTHelpers
         Server2019_3,
         Server2019_4,
         Server2020_1,
-        Server2020_2
+        Server2020_2,
+        Server2020_3,
+        Server2020_4,
+        Server2021_1
     }
 
     public class ServerVersionLookup
@@ -57,7 +60,10 @@ namespace TableauAPI.RESTHelpers
         { ServerVersion.Server2019_3, "3.5" },
         { ServerVersion.Server2019_4, "3.6" },
         { ServerVersion.Server2020_1, "3.7" },
-        { ServerVersion.Server2020_2, "3.8" }
+        { ServerVersion.Server2020_2, "3.8" },
+        { ServerVersion.Server2020_3, "3.9" },
+        { ServerVersion.Server2020_4, "3.10" },
+        { ServerVersion.Server2021_1, "3.11" }
     };
 
             return mappingA[version];
