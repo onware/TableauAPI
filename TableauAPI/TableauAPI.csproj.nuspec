@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>TableauAPI</id>
-    <version>1.3.6</version>
+    <version>1.4.3</version>
     <authors>Onware</authors>
     <owners>Onware</owners>
     <licenseUrl>https://github.com/onware/TableauAPI/blob/master/LICENSE.txt</licenseUrl>
@@ -10,7 +10,7 @@
     <iconUrl>https://raw.githubusercontent.com/onware/TableauAPI/master/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>An implementation of the Tableau REST API in C# distributed as a NuGet package.</description>
-    <releaseNotes>Fixed DownloadUserList</releaseNotes>
+    <releaseNotes>Added favorite methods for views and workbooks that retrieve the site model.</releaseNotes>
     <copyright>Copyright 2021</copyright>
     <tags>Tableau</tags>
   </metadata>

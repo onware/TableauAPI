@@ -50,8 +50,9 @@ namespace TableauAPI.RESTHelpers
         private readonly string _urlDeleteDatasourceTagTemplate;
         private readonly string _urlUpdateUserTemplate;
         private readonly string _urlViewImageTemplate;
-        private readonly string _urlAddWorkbookToFavorites;
+        private readonly string _urlAddToFavorites;
         private readonly string _urlDeleteWorkbookFromFavorites;
+        private readonly string _urlDeleteViewFromFavorites;
         private readonly string _urlGetFavoritesForUser;
         private readonly string _urlDownloadViewPDF;
         private readonly string _urlDownloadWorkbookPDF;
@@ -138,8 +139,9 @@ namespace TableauAPI.RESTHelpers
             _urlDeleteDatasourceTagTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources/%%iwsDatasourceId%%/tags/%%iwsTagText%%";
             _urlUpdateUserTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/users/iwsUserId";
             _urlViewImageTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/image?%%iwsFilterValue%%";
-            _urlAddWorkbookToFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%";
+            _urlAddToFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%";
             _urlDeleteWorkbookFromFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%/workbooks/%%iwsWorkbookId%%";
+            _urlDeleteViewFromFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%/views/%%iwsViewId%%";
             _urlGetFavoritesForUser = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%";
             _urlDownloadViewPDF = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/pdf?type=%%iwsPageType%%&orientation=%%iwsPageOrientation%%";
             _urlDownloadWorkbookPDF = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/pdf?type=%%iwsPageType%%&orientation=%%iwsPageOrientation%%";
@@ -656,9 +658,9 @@ namespace TableauAPI.RESTHelpers
         /// </summary>
         /// <param name="logInInfo">Tableau Sign In Information</param>
         /// <returns></returns>
-        public string Url_AddWorkbookToFavorites(string userId, TableauServerSignIn logInInfo)
+        public string Url_AddToFavorites(string userId, TableauServerSignIn logInInfo)
         {
-            string workingText = _urlAddWorkbookToFavorites;
+            string workingText = _urlAddToFavorites;
             workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
             workingText = workingText.Replace("%%iwsUserId%%", userId);
             _ValidateTemplateReplaceComplete(workingText);
@@ -680,6 +682,24 @@ namespace TableauAPI.RESTHelpers
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }
+
+
+        /// <summary>
+        /// Deletes a view from a user's favorites. If the specified view is not a favorite of the specified user, this call has no effect.
+        /// </summary>
+        /// <param name="viewId">The ID of the workbook to remove from the user's favorites.</param>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <returns></returns>
+        public string Url_DeleteViewFromFavorites(string viewId, string userId, TableauServerSignIn logInInfo)
+        {
+            string workingText = _urlDeleteViewFromFavorites;
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsUserId%%", userId);
+            workingText = workingText.Replace("%%iwsViewId%%", viewId);
+            _ValidateTemplateReplaceComplete(workingText);
+            return workingText;
+        }
+
 
         /// <summary>
         /// Returns a list of favorite projects, data sources, views, workbooks, and flows for a user.

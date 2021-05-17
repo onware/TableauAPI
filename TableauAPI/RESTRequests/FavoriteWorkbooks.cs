@@ -15,6 +15,20 @@ namespace TableauAPI.RESTRequests
 
         private List<string> _favoriteWorkbookIds;
 
+        private List<SiteWorkbook> _workbooks;
+
+        /// <summary>
+        /// Workbooks we've parsed from server results
+        /// </summary>
+        public ICollection<SiteWorkbook> Workbooks
+        {
+            get
+            {
+                var wb = _workbooks;
+                return wb?.AsReadOnly();
+            }
+        }
+
         /// <summary>
         /// Constructor: Call when we want to query favorite workbooks on behalf of the currently logged in user
         /// </summary>
@@ -48,7 +62,7 @@ namespace TableauAPI.RESTRequests
         /// <returns></returns>
         public void AddWorkbookToFavorites(string favoriteLabel, string workbookId)
         {
-            var url = _onlineUrls.Url_AddWorkbookToFavorites(_userId, OnlineSession);
+            var url = _onlineUrls.Url_AddToFavorites(_userId, OnlineSession);
             var sb = new StringBuilder();
             var xmlSettings = new XmlWriterSettings();
             xmlSettings.OmitXmlDeclaration = true;
@@ -91,14 +105,29 @@ namespace TableauAPI.RESTRequests
         /// </summary>
         public List<string> GetFavoriteWorkbookIds()
         {
+            if (_workbooks == null || _workbooks.Count <= 0)
+            {
+                ExecuteRequest();
+            }
+            return _favoriteWorkbookIds;
+        }
+
+        /// <summary>
+        /// Execute request for Favorite workbook listings
+        /// </summary>
+        public void ExecuteRequest()
+        {
             //Sanity check
             if (string.IsNullOrWhiteSpace(_userId))
             {
                 OnlineSession.StatusLog.AddError("User ID required to query favorite workbooks");
             }
 
-            string urlQuery = _onlineUrls.Url_GetFavoritesForUser(_userId, OnlineSession);
+            _workbooks = new List<SiteWorkbook>();
+            _favoriteWorkbookIds = new List<string>();
 
+            //Create a web request, in including the users logged-in auth information in the request headers
+            var urlQuery = _onlineUrls.Url_GetFavoritesForUser(_userId, OnlineSession);
             var webRequest = CreateLoggedInWebRequest(urlQuery);
             webRequest.Method = "GET";
 
@@ -106,30 +135,27 @@ namespace TableauAPI.RESTRequests
             var response = GetWebResponseLogErrors(webRequest, "get Favorites list");
             var xmlDoc = GetWebResponseAsXml(response);
 
-            //Get all the workbook nodes
+            //Get all the favorite workbook nodes
             var nsManager = XmlHelper.CreateTableauXmlNamespaceManager("iwsOnline");
-            var favorites = xmlDoc.SelectNodes("//iwsOnline:favorite/iwsOnline:workbook", nsManager);
-
-            List<string> onlineFavoriteWorkbookIds = new List<string>();
+            var workbooks = xmlDoc.SelectNodes("//iwsOnline:favorite/iwsOnline:workbook", nsManager);
 
             //Get information for each of the data sources
-            foreach (XmlNode itemXml in favorites)
+            foreach (XmlNode itemXml in workbooks)
             {
                 try
                 {
-                    var ds = itemXml.Attributes["id"]?.Value;
-                    onlineFavoriteWorkbookIds.Add(ds);
+                    var ds = new SiteWorkbook(itemXml);
+                    _favoriteWorkbookIds.Add(ds.Id);
+                    _workbooks.Add(ds);
                 }
                 catch
                 {
-                    AppDiagnostics.Assert(false, "Favorite parse error");
-                    OnlineSession.StatusLog.AddError("Error parsing favorite: " + itemXml.InnerXml);
+                    AppDiagnostics.Assert(false, "Favorite workbook parse error");
+                    OnlineSession.StatusLog.AddError("Error parsing favorite workbook: " + itemXml.InnerXml);
                 }
-            }
-
-            _favoriteWorkbookIds = onlineFavoriteWorkbookIds;
-
-            return _favoriteWorkbookIds;
+            } //end: foreach
         }
+
+
     }
 }

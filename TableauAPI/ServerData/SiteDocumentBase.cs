@@ -67,7 +67,7 @@ namespace TableauAPI.ServerData
             if (projectNode != null)
             {
                 ProjectId = projectNode.Attributes?["id"].Value;
-                ProjectName = projectNode.Attributes?["name"].Value;
+                ProjectName = projectNode.Attributes?["name"]?.Value;
             }
 
             //Get the owner attributes
