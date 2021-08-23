@@ -52,10 +52,13 @@ namespace TableauAPI.RESTRequests
         /// </summary>
         /// <param name="workbookId"></param>
         /// <param name="viewId"></param>
+        /// <param name="filterName"></param>
+        /// <param name="filterValue"></param>
+        /// <param name="maxAge"></param>
         /// <returns></returns>
-        public byte[] GetImage(string workbookId, string viewId, string filterName="", string filterValue="")
+        public byte[] GetImage(string workbookId, string viewId, string filterName="", string filterValue="", int maxAge=60)
         {
-            var url = _onlineUrls.Url_ViewImage(workbookId, viewId, filterName, filterValue, OnlineSession);
+            var url = _onlineUrls.Url_ViewImage(workbookId, viewId, filterName, filterValue, maxAge, OnlineSession);
             var webRequest = CreateLoggedInWebRequest(url);
             webRequest.Method = "GET";
             var response = GetWebResponseLogErrors(webRequest, "get view image");

@@ -138,7 +138,7 @@ namespace TableauAPI.RESTHelpers
             _urlDeleteWorkbookTagTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/tags/%%iwsTagText%%";
             _urlDeleteDatasourceTagTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources/%%iwsDatasourceId%%/tags/%%iwsTagText%%";
             _urlUpdateUserTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/users/iwsUserId";
-            _urlViewImageTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/image?%%iwsFilterValue%%";
+            _urlViewImageTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/image?maxAge=%%iwsMaxAge%%&%%iwsFilterValue%%";
             _urlAddToFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%";
             _urlDeleteWorkbookFromFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%/workbooks/%%iwsWorkbookId%%";
             _urlDeleteViewFromFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%/views/%%iwsViewId%%";
@@ -300,13 +300,14 @@ namespace TableauAPI.RESTHelpers
         /// <param name="viewId">View ID</param>
         /// <param name="logInInfo">Tableau Sign In Information</param>
         /// <returns></returns>
-        public string Url_ViewImage(string workbookId, string viewId, string filterName, string filterValue,TableauServerSignIn logInInfo)
+        public string Url_ViewImage(string workbookId, string viewId, string filterName, string filterValue, int maxAge, TableauServerSignIn logInInfo)
         {
             var filterText = string.Empty;
             filterText = _urlViewFilter.Replace("%%iwsFieldName%%", filterName);
             filterText = filterText.Replace("%%iwsFieldValue%%", filterValue);
             var workingText = _urlViewImageTemplate.Replace("%%iwsSiteId%%", logInInfo.SiteId);
             workingText = workingText.Replace("%%iwsViewId%%", viewId);
+            workingText = workingText.Replace("%%iwsMaxAge%%", maxAge.ToString());
             workingText = workingText.Replace("%%iwsFilterValue%%", filterText);
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
