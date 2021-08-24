@@ -35,6 +35,7 @@ namespace TableauAPI.RESTHelpers
         private readonly string _urlListGroupsTemplate;
         private readonly string _urlListUsersTemplate;
         private readonly string _urlListUsersInGroupTemplate;
+        private readonly string _urlListGroupsForUserTemplate;
         private readonly string _urlDownloadWorkbookTemplate;
         private readonly string _urlDownloadDatasourceTemplate;
         private readonly string _urlDatasourceConnectionsTemplate;
@@ -49,9 +50,16 @@ namespace TableauAPI.RESTHelpers
         private readonly string _urlDeleteDatasourceTagTemplate;
         private readonly string _urlUpdateUserTemplate;
         private readonly string _urlViewImageTemplate;
-        private readonly string _urlAddWorkbookToFavorites;
+        private readonly string _urlAddToFavorites;
         private readonly string _urlDeleteWorkbookFromFavorites;
+        private readonly string _urlDeleteViewFromFavorites;
         private readonly string _urlGetFavoritesForUser;
+        private readonly string _urlDownloadViewPDF;
+        private readonly string _urlDownloadWorkbookPDF;
+        private readonly string _urlViewFilter;
+
+    
+
 
         /// <summary>
         /// Server url with protocol
@@ -107,13 +115,14 @@ namespace TableauAPI.RESTHelpers
             _urlListWorkbooksForUserTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/users/%%iwsUserId%%/workbooks?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlViewsListForSiteTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlViewThumbnailTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/views/%%iwsViewId%%/previewImage";
-            _urlViewDataTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/data";
+            _urlViewDataTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/data?%%iwsFilterValue%%";
             _urlListViewsForWorkbookTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/views";
             _urlListWorkbookConnectionsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/connections";
             _urlWorkbookTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%";
             _urlListDatasourcesTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlListProjectsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/projects?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlListGroupsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/groups?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
+            _urlListGroupsForUserTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/users/%%iwsUserId%%/groups";
             _urlListUsersTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/users?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlListUsersInGroupTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/groups/%%iwsGroupId%%/users?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlDownloadDatasourceTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources/%%iwsRepositoryId%%/content";
@@ -129,15 +138,15 @@ namespace TableauAPI.RESTHelpers
             _urlDeleteWorkbookTagTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/tags/%%iwsTagText%%";
             _urlDeleteDatasourceTagTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources/%%iwsDatasourceId%%/tags/%%iwsTagText%%";
             _urlUpdateUserTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/users/iwsUserId";
-            _urlViewImageTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/image";
-
-            _urlAddWorkbookToFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%";
+            _urlViewImageTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/image?maxAge=%%iwsMaxAge%%&%%iwsFilterValue%%";
+            _urlAddToFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%";
             _urlDeleteWorkbookFromFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%/workbooks/%%iwsWorkbookId%%";
+            _urlDeleteViewFromFavorites = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%/views/%%iwsViewId%%";
             _urlGetFavoritesForUser = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/favorites/%%iwsUserId%%";
-
-
-        //Any server version specific things we want to do?
-    }
+            _urlDownloadViewPDF = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/pdf?type=%%iwsPageType%%&orientation=%%iwsPageOrientation%%";
+            _urlDownloadWorkbookPDF = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/pdf?type=%%iwsPageType%%&orientation=%%iwsPageOrientation%%";
+            _urlViewFilter = $"vf_%%iwsFieldName%%=%%iwsFieldValue%%";
+        }
 
         private static ServerProtocol _GetProtocolFromUrl(string url)
         {
@@ -291,10 +300,15 @@ namespace TableauAPI.RESTHelpers
         /// <param name="viewId">View ID</param>
         /// <param name="logInInfo">Tableau Sign In Information</param>
         /// <returns></returns>
-        public string Url_ViewImage(string workbookId, string viewId, TableauServerSignIn logInInfo)
+        public string Url_ViewImage(string workbookId, string viewId, string filterName, string filterValue, int maxAge, TableauServerSignIn logInInfo)
         {
+            var filterText = string.Empty;
+            filterText = _urlViewFilter.Replace("%%iwsFieldName%%", filterName);
+            filterText = filterText.Replace("%%iwsFieldValue%%", filterValue);
             var workingText = _urlViewImageTemplate.Replace("%%iwsSiteId%%", logInInfo.SiteId);
             workingText = workingText.Replace("%%iwsViewId%%", viewId);
+            workingText = workingText.Replace("%%iwsMaxAge%%", maxAge.ToString());
+            workingText = workingText.Replace("%%iwsFilterValue%%", filterText);
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }
@@ -305,10 +319,14 @@ namespace TableauAPI.RESTHelpers
         /// <param name="viewId">View ID</param>
         /// <param name="logInInfo">Tableau Sign In Information</param>
         /// <returns></returns>
-        public string Url_ViewData(string viewId, TableauServerSignIn logInInfo)
+        public string Url_ViewData(string viewId, string filterName, string filterValue, TableauServerSignIn logInInfo)
         {
+            var filterText = string.Empty;
+            filterText = _urlViewFilter.Replace("%%iwsFieldName%%", filterName);
+            filterText = filterText.Replace("%%iwsFieldValue%%", filterValue);
             var workingText = _urlViewDataTemplate.Replace("%%iwsSiteId%%", logInInfo.SiteId);
             workingText = workingText.Replace("%%iwsViewId%%", viewId);
+            workingText = workingText.Replace("%%iwsFilterValue%%", filterText);
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }
@@ -535,6 +553,7 @@ namespace TableauAPI.RESTHelpers
             return workingText;
         }
 
+
         /// <summary>
         /// URL for the Users list
         /// </summary>
@@ -562,6 +581,26 @@ namespace TableauAPI.RESTHelpers
         {
             string workingText = _urlListUsersInGroupTemplate.Replace("%%iwsSiteId%%", logInInfo.SiteId);
             workingText = workingText.Replace("%%iwsGroupId%%", groupId);
+            workingText = workingText.Replace("%%iwsPageSize%%", pageSize.ToString());
+            workingText = workingText.Replace("%%iwsPageNumber%%", pageNumber.ToString());
+            _ValidateTemplateReplaceComplete(workingText);
+
+            return workingText;
+        }
+
+        /// <summary>
+        /// URL for a User's list of groups
+        /// </summary>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <param name="pageSize">Page size to use when retrieving results from Tableau server</param>
+        /// <param name="pageNumber">Which page of the results to return. Defaults to 1.</param>
+        /// <param name="userId">User ID who's groups we should retrieve</param>
+        /// <returns></returns>
+        public string Url_GroupsListForUser(TableauServerSignIn logInInfo, string userId, int pageSize, int pageNumber = 1)
+        {
+            string workingText = _urlListGroupsForUserTemplate;
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsUserId%%", userId);
             workingText = workingText.Replace("%%iwsPageSize%%", pageSize.ToString());
             workingText = workingText.Replace("%%iwsPageNumber%%", pageNumber.ToString());
             _ValidateTemplateReplaceComplete(workingText);
@@ -620,12 +659,11 @@ namespace TableauAPI.RESTHelpers
         /// </summary>
         /// <param name="logInInfo">Tableau Sign In Information</param>
         /// <returns></returns>
-        public string Url_AddWorkbookToFavorites(TableauServerSignIn logInInfo)
+        public string Url_AddToFavorites(string userId, TableauServerSignIn logInInfo)
         {
-            string workingText = _urlDownloadDatasourceTemplate;
+            string workingText = _urlAddToFavorites;
             workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
-            workingText = workingText.Replace("%%iwsUserId%%", logInInfo.UserId);
-
+            workingText = workingText.Replace("%%iwsUserId%%", userId);
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }
@@ -636,28 +674,82 @@ namespace TableauAPI.RESTHelpers
         /// <param name="workbookId">The ID of the workbook to remove from the user's favorites.</param>
         /// <param name="logInInfo">Tableau Sign In Information</param>
         /// <returns></returns>
-        public string Url_DeleteWorkbookFromFavorites(string workbookId, TableauServerSignIn logInInfo)
+        public string Url_DeleteWorkbookFromFavorites(string workbookId, string userId, TableauServerSignIn logInInfo)
         {
-            string workingText = _urlDownloadDatasourceTemplate;
+            string workingText = _urlDeleteWorkbookFromFavorites;
             workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
-            workingText = workingText.Replace("%%iwsUserId%%", logInInfo.UserId);
+            workingText = workingText.Replace("%%iwsUserId%%", userId);
             workingText = workingText.Replace("%%iwsWorkbookId%%", workbookId);
-
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }
+
+
+        /// <summary>
+        /// Deletes a view from a user's favorites. If the specified view is not a favorite of the specified user, this call has no effect.
+        /// </summary>
+        /// <param name="viewId">The ID of the workbook to remove from the user's favorites.</param>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <returns></returns>
+        public string Url_DeleteViewFromFavorites(string viewId, string userId, TableauServerSignIn logInInfo)
+        {
+            string workingText = _urlDeleteViewFromFavorites;
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsUserId%%", userId);
+            workingText = workingText.Replace("%%iwsViewId%%", viewId);
+            _ValidateTemplateReplaceComplete(workingText);
+            return workingText;
+        }
+
 
         /// <summary>
         /// Returns a list of favorite projects, data sources, views, workbooks, and flows for a user.
         /// </summary>
         /// <param name="logInInfo">Tableau Sign In Information</param>
         /// <returns></returns>
-        public string Url_GetFavoritesForUser(TableauServerSignIn logInInfo)
+        public string Url_GetFavoritesForUser(string userId, TableauServerSignIn logInInfo)
         {
-            string workingText = _urlDownloadDatasourceTemplate;
+            string workingText = _urlGetFavoritesForUser;
             workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
-            workingText = workingText.Replace("%%iwsUserId%%", logInInfo.UserId);
+            workingText = workingText.Replace("%%iwsUserId%%", userId);
+            _ValidateTemplateReplaceComplete(workingText);
+            return workingText;
+        }
 
+        /// <summary>
+        /// URL to download a PDF for a view
+        /// </summary>
+        /// <param name="loginInfo"></param>
+        /// <param name="workbookId"></param>
+        /// <param name="pageType"></param>
+        /// <param name="pageOrientation"></param>
+        /// <returns></returns>
+        public string Url_DownloadViewPDF(TableauServerSignIn loginInfo, string workbookId, PageType pageType, PageOrientation pageOrientation)
+        {
+            string workingText = _urlDownloadViewPDF;
+            workingText = workingText.Replace("%%iwsSiteId%%", loginInfo.SiteId);
+            workingText = workingText.Replace("%%iwsViewId%%", workbookId);
+            workingText = workingText.Replace("%%iwsPageType%%", pageType.ToString());
+            workingText = workingText.Replace("%%iwsPageOrientation%%", pageOrientation.ToString());
+            _ValidateTemplateReplaceComplete(workingText);
+            return workingText;
+        }
+
+        /// <summary>
+        /// URL to download a PDF for a workbook
+        /// </summary>
+        /// <param name="loginInfo"></param>
+        /// <param name="workbookId"></param>
+        /// <param name="pageType"></param>
+        /// <param name="pageOrientation"></param>
+        /// <returns></returns>
+        public string Url_DownloadWorkbookPDF(TableauServerSignIn loginInfo, string workbookId, PageType pageType, PageOrientation pageOrientation)
+        {
+            string workingText = _urlDownloadWorkbookPDF;
+            workingText = workingText.Replace("%%iwsSiteId%%", loginInfo.SiteId);
+            workingText = workingText.Replace("%%iwsWorkbookId%%", workbookId);
+            workingText = workingText.Replace("%%iwsPageType%%", pageType.ToString());
+            workingText = workingText.Replace("%%iwsPageOrientation%%", pageOrientation.ToString());
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }

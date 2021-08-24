@@ -44,6 +44,8 @@ namespace TableauAPI.ServerData
         /// </summary>
         public readonly string Size;
 
+        public readonly string DefaultViewId;
+
         private List<SiteConnection> _dataConnections;
 
         /// <summary>
@@ -84,10 +86,11 @@ namespace TableauAPI.ServerData
             }
 
             CreatedAt = workbookNode.Attributes?["createdAt"].Value;
-
             UpdatedAt = workbookNode.Attributes?["updatedAt"].Value;
 
             Size = workbookNode.Attributes?["size"].Value;
+
+            DefaultViewId = workbookNode.Attributes?["defaultViewId"]?.Value;
 
             //Do we have tabs?
             ShowTabs = XmlHelper.SafeParseXmlAttribute_Bool(workbookNode, "showTabs", false);

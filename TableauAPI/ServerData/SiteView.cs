@@ -63,7 +63,7 @@ namespace TableauAPI.ServerData
             var workbookNode = xmlNode.SelectSingleNode("iwsOnline:workbook", NamespaceManager);
             if (workbookNode != null)
             {
-                this.WorkbookId = xmlNode.Attributes?["id"].Value;
+                this.WorkbookId = workbookNode.Attributes?["id"].Value;
             }
         }
 
