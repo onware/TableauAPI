@@ -57,9 +57,7 @@ namespace TableauAPI.RESTHelpers
         private readonly string _urlDownloadViewPDF;
         private readonly string _urlDownloadWorkbookPDF;
         private readonly string _urlViewFilter;
-
-    
-
+        private readonly string _urlOrderFavoritesForUser;
 
         /// <summary>
         /// Server url with protocol
@@ -146,6 +144,7 @@ namespace TableauAPI.RESTHelpers
             _urlDownloadViewPDF = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/views/%%iwsViewId%%/pdf?type=%%iwsPageType%%&orientation=%%iwsPageOrientation%%";
             _urlDownloadWorkbookPDF = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/pdf?type=%%iwsPageType%%&orientation=%%iwsPageOrientation%%";
             _urlViewFilter = $"vf_%%iwsFieldName%%=%%iwsFieldValue%%";
+            _urlOrderFavoritesForUser = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/orderFavorites/%%iwsUserId%%";
         }
 
         private static ServerProtocol _GetProtocolFromUrl(string url)
@@ -754,6 +753,18 @@ namespace TableauAPI.RESTHelpers
             return workingText;
         }
 
+        /// Submits a change request for the User's Favorite Workbooks and Views sort order
+        /// </summary>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <returns></returns>
+        public string Url_OrderFavoritesForUser(string userId, TableauServerSignIn logInInfo)
+        {
+            string workingText = _urlOrderFavoritesForUser;
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsUserId%%", userId);
+            _ValidateTemplateReplaceComplete(workingText);
+            return workingText;
+        }
 
         string ITableauServerSiteInfo.ServerName => ServerName;
 
