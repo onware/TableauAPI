@@ -43,6 +43,12 @@ namespace TableauAPI.ServerData
         /// Size
         /// </summary>
         public readonly string Size;
+        /// <summary>
+        /// Order position
+        /// </summary>
+        public readonly string Position;
+
+        public readonly string DefaultViewId;
 
         public readonly string DefaultViewId;
 
@@ -75,6 +81,11 @@ namespace TableauAPI.ServerData
             if (workbookNode.Attributes != null && workbookNode.Attributes["description"] != null)
             {
                 Description = workbookNode.Attributes?["description"].Value;
+            }
+
+            if (workbookNode.ParentNode != null && workbookNode.ParentNode.Attributes["position"] != null)
+            {
+                Position = workbookNode.ParentNode.Attributes?["position"].Value;
             }
             
             //Note: [2015-10-28] Datasources presently don't return this information, so we need to make this workbook specific

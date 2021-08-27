@@ -1,5 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Net;
+using System.Xml;
+using System.Xml.Linq;
 using TableauAPI.FilesLogging;
 using TableauAPI.RESTRequests;
 
@@ -181,6 +184,10 @@ namespace TableauAPI.RESTHelpers
             }
             catch (WebException webException)
             {
+                var resp = new StreamReader(webException.Response.GetResponseStream()).ReadToEnd();
+                //var xDoc = XDocument.Parse(resp);
+                //string value = xDoc.Root.Element("error").Attribute("first").Value;
+                             
                 AttemptToLogWebException(webException, description + " (" + requestUri + ") ", StatusLog);
                 throw;
             }
