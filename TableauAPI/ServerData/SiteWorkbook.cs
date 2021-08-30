@@ -50,8 +50,6 @@ namespace TableauAPI.ServerData
 
         public readonly string DefaultViewId;
 
-        public readonly string DefaultViewId;
-
         private List<SiteConnection> _dataConnections;
 
         /// <summary>
