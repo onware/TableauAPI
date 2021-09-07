@@ -169,8 +169,42 @@ namespace TableauAPI.RESTRequests
             } //end: foreach
 
         }
+        
+        /// <summary>
+        /// Reorders a view from a user's favorites. If the specified view is not a favorite of the specified user, this call has no effect.
+        /// Tableau API Call params
+        /// </summary>
+        /// <param name="favoriteId">The ID of the workbook to move from the user's favorites.</param>
+        /// <param name="favoriteAfterId">The ID of the workbook to which our FavoriteId will be placed after from the user's favorites. If not specified</param>
+        /// <returns></returns>
+        public void ReorderFavorites(string favoriteId, string favoriteAfterId)
+        {
+            var contentType = "view";
+            var url = _onlineUrls.Url_OrderFavoritesForUser(_userId, OnlineSession);
+            var sb = new StringBuilder();
+            var xmlSettings = new XmlWriterSettings();
+            xmlSettings.OmitXmlDeclaration = true;
+            var xmlWriter = XmlWriter.Create(sb, xmlSettings);
+            xmlWriter.WriteStartElement("tsRequest");
+            xmlWriter.WriteStartElement("favoriteOrderings");
+            xmlWriter.WriteStartElement("favoriteOrdering");
+            xmlWriter.WriteAttributeString("favoriteId", favoriteId);
+            xmlWriter.WriteAttributeString("favoriteType", contentType);
+            xmlWriter.WriteAttributeString("favoriteIdMoveAfter", favoriteAfterId);
+            xmlWriter.WriteAttributeString("favoriteTypeMoveAfter", contentType);
+            xmlWriter.WriteEndElement(); // end favorite ordering element
+            xmlWriter.WriteEndElement(); // end favorite orderings element
+            xmlWriter.WriteEndElement(); // end tsRequest element
+            xmlWriter.Close();
 
+            var xmlText = sb.ToString();
 
+            var webRequest = CreateLoggedInWebRequest(url, "PUT");
+
+            SendRequestContents(webRequest, xmlText, "PUT");
+
+            var response = GetWebResponseLogErrors(webRequest, "reorder workbook favorites");            
+        }
     }
 }
 

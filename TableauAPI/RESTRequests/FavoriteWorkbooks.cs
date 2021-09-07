@@ -162,10 +162,10 @@ namespace TableauAPI.RESTRequests
         /// </summary>
         /// <param name="favoriteId">The ID of the workbook to move from the user's favorites.</param>
         /// <param name="favoriteAfterId">The ID of the workbook to which our FavoriteId will be placed after from the user's favorites. If not specified</param>
-        /// <param name="contentType">The content type of the favorite. To specify the type, use one of the following values: datasource, workbook, view, project, flow</param>
         /// <returns></returns>
-        public void ReorderWorkbookFavorites(string favoriteId, string favoriteAfterId, string contentType)
+        public void ReorderFavorites(string favoriteId, string favoriteAfterId)
         {
+            var contentType = "workbook";
             var url = _onlineUrls.Url_OrderFavoritesForUser(_userId, OnlineSession);
             var sb = new StringBuilder();
             var xmlSettings = new XmlWriterSettings();
