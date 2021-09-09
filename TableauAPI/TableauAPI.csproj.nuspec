@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>TableauAPI</id>
-    <version>1.4.4</version>
+    <version>1.4.7</version>
     <authors>Onware</authors>
     <owners>Onware</owners>
     <licenseUrl>https://github.com/onware/TableauAPI/blob/master/LICENSE.txt</licenseUrl>
@@ -10,7 +10,7 @@
     <iconUrl>https://raw.githubusercontent.com/onware/TableauAPI/master/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>An implementation of the Tableau REST API in C# distributed as a NuGet package.</description>
-    <releaseNotes>Added max-age parameter to view image query</releaseNotes>
+    <releaseNotes>Added Query and download of flows</releaseNotes>
     <copyright>Copyright 2021</copyright>
     <tags>Tableau</tags>
   </metadata>
