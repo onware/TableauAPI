@@ -8,7 +8,7 @@ using TableauAPI.ServerData;
 namespace TableauAPI.RESTRequests
 {
     /// <summary>
-    /// Downloads the list of data sources from the Tableau REST API
+    /// Downloads the list of flows from the Tableau REST API
     /// </summary>
     public class DownloadFlowsList : TableauServerSignedInRequestBase
     {
@@ -16,7 +16,7 @@ namespace TableauAPI.RESTRequests
         private List<SiteFlow> _flows;
 
         /// <summary>
-        /// Workbooks we've parsed from server results
+        /// Flows we've parsed from server results
         /// </summary>
         public ICollection<SiteFlow> Flows
         {
@@ -28,7 +28,7 @@ namespace TableauAPI.RESTRequests
         }
 
         /// <summary>
-        /// Create a request to get a list of Datasources from the Tableau REST API
+        /// Create a request to get a list of Flows from the Tableau REST API
         /// </summary>
         /// <param name="onlineUrls"></param>
         /// <param name="login"></param>
@@ -81,11 +81,11 @@ namespace TableauAPI.RESTRequests
             var response = GetWebResponseLogErrors(webRequest, "get flows list");
             var xmlDoc = GetWebResponseAsXml(response);
 
-            //Get all the workbook nodes
+            //Get all the flow nodes
             var nsManager = XmlHelper.CreateTableauXmlNamespaceManager("iwsOnline");
             var flows = xmlDoc.SelectNodes("//iwsOnline:flow", nsManager);
 
-            //Get information for each of the data sources
+            //Get information for each of the flow
             foreach (XmlNode itemXml in flows)
             {
                 try

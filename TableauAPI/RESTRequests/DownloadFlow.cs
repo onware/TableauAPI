@@ -7,7 +7,7 @@ using TableauAPI.ServerData;
 namespace TableauAPI.RESTRequests
 {
     /// <summary>
-    /// 
+    /// Manages the download of a flow from a Tableau REST API and saves it to disk
     /// </summary>
     public class DownloadFlow : TableauServerSignedInRequestBase
     {
@@ -18,7 +18,7 @@ namespace TableauAPI.RESTRequests
         private readonly SiteProject _downloadToProjectDirectory;
 
         /// <summary>
-        /// Create the request for to download Data sources from the Tableau REST API
+        /// Create the request to download a flow from the Tableau REST API
         /// </summary>
         /// <param name="onlineUrls">Tableau Server Information</param>
         /// <param name="logInInfo">Tableau Sign In Information</param>
@@ -35,7 +35,7 @@ namespace TableauAPI.RESTRequests
         }
 
         /// <summary>
-        /// Execute the REST API call for a list of data sources
+        /// Execute the REST API call for an individual flow
         /// </summary>
         public List<SiteFlow> ExecuteRequest()
         {
@@ -53,7 +53,7 @@ namespace TableauAPI.RESTRequests
 
             //Local path save the workbook
             string urlDownload = _onlineUrls.Url_FlowDownload(OnlineSession, _flow);
-            statusLog.AddStatus("Starting Datasource download " + _flow.Name);
+            statusLog.AddStatus("Starting Flow download " + _flow.Name);
             try
             {
                 //Generate the directory name we want to download into
@@ -61,9 +61,9 @@ namespace TableauAPI.RESTRequests
 
                 var fileDownloaded = this.DownloadFile(urlDownload, pathToSaveTo, _flow.Name, typeMapper);
                 var fileDownloadedNoPath = System.IO.Path.GetFileName(fileDownloaded);
-                statusLog.AddStatus("Finished Datasource download " + fileDownloadedNoPath);
+                statusLog.AddStatus("Finished Flow download " + fileDownloadedNoPath);
 
-                //Add to the list of our downloaded data sources
+                //Add to the list of our downloaded flows
                 if (!string.IsNullOrEmpty(fileDownloaded))
                 {
                     downloadedContent.Add(_flow);
@@ -76,7 +76,7 @@ namespace TableauAPI.RESTRequests
             }
             catch (Exception ex)
             {
-                statusLog.AddError("Error during Datasource download " + _flow.Name + "\r\n  " + urlDownload + "\r\n  " + ex.ToString());
+                statusLog.AddError("Error during Flow download " + _flow.Name + "\r\n  " + urlDownload + "\r\n  " + ex.ToString());
             }
 
             //Return the set of successfully downloaded content

@@ -7,7 +7,7 @@ using TableauAPI.ServerData;
 namespace TableauAPI.RESTRequests
 {
     /// <summary>
-    /// Manages the download of a set of data sources from a Tableau REST API and saves it to disk
+    /// Manages the download of a set of flows from a Tableau REST API and saves it to disk
     /// </summary>
     public class DownloadFlows : TableauServerSignedInRequestBase
     {
@@ -18,7 +18,7 @@ namespace TableauAPI.RESTRequests
         private readonly IProjectsList _downloadToProjectDirectories;
 
         /// <summary>
-        /// Create the request for to download Data sources from the Tableau REST API
+        /// Create the request to download Flows from the Tableau REST API
         /// </summary>
         /// <param name="onlineUrls">Tableau Server Information</param>
         /// <param name="logInInfo">Tableau Sign In Information</param>
@@ -35,7 +35,7 @@ namespace TableauAPI.RESTRequests
         }
 
         /// <summary>
-        /// Execute the REST API call for a list of data sources
+        /// Execute the REST API call for a list of flows
         /// </summary>
         public List<SiteFlow> ExecuteRequest()
         {
@@ -69,7 +69,7 @@ namespace TableauAPI.RESTRequests
 
                     var fileDownloaded = this.DownloadFile(urlDownload, pathToSaveTo, fInfo.Name, typeMapper);
                     var fileDownloadedNoPath = System.IO.Path.GetFileName(fileDownloaded);
-                    statusLog.AddStatus("Finished Datasource download " + fileDownloadedNoPath);
+                    statusLog.AddStatus("Finished Flow download " + fileDownloadedNoPath);
 
                     //Add to the list of our downloaded flows
                     if (!string.IsNullOrEmpty(fileDownloaded))
@@ -84,7 +84,7 @@ namespace TableauAPI.RESTRequests
                 }
                 catch (Exception ex)
                 {
-                    statusLog.AddError("Error during Datasource download " + fInfo.Name + "\r\n  " + urlDownload + "\r\n  " + ex.ToString());
+                    statusLog.AddError("Error during Flow download " + fInfo.Name + "\r\n  " + urlDownload + "\r\n  " + ex.ToString());
                 }
             } //foreach
 

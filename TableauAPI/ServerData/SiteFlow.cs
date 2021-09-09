@@ -7,7 +7,7 @@ using TableauAPI.FilesLogging;
 namespace TableauAPI.ServerData
 {
     /// <summary>
-    /// Information about a Datasource in a Server's site
+    /// Information about a Flow in a Server's site
     /// </summary>
     public class SiteFlow : SiteDocumentBase, IEditDataConnectionsSet
     {
@@ -74,7 +74,7 @@ namespace TableauAPI.ServerData
         }
 
         /// <summary>
-        /// Datasource description
+        /// Flow description
         /// </summary>
         /// <returns></returns>
         public override string ToString()

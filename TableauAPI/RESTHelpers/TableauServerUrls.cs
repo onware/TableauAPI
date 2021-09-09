@@ -682,13 +682,13 @@ namespace TableauAPI.RESTHelpers
         /// URL to download a Flow
         /// </summary>
         /// <param name="logInInfo">Tableau Sign In Information</param>
-        /// <param name="datasource">Tableau Data Source</param>
+        /// <param name="flow">Tableau Data Source</param>
         /// <returns></returns>
-        public string Url_FlowDownload(TableauServerSignIn logInInfo, SiteFlow datasource)
+        public string Url_FlowDownload(TableauServerSignIn logInInfo, SiteFlow flow)
         {
             string workingText = _urlDownloadFlowTemplate;
             workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
-            workingText = workingText.Replace("%%iwsRepositoryId%%", datasource.Id);
+            workingText = workingText.Replace("%%iwsRepositoryId%%", flow.Id);
 
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
