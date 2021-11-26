@@ -68,10 +68,15 @@ namespace TableauAPI.ServerData
                 throw new Exception("Unexpected content - not datasource");
             }
 
+
+            if (datasourceNode.Attributes?["webpageUrl"] != null)
+            {
+                WebpageUrl = datasourceNode.Attributes?["webpageUrl"].Value;
+            }
+
             //Get the underlying data source type
             Type = datasourceNode.Attributes?["type"].Value;
             ContentUrl = datasourceNode.Attributes?["contentUrl"].Value;
-            WebpageUrl = datasourceNode.Attributes?["webpageUrl"].Value;
             CreatedAt = datasourceNode.Attributes?["createdAt"].Value;
             UpdatedAt = datasourceNode.Attributes?["updatedAt"].Value;
             IsCertified = datasourceNode.Attributes?["isCertified"].Value;
