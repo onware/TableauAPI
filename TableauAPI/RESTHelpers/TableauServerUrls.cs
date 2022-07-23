@@ -31,6 +31,7 @@ namespace TableauAPI.RESTHelpers
         private readonly string _urlListViewsForWorkbookTemplate;
         private readonly string _urlListWorkbookConnectionsTemplate;
         private readonly string _urlListDatasourcesTemplate;
+        private readonly string _urlListFlowsTemplate;
         private readonly string _urlListProjectsTemplate;
         private readonly string _urlListGroupsTemplate;
         private readonly string _urlListUsersTemplate;
@@ -38,6 +39,7 @@ namespace TableauAPI.RESTHelpers
         private readonly string _urlListGroupsForUserTemplate;
         private readonly string _urlDownloadWorkbookTemplate;
         private readonly string _urlDownloadDatasourceTemplate;
+        private readonly string _urlDownloadFlowTemplate;
         private readonly string _urlDatasourceConnectionsTemplate;
         private readonly string _urlSiteInfoTemplate;
         private readonly string _urlInitiateUploadTemplate;
@@ -118,6 +120,7 @@ namespace TableauAPI.RESTHelpers
             _urlListWorkbookConnectionsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/connections";
             _urlWorkbookTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%";
             _urlListDatasourcesTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
+            _urlListFlowsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/flows?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlListProjectsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/projects?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlListGroupsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/groups?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlListGroupsForUserTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/users/%%iwsUserId%%/groups";
@@ -126,6 +129,7 @@ namespace TableauAPI.RESTHelpers
             _urlDownloadDatasourceTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources/%%iwsRepositoryId%%/content";
             _urlDatasourceConnectionsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources/%%iwsRepositoryId%%/connections";
             _urlDownloadWorkbookTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsRepositoryId%%/content";
+            _urlDownloadFlowTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/flows/%%iwsRepositoryId%%/content";
             _urlSiteInfoTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%";
             _urlInitiateUploadTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/fileUploads";
             _urlAppendUploadChunkTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/fileUploads/%%iwsUploadSession%%";
@@ -451,6 +455,27 @@ namespace TableauAPI.RESTHelpers
             return workingText;
         }
 
+
+        /// <summary>
+        /// URL for the Flows list
+        /// </summary>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <param name="pageSize">Page size to use when retrieving results from Tableau server</param>
+        /// <param name="pageNumber">Which page of the results to return. Defaults to 1.</param>
+        /// <returns></returns>
+        public string Url_FlowsList(TableauServerSignIn logInInfo, int pageSize, int pageNumber = 1)
+        {
+            string workingText = _urlListFlowsTemplate;
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsPageSize%%", pageSize.ToString());
+            workingText = workingText.Replace("%%iwsPageNumber%%", pageNumber.ToString());
+            _ValidateTemplateReplaceComplete(workingText);
+
+            return workingText;
+        }
+
+
+
         /// <summary>
         /// URL for creating a project
         /// </summary>
@@ -648,6 +673,22 @@ namespace TableauAPI.RESTHelpers
             string workingText = _urlDownloadDatasourceTemplate;
             workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
             workingText = workingText.Replace("%%iwsRepositoryId%%", datasource.Id);
+
+            _ValidateTemplateReplaceComplete(workingText);
+            return workingText;
+        }
+
+        /// <summary>
+        /// URL to download a Flow
+        /// </summary>
+        /// <param name="logInInfo">Tableau Sign In Information</param>
+        /// <param name="flow">Tableau Data Source</param>
+        /// <returns></returns>
+        public string Url_FlowDownload(TableauServerSignIn logInInfo, SiteFlow flow)
+        {
+            string workingText = _urlDownloadFlowTemplate;
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsRepositoryId%%", flow.Id);
 
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
