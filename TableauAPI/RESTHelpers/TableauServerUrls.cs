@@ -61,6 +61,7 @@ namespace TableauAPI.RESTHelpers
         private readonly string _urlViewFilter;
         private readonly string _urlOrderFavoritesForUser;
         private readonly string _urlGetSchedule;
+        private readonly string _UrlQuerySchedules;
 
         /// <summary>
         /// Server url with protocol
@@ -151,6 +152,7 @@ namespace TableauAPI.RESTHelpers
             _urlViewFilter = $"vf_%%iwsFieldName%%=%%iwsFieldValue%%";
             _urlOrderFavoritesForUser = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/orderFavorites/%%iwsUserId%%";
             _urlGetSchedule = serverNameWithProtocol + $"/api/{apiVersion}/schedules/%%iwsScheduleId%%";
+            _UrlQuerySchedules = serverNameWithProtocol + $"/api/{apiVersion}/schedules";
         }
 
         private static ServerProtocol _GetProtocolFromUrl(string url)
@@ -799,6 +801,12 @@ namespace TableauAPI.RESTHelpers
         public string Url_GetSchedule(string scheduleId) {
             string workingText = _urlGetSchedule;
             workingText = workingText.Replace("%%iwsScheduleId%%",scheduleId);
+            _ValidateTemplateReplaceComplete(workingText);
+            return workingText;
+        }
+
+        public string Url__QuerySchedules() {
+            string workingText = _UrlQuerySchedules;
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }

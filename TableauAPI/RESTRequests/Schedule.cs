@@ -16,6 +16,21 @@ namespace TableauAPI.RESTRequests
             _onlineUrls = onlineUrls;
         }
 
+        public void QuerySchedules() {
+            var statusLog = OnlineSession.StatusLog;
+
+            //Create a web request, in including the users logged-in auth information in the request headers
+            var urlRequest = _onlineUrls.Url__QuerySchedules();
+            var webRequest = CreateLoggedInWebRequest(urlRequest);
+            webRequest.Method = "GET";
+
+            //Request the data from server
+            OnlineSession.StatusLog.AddStatus("Web request: " + urlRequest, -10);
+            var response = GetWebResponseLogErrors(webRequest, "get schedule");
+            var xmlDoc = GetWebResponseAsXml(response);
+
+        }
+
         public void GetSchedule(string scheduleId) {
             var statusLog = OnlineSession.StatusLog;
 
