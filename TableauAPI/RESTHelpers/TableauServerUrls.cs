@@ -60,7 +60,7 @@ namespace TableauAPI.RESTHelpers
         private readonly string _urlDownloadWorkbookPDF;
         private readonly string _urlViewFilter;
         private readonly string _urlOrderFavoritesForUser;
-
+        private readonly string _urlExtractRefreshTaskBySite;
         /// <summary>
         /// Server url with protocol
         /// </summary>
@@ -149,6 +149,7 @@ namespace TableauAPI.RESTHelpers
             _urlDownloadWorkbookPDF = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/pdf?type=%%iwsPageType%%&orientation=%%iwsPageOrientation%%";
             _urlViewFilter = $"vf_%%iwsFieldName%%=%%iwsFieldValue%%";
             _urlOrderFavoritesForUser = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/orderFavorites/%%iwsUserId%%";
+            _urlExtractRefreshTaskBySite = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/tasks/extractRefreshes";
         }
 
         private static ServerProtocol _GetProtocolFromUrl(string url)
@@ -803,6 +804,13 @@ namespace TableauAPI.RESTHelpers
             string workingText = _urlOrderFavoritesForUser;
             workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
             workingText = workingText.Replace("%%iwsUserId%%", userId);
+            _ValidateTemplateReplaceComplete(workingText);
+            return workingText;
+        }
+
+        public string Url_ExtractRefreshTaskBySiteId(TableauServerSignIn logInInfo) {
+            string workingText = _urlExtractRefreshTaskBySite;
+            workingText = workingText.Replace("%%iwsSiteId%%",logInInfo.SiteId);
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }
