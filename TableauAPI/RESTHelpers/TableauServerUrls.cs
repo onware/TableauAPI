@@ -60,6 +60,9 @@ namespace TableauAPI.RESTHelpers
         private readonly string _urlDownloadWorkbookPDF;
         private readonly string _urlViewFilter;
         private readonly string _urlOrderFavoritesForUser;
+        private readonly string _urlGetSchedule;
+        private readonly string _UrlQuerySchedules;
+
         private readonly string _urlExtractRefreshTaskBySite;
         /// <summary>
         /// Server url with protocol
@@ -149,6 +152,8 @@ namespace TableauAPI.RESTHelpers
             _urlDownloadWorkbookPDF = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/pdf?type=%%iwsPageType%%&orientation=%%iwsPageOrientation%%";
             _urlViewFilter = $"vf_%%iwsFieldName%%=%%iwsFieldValue%%";
             _urlOrderFavoritesForUser = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/orderFavorites/%%iwsUserId%%";
+            _urlGetSchedule = serverNameWithProtocol + $"/api/{apiVersion}/schedules/%%iwsScheduleId%%";
+            _UrlQuerySchedules = serverNameWithProtocol + $"/api/{apiVersion}/schedules";
             _urlExtractRefreshTaskBySite = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/tasks/extractRefreshes";
         }
 
@@ -791,6 +796,19 @@ namespace TableauAPI.RESTHelpers
             workingText = workingText.Replace("%%iwsWorkbookId%%", workbookId);
             workingText = workingText.Replace("%%iwsPageType%%", pageType.ToString());
             workingText = workingText.Replace("%%iwsPageOrientation%%", pageOrientation.ToString());
+            _ValidateTemplateReplaceComplete(workingText);
+            return workingText;
+        }
+
+        public string Url_GetSchedule(string scheduleId) {
+            string workingText = _urlGetSchedule;
+            workingText = workingText.Replace("%%iwsScheduleId%%",scheduleId);
+            _ValidateTemplateReplaceComplete(workingText);
+            return workingText;
+        }
+
+        public string Url__QuerySchedules() {
+            string workingText = _UrlQuerySchedules;
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }
