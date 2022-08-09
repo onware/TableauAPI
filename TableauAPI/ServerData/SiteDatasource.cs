@@ -74,8 +74,12 @@ namespace TableauAPI.ServerData
                 WebpageUrl = datasourceNode.Attributes?["webpageUrl"].Value;
             }
 
+            if (datasourceNode.Attributes?["type"] != null) 
+            {
+                Type = datasourceNode.Attributes["type"].Value;
+            }
+
             //Get the underlying data source type
-            Type = datasourceNode.Attributes?["type"].Value;
             ContentUrl = datasourceNode.Attributes?["contentUrl"].Value;
             CreatedAt = datasourceNode.Attributes?["createdAt"].Value;
             UpdatedAt = datasourceNode.Attributes?["updatedAt"].Value;
