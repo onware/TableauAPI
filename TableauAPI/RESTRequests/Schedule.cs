@@ -12,6 +12,7 @@ namespace TableauAPI.RESTRequests
     {
         private readonly TableauServerUrls _onlineUrls;
         private List<SiteSchedule> _schedules;
+        private SiteSchedule _siteSchedule;
 
         public Schedule(TableauServerUrls onlineUrls, TableauServerSignIn logInInfo)
             : base(logInInfo)
@@ -63,10 +64,22 @@ namespace TableauAPI.RESTRequests
             OnlineSession.StatusLog.AddStatus("Web request: " + urlRequest, -10);
             var response = GetWebResponseLogErrors(webRequest, "get schedule");
 
-            var xmlDoc = GetWebResponseAsXml(response);
+            var xmlDoc = GetWebResponseAsXml(response); 
+
+            var nsManager = XmlHelper.CreateTableauXmlNamespaceManager("iwsOnline");
+            var collection = xmlDoc.SelectSingleNode("//iwsOnline:schedule", nsManager);
 
             //Get schedule
-            
+            try
+            {
+                var s = new SiteSchedule(collection);
+                _siteSchedule = s;
+            }
+            catch
+            {
+                AppDiagnostics.Assert(false, "schedule parse error");
+                OnlineSession.StatusLog.AddError("Error parsing schedule: " + collection.InnerXml);
+            }
         }
     }
 }
