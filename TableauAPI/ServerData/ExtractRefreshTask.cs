@@ -6,30 +6,48 @@ namespace TableauAPI.ServerData
 {
     public class ExtractRefreshTask
     {
-        public readonly string nextRunAt;
         public readonly string datasourceId;
-        public readonly string scheduleId;
         public readonly string siteId;
-        public readonly string taskId;
 
-        public ExtractRefreshTask(XmlNamespaceManager nsManager, XmlDocument xmlDoc,string _siteId)
-        {
-            var task = xmlDoc.SelectSingleNode("//iwsOnline:extractRefresh", nsManager);
-            var schedule = xmlDoc.SelectSingleNode("//iwsOnline:schedule", nsManager);
-            var datasource = xmlDoc.SelectSingleNode("//iwsOnline:datasource", nsManager);
+        public readonly string extractRefreshId;
+        public readonly string extractRefreshPriority;
+        public readonly string consecutiveFailedCount;
+        public readonly string extractRefreshType;
 
-            var taskname = task.Name.ToLower();
+        public readonly string scheduleId;
+        public readonly string scheduleName;
+        public readonly string scheduleState;
+        public readonly string schedulePriority;
+        public readonly string scheduleCreatedAt;
+        public readonly string scheduleUpdatedAt;
+        public readonly string scheduleType;
+        public readonly string scheduleFrequency;
+        public readonly string scheduleNextRunAt;
 
-            if (taskname == "extractrefresh") {
-                taskId = task.Attributes?["id"].Value;
-            }
-            if (schedule.Name.ToLower() == "schedule") { 
-                nextRunAt = schedule.Attributes?["nextRunAt"].Value;
-                scheduleId = schedule.Attributes?["id"].Value;
-            }
-            if (datasource.Name.ToLower() == "datasource") { 
-                datasourceId = datasource.Attributes?["id"].Value;
-            }
+
+
+        public ExtractRefreshTask(XmlNamespaceManager nsManager, XmlNode task, string _siteId) {
+
+            var extractRefresh = task.LastChild;
+            var schedule = task.LastChild.FirstChild;
+            var datasource = task.LastChild.LastChild;
+            
+            datasourceId = datasource.Attributes?["id"].Value;
+
+            extractRefreshId = extractRefresh.Attributes?["id"].Value;
+            extractRefreshPriority = extractRefresh.Attributes?["priority"].Value;
+            consecutiveFailedCount = extractRefresh.Attributes?["consecutiveFailedCount"].Value;
+            extractRefreshType = extractRefresh.Attributes?["type"].Value;
+
+            scheduleId = schedule.Attributes?["id"].Value;
+            scheduleName = schedule.Attributes?["name"].Value;
+            scheduleState = schedule.Attributes?["state"].Value;
+            schedulePriority = schedule.Attributes?["priority"].Value;
+            scheduleCreatedAt = schedule.Attributes?["createdAt"].Value;
+            scheduleUpdatedAt = schedule.Attributes?["updatedAt"].Value;
+            scheduleType = schedule.Attributes?["type"].Value;
+            scheduleFrequency = schedule.Attributes?["frequency"].Value;
+            scheduleNextRunAt = schedule.Attributes?["nextRunAt"].Value;
 
             siteId = _siteId;
         }

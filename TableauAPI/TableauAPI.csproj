@@ -3,6 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
 	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	  <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+	  <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <version>1.5.1</version>
   </PropertyGroup>
 
 </Project>
