@@ -2,6 +2,7 @@
 using TableauAPI.FilesLogging;
 using TableauAPI.RESTHelpers;
 using TableauAPI.ServerData;
+using System.Collections.Generic;
 
 namespace TableauAPI.RESTRequests
 {
@@ -9,20 +10,20 @@ namespace TableauAPI.RESTRequests
     {
 
         private readonly TableauServerUrls _onlineUrls;
-        private ServerData.ExtractRefreshTask _extractRefreshTask;
+        private List<ServerData.ExtractRefreshTask> _extractRefreshTasks;
 
+        public ICollection<ServerData.ExtractRefreshTask> extractRefreshTasks
+        {
+            get {
+                var e = _extractRefreshTasks;
+                return e?.AsReadOnly();
+            }
+        }
         public ExtractRefreshTask(TableauServerUrls onlineUrls, TableauServerSignIn logInInfo) : base (logInInfo)
         {
             _onlineUrls = onlineUrls;
         }
 
-        public ServerData.ExtractRefreshTask extractRefreshTask
-        {
-            get 
-            {
-                return _extractRefreshTask;
-            }
-        }
 
         public void GetExtractRefreshTasks() {
             var statusLog = OnlineSession.StatusLog;
@@ -40,18 +41,24 @@ namespace TableauAPI.RESTRequests
 
             //Get extract refresh task by site
             var nsManager = XmlHelper.CreateTableauXmlNamespaceManager("iwsOnline");
-            try
-            {
-                var refreshTask = new ServerData.ExtractRefreshTask(nsManager,xmlDoc,OnlineSession.SiteId);
-                _extractRefreshTask = refreshTask;
-                statusLog.AddStatus("Extract Refresh Task: " + refreshTask.taskId + "/" + refreshTask.nextRunAt + "/" + refreshTask.scheduleId);
+
+            var tasks = xmlDoc.SelectNodes("//iwsOnline:task", nsManager);
+
+            var sources = new List<ServerData.ExtractRefreshTask>();
+
+            //Get information for each of the tasks
+            foreach (XmlNode itemXml in tasks) {
+                try {
+                    var task = new ServerData.ExtractRefreshTask(nsManager, itemXml, OnlineSession.SiteId);
+                    sources.Add(task);
+                }
+                catch
+                {
+                    AppDiagnostics.Assert(false, "task parse error");
+                    statusLog.AddError("Error parsing task: " + xmlDoc.InnerXml);
+                }
             }
-            catch
-            {
-                AppDiagnostics.Assert(false, "Site parse error");
-                statusLog.AddError("Error parsing site: " + xmlDoc.InnerXml);
-            }
-            
+            _extractRefreshTasks = sources;
         }
     }
 }
