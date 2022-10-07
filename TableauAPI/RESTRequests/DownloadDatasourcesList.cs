@@ -110,5 +110,40 @@ namespace TableauAPI.RESTRequests
 
         #endregion
 
+        public void QueryDataSources() {
+            //Create a web request, in including the users logged-in auth information in the request headers
+            var urlQuery = _onlineUrls.Url_QueryDataSources(OnlineSession);
+            var webRequest = CreateLoggedInWebRequest(urlQuery);
+            webRequest.Method = "GET";
+
+            OnlineSession.StatusLog.AddStatus("Web request: " + urlQuery, -10);
+            var response = GetWebResponseLogErrors(webRequest, "query data sources");
+            var xmlDoc = GetWebResponseAsXml(response);
+
+            //Get all the workbook nodes
+            var nsManager = XmlHelper.CreateTableauXmlNamespaceManager("iwsOnline");
+            var datasources = xmlDoc.SelectNodes("//iwsOnline:datasource", nsManager);
+
+            var sources = new List<SiteDatasource>();
+
+            foreach (XmlNode itemXml in datasources)
+            {
+                try
+                {
+                    var ds = new SiteDatasource(itemXml);
+                    sources.Add(ds);
+                }
+                catch
+                {
+                    AppDiagnostics.Assert(false, "Datasource parse error");
+                    OnlineSession.StatusLog.AddError("Error parsing datasource: " + itemXml.InnerXml);
+                }
+            } //end: foreach
+
+            _datasources = sources;
+        }
+
     }
+
+    
 }

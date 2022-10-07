@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using TableauAPI.RESTHelpers;
+using TableauAPI.RESTRequests;
 
 namespace TableauAPI.RESTRequests
 {
@@ -51,10 +52,13 @@ namespace TableauAPI.RESTRequests
         /// </summary>
         /// <param name="workbookId"></param>
         /// <param name="viewId"></param>
+        /// <param name="filterName"></param>
+        /// <param name="filterValue"></param>
+        /// <param name="maxAge"></param>
         /// <returns></returns>
-        public byte[] GetImage(string workbookId, string viewId)
+        public byte[] GetImage(string workbookId, string viewId, string filterName="", string filterValue="", int maxAge=60)
         {
-            var url = _onlineUrls.Url_ViewImage(workbookId, viewId, OnlineSession);
+            var url = _onlineUrls.Url_ViewImage(workbookId, viewId, filterName, filterValue, maxAge, OnlineSession);
             var webRequest = CreateLoggedInWebRequest(url);
             webRequest.Method = "GET";
             var response = GetWebResponseLogErrors(webRequest, "get view image");
@@ -76,9 +80,9 @@ namespace TableauAPI.RESTRequests
         /// </summary>
         /// <param name="viewId"></param>
         /// <returns></returns>
-        public string GetData(string viewId)
+        public string GetData(string viewId, string filterName = "", string filterValue="")
         {
-            var url = _onlineUrls.Url_ViewData(viewId, OnlineSession);
+            var url = _onlineUrls.Url_ViewData(viewId, filterName, filterValue, OnlineSession);
             var webRequest = CreateLoggedInWebRequest(url);
             webRequest.Method = "GET";
             var response = GetWebResponseLogErrors(webRequest, "get view data");
@@ -92,6 +96,33 @@ namespace TableauAPI.RESTRequests
                 }
             }
             return System.Text.Encoding.UTF8.GetString(data);
+        }
+
+
+        /// <summary>
+        /// Return PDF for a View 
+        /// </summary>
+        /// <param name="viewId"></param>
+        /// <param name="pageType"></param>
+        /// <param name="pageOrientation"></param>
+        /// <returns></returns>
+        public byte[] GetPDF(string viewId, PageType pageType = PageType.Letter, PageOrientation pageOrientation = PageOrientation.Portrait)
+        {
+            var url = _onlineUrls.Url_DownloadViewPDF(OnlineSession, viewId, pageType, pageOrientation);
+            var webRequest = CreateLoggedInWebRequest(url);
+            webRequest.Method = "GET";
+            var response = GetWebResponseLogErrors(webRequest, "get view pdf");
+            byte[] pdf;
+            using (var stream = response.GetResponseStream())
+            {
+
+                using (var ms = new MemoryStream())
+                {
+                    stream.CopyTo(ms);
+                    pdf = ms.ToArray();
+                }
+            }
+            return pdf;
         }
     }
 }

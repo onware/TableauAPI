@@ -8,33 +8,34 @@ using System.Text;
 
 namespace TableauAPI.RESTRequests
 {
-    public class FavoriteWorkbooks : TableauServerSignedInRequestBase
+    public class FavoriteViews : TableauServerSignedInRequestBase
     {
         private readonly TableauServerUrls _onlineUrls;
         private readonly string _userId;
 
-        private List<string> _favoriteWorkbookIds;
+        private List<SiteView> _views;
 
-        private List<SiteWorkbook> _workbooks;
+        private List<string> _favoriteViewIds;
+        private List<string> _favoriteViewWorkbookIds;
 
         /// <summary>
-        /// Workbooks we've parsed from server results
+        /// Favorite views we've parsed from server results
         /// </summary>
-        public ICollection<SiteWorkbook> Workbooks
+        public ICollection<SiteView> Views
         {
             get
             {
-                var wb = _workbooks;
-                return wb?.AsReadOnly();
+                var views = _views;
+                return views?.AsReadOnly();
             }
         }
 
         /// <summary>
-        /// Constructor: Call when we want to query favorite workbooks on behalf of the currently logged in user
+        /// Constructor: Call when we want to query favorite views on behalf of the currently logged in user
         /// </summary>
         /// <param name="onlineUrls">Tableau Server Information</param>
         /// <param name="logInInfo">Tableau Sign In Information</param>
-        public FavoriteWorkbooks(TableauServerUrls onlineUrls, TableauServerSignIn logInInfo)
+        public FavoriteViews(TableauServerUrls onlineUrls, TableauServerSignIn logInInfo)
             : base(logInInfo)
         {
             _onlineUrls = onlineUrls;
@@ -42,12 +43,12 @@ namespace TableauAPI.RESTRequests
         }
 
         /// <summary>
-        /// Constructor: Call when we want to query favorite workbooks on behalf of an explicitly specified user
+        /// Constructor: Call when we want to query favorite views on behalf of an explicitly specified user
         /// </summary>
         /// <param name="onlineUrls">Tableau Server Information</param>
         /// <param name="logInInfo">Tableau Sign In Information</param>
         /// <param name="userId">Tableau User Id</param>
-        public FavoriteWorkbooks(TableauServerUrls onlineUrls, TableauServerSignIn logInInfo, string userId)
+        public FavoriteViews(TableauServerUrls onlineUrls, TableauServerSignIn logInInfo, string userId)
             : base(logInInfo)
         {
             _onlineUrls = onlineUrls;
@@ -55,12 +56,12 @@ namespace TableauAPI.RESTRequests
         }
 
         /// <summary>
-        /// Adds the specified workbook to a user's favorites.
+        /// Adds the specified view to a user's favorites.
         /// </summary>
-        /// <param name="favoriteLabel">A label to assign to the favorite. This value is displayed when you search for favorites on the server. If the label is already in use for another workbook, an error is returned.</param>
-        /// <param name="workbookId">The ID (not name) of the workbook to add as a favorite.</param>
+        /// <param name="favoriteLabel">A label to assign to the favorite. This value is displayed when you search for favorites on the server. If the label is already in use for another view, an error is returned.</param>
+        /// <param name="viewId">The ID (not name) of the view to add as a favorite.</param>
         /// <returns></returns>
-        public void AddWorkbookToFavorites(string favoriteLabel, string workbookId)
+        public void AddViewToFavorites(string favoriteLabel, string viewId)
         {
             var url = _onlineUrls.Url_AddToFavorites(_userId, OnlineSession);
             var sb = new StringBuilder();
@@ -70,9 +71,9 @@ namespace TableauAPI.RESTRequests
             xmlWriter.WriteStartElement("tsRequest");
             xmlWriter.WriteStartElement("favorite");
             xmlWriter.WriteAttributeString("label", favoriteLabel);
-            xmlWriter.WriteStartElement("workbook");
-            xmlWriter.WriteAttributeString("id", workbookId);
-            xmlWriter.WriteEndElement(); // end workbook element
+            xmlWriter.WriteStartElement("view");
+            xmlWriter.WriteAttributeString("id", viewId);
+            xmlWriter.WriteEndElement(); // end view element
             xmlWriter.WriteEndElement(); // end favorite element
             xmlWriter.WriteEndElement(); // end tsRequest element
             xmlWriter.Close();
@@ -83,48 +84,59 @@ namespace TableauAPI.RESTRequests
 
             SendRequestContents(webRequest, xmlText, "PUT");
 
-            var response = GetWebResponseLogErrors(webRequest, "add workbook to favorites");
+            var response = GetWebResponseLogErrors(webRequest, "add view to favorites");
         }
 
         /// <summary>
-        /// Deletes a workbook from a user's favorites. If the specified workbook is not a favorite of the specified user, this call has no effect.
+        /// Deletes a view from a user's favorites. If the specified view is not a favorite of the specified user, this call has no effect.
         /// </summary>
-        /// <param name="workbookId">The ID of the workbook to remove from the user's favorites.</param>
+        /// <param name="viewId">The ID of the view to remove from the user's favorites.</param>
         /// <returns></returns>
-        public void DeleteWorkbookFromFavorites(string workbookId)
+        public void DeleteViewFromFavorites(string viewId)
         {
-            var url = _onlineUrls.Url_DeleteWorkbookFromFavorites(workbookId, _userId, OnlineSession);
+            var url = _onlineUrls.Url_DeleteViewFromFavorites(viewId, _userId, OnlineSession);
 
             var webRequest = CreateLoggedInWebRequest(url, "DELETE");
 
-            var response = GetWebResponseLogErrors(webRequest, "delete workbook from favorites");
+            var response = GetWebResponseLogErrors(webRequest, "delete view from favorites");
         }
 
         /// <summary>
-        /// Get a listing of a user's workbooks that have been favorited.
+        /// Get a listing of a user's views that have been favorited.
         /// </summary>
-        public List<string> GetFavoriteWorkbookIds()
+        public List<string> GetFavoriteViewIds()
         {
-            if (_workbooks == null || _workbooks.Count <= 0)
+            if (_views == null || _views.Count <= 0)
             {
                 ExecuteRequest();
             }
-            return _favoriteWorkbookIds;
+            return _favoriteViewIds;
         }
 
+        public List<string> GetWorkbookIdsFromFavoriteViews()
+        {
+            if (_views == null || _views.Count <= 0)
+            {
+                ExecuteRequest();
+            }
+            return _favoriteViewWorkbookIds;
+        }
+
+
         /// <summary>
-        /// Execute request for Favorite workbook listings
+        /// Execute request for favorite view listings
         /// </summary>
         public void ExecuteRequest()
         {
             //Sanity check
             if (string.IsNullOrWhiteSpace(_userId))
             {
-                OnlineSession.StatusLog.AddError("User ID required to query favorite workbooks");
+                OnlineSession.StatusLog.AddError("User ID required to query favorite views");
             }
 
-            _workbooks = new List<SiteWorkbook>();
-            _favoriteWorkbookIds = new List<string>();
+            _views = new List<SiteView>();
+            _favoriteViewIds = new List<string>();
+            _favoriteViewWorkbookIds = new List<string>();
 
             //Create a web request, in including the users logged-in auth information in the request headers
             var urlQuery = _onlineUrls.Url_GetFavoritesForUser(_userId, OnlineSession);
@@ -132,32 +144,34 @@ namespace TableauAPI.RESTRequests
             webRequest.Method = "GET";
 
             OnlineSession.StatusLog.AddStatus("Web request: " + urlQuery, -10);
-            var response = GetWebResponseLogErrors(webRequest, "get Favorites list");
+            var response = GetWebResponseLogErrors(webRequest, "get favorite views list");
             var xmlDoc = GetWebResponseAsXml(response);
 
-            //Get all the favorite workbook nodes
+            //Get all the favorite view nodes
             var nsManager = XmlHelper.CreateTableauXmlNamespaceManager("iwsOnline");
-            var workbooks = xmlDoc.SelectNodes("//iwsOnline:favorite/iwsOnline:workbook", nsManager);
+            var views = xmlDoc.SelectNodes("//iwsOnline:favorite/iwsOnline:view", nsManager);
 
             //Get information for each of the data sources
-            foreach (XmlNode itemXml in workbooks)
+            foreach (XmlNode itemXml in views)
             {
                 try
                 {
-                    var ds = new SiteWorkbook(itemXml);
-                    _favoriteWorkbookIds.Add(ds.Id);
-                    _workbooks.Add(ds);
+                    var ds = new SiteView(itemXml);
+                    _favoriteViewIds.Add(ds.Id);
+                    _favoriteViewWorkbookIds.Add(ds.WorkbookId);
+                    _views.Add(ds);
                 }
                 catch
                 {
-                    AppDiagnostics.Assert(false, "Favorite workbook parse error");
-                    OnlineSession.StatusLog.AddError("Error parsing favorite workbook: " + itemXml.InnerXml);
+                    AppDiagnostics.Assert(false, "Favorite view parse error");
+                    OnlineSession.StatusLog.AddError("Error parsing favorite view: " + itemXml.InnerXml);
                 }
             } //end: foreach
-        }
 
+        }
+        
         /// <summary>
-        /// Reorders a workbook from a user's favorites. If the specified workbook is not a favorite of the specified user, this call has no effect.
+        /// Reorders a view from a user's favorites. If the specified view is not a favorite of the specified user, this call has no effect.
         /// Tableau API Call params
         /// </summary>
         /// <param name="favoriteId">The ID of the workbook to move from the user's favorites.</param>
@@ -165,7 +179,7 @@ namespace TableauAPI.RESTRequests
         /// <returns></returns>
         public void ReorderFavorites(string favoriteId, string favoriteAfterId)
         {
-            var contentType = "workbook";
+            var contentType = "view";
             var url = _onlineUrls.Url_OrderFavoritesForUser(_userId, OnlineSession);
             var sb = new StringBuilder();
             var xmlSettings = new XmlWriterSettings();
@@ -193,3 +207,4 @@ namespace TableauAPI.RESTRequests
         }
     }
 }
+

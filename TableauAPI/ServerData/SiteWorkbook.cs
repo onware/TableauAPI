@@ -43,6 +43,12 @@ namespace TableauAPI.ServerData
         /// Size
         /// </summary>
         public readonly string Size;
+        /// <summary>
+        /// Order position
+        /// </summary>
+        public readonly string Position;
+
+        public readonly string DefaultViewId;
 
         private List<SiteConnection> _dataConnections;
 
@@ -74,6 +80,11 @@ namespace TableauAPI.ServerData
             {
                 Description = workbookNode.Attributes?["description"].Value;
             }
+
+            if (workbookNode.ParentNode != null && workbookNode.ParentNode.Attributes["position"] != null)
+            {
+                Position = workbookNode.ParentNode.Attributes?["position"].Value;
+            }
             
             //Note: [2015-10-28] Datasources presently don't return this information, so we need to make this workbook specific
             ContentUrl = workbookNode.Attributes?["contentUrl"].Value;
@@ -84,10 +95,11 @@ namespace TableauAPI.ServerData
             }
 
             CreatedAt = workbookNode.Attributes?["createdAt"].Value;
-
             UpdatedAt = workbookNode.Attributes?["updatedAt"].Value;
 
             Size = workbookNode.Attributes?["size"].Value;
+
+            DefaultViewId = workbookNode.Attributes?["defaultViewId"]?.Value;
 
             //Do we have tabs?
             ShowTabs = XmlHelper.SafeParseXmlAttribute_Bool(workbookNode, "showTabs", false);

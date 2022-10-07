@@ -13,14 +13,14 @@ namespace TableauAPI.RESTRequests
     {
         const string xmlLogIn = "<tsRequest>  <credentials name=\"{{iwsUserName}}\"    password=\"{{iwsPassword}}\" >  <site contentUrl=\"{{iwsSiteUrl}}\" /> </credentials></tsRequest>";
 
-        private readonly TableauServerUrls _onlineUrls;
+        protected readonly TableauServerUrls _onlineUrls;
         private readonly string _userName;
         private readonly string _password;
-        private readonly string _siteUrlSegment;
-        private string _logInCookies;
-        private string _logInToken;
-        private string _logInSiteId;
-        private string _logInUserId;
+        protected readonly string _siteUrlSegment;
+        protected string _logInCookies;
+        protected string _logInToken;
+        protected string _logInSiteId;
+        protected string _logInUserId;
 
         /// <summary>
         /// Status Log for the current Sign In Session
@@ -94,14 +94,18 @@ namespace TableauAPI.RESTRequests
         /// </summary>
         public bool ExecuteRequest()
         {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-            var webRequest = WebRequest.Create(_onlineUrls.UrlLogin);
             string bodyText = xmlLogIn;
             bodyText = bodyText.Replace("{{iwsUserName}}", _userName);
             bodyText = bodyText.Replace("{{iwsPassword}}", _password);
             bodyText = bodyText.Replace("{{iwsSiteUrl}}", _siteUrlSegment);
             AssertTemplateFullyReplaced(bodyText);
+            return ExecuteRequestForBodyText(bodyText);
+        }
 
+        protected bool ExecuteRequestForBodyText(string bodyText)
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+            var webRequest = WebRequest.Create(_onlineUrls.UrlLogin);
             //===============================================================================================
             //Make the sign in request, trap and note, and rethrow any errors
             //===============================================================================================
@@ -124,7 +128,7 @@ namespace TableauAPI.RESTRequests
             {
                 response = webRequest.GetResponse();
             }
-            catch(Exception exResponse)
+            catch (Exception exResponse)
             {
                 StatusLog.AddError("Error returned from sign in response: " + exResponse);
                 throw;
@@ -158,10 +162,10 @@ namespace TableauAPI.RESTRequests
             //For this reason this code is going to defensively look to see if hte attribute is there
             var userNode = xmlDoc.SelectSingleNode("//iwsOnline:user", nsManager);
             string userId = null;
-            if(userNode != null)
+            if (userNode != null)
             {
-                var userIdAttribute =  userNode.Attributes?["id"];
-                if(userIdAttribute != null)
+                var userIdAttribute = userNode.Attributes?["id"];
+                if (userIdAttribute != null)
                 {
                     userId = userIdAttribute.Value;
                 }
@@ -169,7 +173,7 @@ namespace TableauAPI.RESTRequests
             }
 
             //Output some status text...
-            if(!string.IsNullOrWhiteSpace(userId))
+            if (!string.IsNullOrWhiteSpace(userId))
             {
                 StatusLog.AddStatus("Log-in returned user id: '" + userId + "'", -10);
             }

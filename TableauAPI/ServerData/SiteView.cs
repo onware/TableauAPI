@@ -29,6 +29,10 @@ namespace TableauAPI.ServerData
         /// Update date
         /// </summary>
         public readonly string UpdatedAt;
+        /// <summary>
+        /// Order position
+        /// </summary>
+        public readonly string Position;
 
         private List<SiteConnection> _dataConnections;
 
@@ -47,23 +51,28 @@ namespace TableauAPI.ServerData
         /// <summary>
         /// Create a SiteView from XML returned by the Tableau server
         /// </summary>
-        /// <param name="xmlNode"></param>
-        public SiteView(XmlNode xmlNode) : base(xmlNode)
+        /// <param name="viewNode"></param>
+        public SiteView(XmlNode viewNode) : base(viewNode)
         {
-            if (xmlNode.Name.ToLower() != "view")
+            if (viewNode.Name.ToLower() != "view")
             {
                 AppDiagnostics.Assert(false, "Not a view");
                 throw new Exception("Unexpected content - not a view");
             }
 
-            this.ContentUrl = xmlNode.Attributes?["contentUrl"].Value;
-            CreatedAt = xmlNode.Attributes?["createdAt"].Value;
-            UpdatedAt = xmlNode.Attributes?["updatedAt"].Value;
+            this.ContentUrl = viewNode.Attributes?["contentUrl"].Value;
+            CreatedAt = viewNode.Attributes?["createdAt"].Value;
+            UpdatedAt = viewNode.Attributes?["updatedAt"].Value;            
 
-            var workbookNode = xmlNode.SelectSingleNode("iwsOnline:workbook", NamespaceManager);
+            var workbookNode = viewNode.SelectSingleNode("iwsOnline:workbook", NamespaceManager);
             if (workbookNode != null)
             {
-                this.WorkbookId = xmlNode.Attributes?["id"].Value;
+                this.WorkbookId = workbookNode.Attributes?["id"].Value;                
+            }
+
+            if (viewNode.ParentNode != null && viewNode.ParentNode.Attributes["position"] != null)
+            {
+                Position = viewNode.ParentNode.Attributes?["position"].Value;
             }
         }
 
