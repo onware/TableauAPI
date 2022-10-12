@@ -11,7 +11,6 @@ namespace TableauAPI.ServerData
     /// </summary>
     public class SiteFlow : SiteDocumentBase, IEditDataConnectionsSet
     {
-
         /// <summary>
         /// Web page url
         /// </summary>
