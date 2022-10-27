@@ -126,7 +126,7 @@ namespace TableauAPI.RESTHelpers
             _urlWorkbookTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%";
             _urlListDatasourcesTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlListFlowsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/flows?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
-            _urlListFlowRunTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/flows/runs";
+            _urlListFlowRunTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/flows/runs?filter=startedAt:gt:%%iwsStartedAt%%";
             _urlListProjectsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/projects?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlListGroupsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/groups?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlListGroupsForUserTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/users/%%iwsUserId%%/groups";
@@ -491,9 +491,10 @@ namespace TableauAPI.RESTHelpers
             return workingText;
         }
 
-        public string Url_FlowRunsList(TableauServerSignIn logInInfo) {
+        public string Url_FlowRunsList(TableauServerSignIn logInInfo,DateTime startedAt) {
             string workingText = _urlListFlowRunTemplate;
             workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsStartedAt%%", startedAt.ToString("o"));
             return workingText;
         }
 

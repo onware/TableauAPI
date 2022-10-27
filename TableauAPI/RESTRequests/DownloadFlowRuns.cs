@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using TableauAPI.FilesLogging;
 using TableauAPI.RESTHelpers;
@@ -33,10 +34,21 @@ namespace TableauAPI.RESTRequests
             _onlineUrls = onlineUrls;
         }
 
-        public void ExecuteRequest() 
+        public void ExecuteRequest(DateTime? startedAt = null)
         {
+            if (startedAt == null) { startedAt = DateTime.UtcNow.AddDays(-7); }
             var onlineFlowRuns = new List<SiteFlowRun>();
-            var urlQuery = _onlineUrls.Url_FlowRunsList(OnlineSession);
+            bool canContinue = true;
+            while (canContinue) {
+                ExecuteRequestByDate(onlineFlowRuns, (DateTime)startedAt, out canContinue);
+                string strStartedAt = onlineFlowRuns.OrderByDescending(x => x.startedAt).FirstOrDefault().startedAt;
+                startedAt = DateTimeOffset.Parse(strStartedAt).UtcDateTime;
+            }
+            _flowRuns = onlineFlowRuns.GroupBy(x => x.Id).Select(x => x.First()).ToList();  
+        }
+        public void ExecuteRequestByDate(List<SiteFlowRun> onlineFlowRuns, DateTime startedAt, out bool canContinue) 
+        {
+            var urlQuery = _onlineUrls.Url_FlowRunsList(OnlineSession,startedAt);
             var webRequest = CreateLoggedInWebRequest(urlQuery);
             webRequest.Method = "GET";
 
@@ -47,6 +59,7 @@ namespace TableauAPI.RESTRequests
             //Get all the flow run nodes
             var nsManager = XmlHelper.CreateTableauXmlNamespaceManager("iwsOnline");
             var flowRuns = xmlDoc.SelectNodes("//iwsOnline:flowRuns", nsManager);
+
             //Get information for each of the flow
             foreach (XmlNode itemXml in flowRuns)
             {
@@ -63,9 +76,7 @@ namespace TableauAPI.RESTRequests
                     OnlineSession.StatusLog.AddError("Error parsing flow run: " + itemXml.InnerXml);
                 }
             }
-
-            _flowRuns = onlineFlowRuns;
-
+            if (flowRuns.Count < 100) { canContinue = false; } else { canContinue = true; }
         }
 
     }
