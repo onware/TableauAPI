@@ -143,7 +143,34 @@ namespace TableauAPI.RESTRequests
             _datasources = sources;
         }
 
+        public SiteDatasource QueryDataSource(string id)
+        {
+            //Create a web request, in including the users logged-in auth information in the request headers
+            var urlQuery = _onlineUrls.Url_QueryDataSource(OnlineSession, id);
+            var webRequest = CreateLoggedInWebRequest(urlQuery);
+            webRequest.Method = "GET";
+
+            OnlineSession.StatusLog.AddStatus("Web request: " + urlQuery, -10);
+            var response = GetWebResponseLogErrors(webRequest, "query data sources");
+            var xmlDoc = GetWebResponseAsXml(response);
+
+            //Get all the workbook nodes
+            var nsManager = XmlHelper.CreateTableauXmlNamespaceManager("iwsOnline");
+            var itemXml = xmlDoc.SelectSingleNode("//iwsOnline:datasource", nsManager);
+
+            try
+            {
+                var ds = new SiteDatasource(itemXml);
+                return ds;
+            }
+            catch
+            {
+                AppDiagnostics.Assert(false, "Datasource parse error");
+                OnlineSession.StatusLog.AddError("Error parsing datasource: " + itemXml.InnerXml);
+                return null;
+            }
+        }
     }
 
-    
+
 }

@@ -243,3 +243,6 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+
+TableauAPI.Test/integration-test-config.xml
+
