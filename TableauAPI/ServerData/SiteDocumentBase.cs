@@ -53,8 +53,8 @@ namespace TableauAPI.ServerData
         /// <param name="xmlNode"></param>
         protected SiteDocumentBase(XmlNode xmlNode)
         {
-            Name = xmlNode.Attributes?["name"].Value;
-            Id = xmlNode.Attributes?["id"].Value;
+            Name = xmlNode.Attributes?["name"]?.Value;
+            Id = xmlNode.Attributes?["id"]?.Value;
 
             //Note: [2015-10-28] Datasources presently don't return this information
             //        this.ContentUrl = xmlNode.Attributes["contentUrl"].Value;
