@@ -5,7 +5,7 @@
 	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	  <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 	  <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <version>1.5.3</version>
+    <version>1.5.4</version>
   </PropertyGroup>
 
 </Project>
