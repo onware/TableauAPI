@@ -32,6 +32,7 @@ namespace TableauAPI.RESTHelpers
         private readonly string _urlListWorkbookConnectionsTemplate;
         private readonly string _urlListDatasourcesTemplate;
         private readonly string _urlListFlowsTemplate;
+        private readonly string _urlListFlowRunTemplate;
         private readonly string _urlListProjectsTemplate;
         private readonly string _urlListGroupsTemplate;
         private readonly string _urlListUsersTemplate;
@@ -60,6 +61,7 @@ namespace TableauAPI.RESTHelpers
         private readonly string _urlDownloadWorkbookPDF;
         private readonly string _urlViewFilter;
         private readonly string _urlOrderFavoritesForUser;
+        private readonly string _urlQueryDataSource;
         private readonly string _urlQueryDataSources;
         private readonly string _urlGetSchedule;
         private readonly string _UrlQuerySchedules;
@@ -125,6 +127,7 @@ namespace TableauAPI.RESTHelpers
             _urlWorkbookTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%";
             _urlListDatasourcesTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlListFlowsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/flows?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
+            _urlListFlowRunTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/flows/runs?filter=startedAt:gt:%%iwsStartedAt%%";
             _urlListProjectsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/projects?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlListGroupsTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/groups?pageSize=%%iwsPageSize%%&pageNumber=%%iwsPageNumber%%";
             _urlListGroupsForUserTemplate = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/users/%%iwsUserId%%/groups";
@@ -153,6 +156,7 @@ namespace TableauAPI.RESTHelpers
             _urlDownloadWorkbookPDF = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/workbooks/%%iwsWorkbookId%%/pdf?type=%%iwsPageType%%&orientation=%%iwsPageOrientation%%";
             _urlViewFilter = $"vf_%%iwsFieldName%%=%%iwsFieldValue%%";
             _urlOrderFavoritesForUser = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/orderFavorites/%%iwsUserId%%";
+            _urlQueryDataSource = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources/%%iwsDatasourceId%%";
             _urlQueryDataSources = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/datasources";
             _urlGetSchedule = serverNameWithProtocol + $"/api/{apiVersion}/schedules/%%iwsScheduleId%%";
             _UrlQuerySchedules = serverNameWithProtocol + $"/api/{apiVersion}/schedules";
@@ -463,6 +467,16 @@ namespace TableauAPI.RESTHelpers
             return workingText;
         }
 
+        public string Url_QueryDataSource(TableauServerSignIn logInInfo, string id)
+        {
+            string workingText = _urlQueryDataSource;
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsDatasourceId%%", id);
+            _ValidateTemplateReplaceComplete(workingText);
+          
+            return workingText;
+        }
+
         public string Url_QueryDataSources(TableauServerSignIn logInInfo) {
             string workingText = _urlQueryDataSources;
             workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
@@ -489,7 +503,12 @@ namespace TableauAPI.RESTHelpers
             return workingText;
         }
 
-
+        public string Url_FlowRunsList(TableauServerSignIn logInInfo,DateTime startedAt) {
+            string workingText = _urlListFlowRunTemplate;
+            workingText = workingText.Replace("%%iwsSiteId%%", logInInfo.SiteId);
+            workingText = workingText.Replace("%%iwsStartedAt%%", startedAt.ToString("o"));
+            return workingText;
+        }
 
         /// <summary>
         /// URL for creating a project
