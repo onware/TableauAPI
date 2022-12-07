@@ -66,6 +66,7 @@ namespace TableauAPI.RESTHelpers
         private readonly string _urlGetSchedule;
         private readonly string _UrlQuerySchedules;
         private readonly string _urlExtractRefreshTaskBySite;
+        private readonly string _urlGraphqlMetadata;
 
         /// <summary>
         /// Server url with protocol
@@ -161,6 +162,7 @@ namespace TableauAPI.RESTHelpers
             _urlGetSchedule = serverNameWithProtocol + $"/api/{apiVersion}/schedules/%%iwsScheduleId%%";
             _UrlQuerySchedules = serverNameWithProtocol + $"/api/{apiVersion}/schedules";
             _urlExtractRefreshTaskBySite = serverNameWithProtocol + $"/api/{apiVersion}/sites/%%iwsSiteId%%/tasks/extractRefreshes";
+            _urlGraphqlMetadata = serverNameWithProtocol + "/api/metadata/graphql";
         }
 
         private static ServerProtocol _GetProtocolFromUrl(string url)
@@ -860,6 +862,12 @@ namespace TableauAPI.RESTHelpers
             _ValidateTemplateReplaceComplete(workingText);
             return workingText;
         }
+
+        public string Url_QueryGraphqlMetadata()
+        {
+            return _urlGraphqlMetadata;
+        }
+
 
         string ITableauServerSiteInfo.ServerName => ServerName;
 

@@ -2,6 +2,7 @@
 using System.Linq;
 using TableauAPI.RESTHelpers;
 using TableauAPI.RESTRequests;
+using Newtonsoft.Json;
 
 namespace TableauAPI.Test
 {
