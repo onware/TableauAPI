@@ -12,13 +12,6 @@ namespace TableauAPI.Test
         private TableauServerUrls _urls;
         private TableauServerSignIn _session;
 
-        public class graphqlRequest
-        {
-            public string query { get; set; }
-            //public string operationName { get; set; } optional property
-            //public string variables { get; set; } optional property
-        }
-
         [TestInitialize]
         public void Login()
         {
@@ -39,21 +32,6 @@ namespace TableauAPI.Test
             var pagedResults = pagedRequest.Datasources;
 
             Assert.IsTrue(pagedResults.Count >= unpagedResults.Count, "paged returns more or same (if unpaged)");
-        }
-
-        [TestMethod]
-        public void TestMetadata()
-        {
-            
-            var meta = new QueryGraphqlMetadata(_urls, _session);
-
-            var q = new graphqlRequest()
-            {
-                query = "query example{\r\n    datasources\r\n    {\r\n      id\r\n    }\r\n}"
-            };
-            string query = JsonConvert.SerializeObject(q);
-            meta.Execute(query);
-            var result = meta.Result;
         }
 
         [TestMethod]

@@ -60,6 +60,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="DatasourceQueryTest.cs" />
+    <Compile Include="GraphqlMetadataTest.cs" />
     <Compile Include="IntegrationTestEnvironment.cs" />
     <Compile Include="SiteConnectionTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

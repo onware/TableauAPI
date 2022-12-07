@@ -29,7 +29,7 @@ namespace TableauAPI.RESTRequests
         ///     "variables": { "myVariable": "someValue", ... }
         /// }
         /// operationName/variables are optional
-        /// referemce https://graphql.org/learn/serving-over-http/#post-request
+        /// reference https://graphql.org/learn/serving-over-http/#post-request
         /// </summary>
         /// <param name="queryString"></param>
         public void Execute(string queryString)
@@ -45,7 +45,7 @@ namespace TableauAPI.RESTRequests
             var newStream = webRequest.GetRequestStream();
             newStream.Write(byte1,0,byte1.Length);
             newStream.Close();
-            var response = GetWebResponseLogErrors(webRequest, "query meata data");
+            var response = GetWebResponseLogErrors(webRequest, "query meta data");
 
             _returnJson = GetWebResponseAsText(response);
 
