@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>TableauAPI</id>
-    <version>1.5.1</version>
+    <version>1.5.5</version>
     <authors>Onware</authors>
     <owners>Onware</owners>
     <licenseUrl>https://github.com/onware/TableauAPI/blob/master/LICENSE.txt</licenseUrl>
