@@ -56,7 +56,6 @@ namespace TableauAPI.ServerData
         {
             if (flowNode.Name.ToLower() != "flow")
             {
-                AppDiagnostics.Assert(false, "Not a flow");
                 throw new Exception("Unexpected content - not flow");
             }
 

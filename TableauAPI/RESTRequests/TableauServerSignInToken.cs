@@ -27,7 +27,7 @@ namespace TableauAPI.RESTRequests
         /// <param name="tokenName">Personal Access Token name</param>
         /// <param name="tokenSecret">Personal Access Token secret</param>
         /// <param name="statusLog">Status log</param>
-        public new static void VerifySignInPossible(string url, string tokenName, string tokenSecret, TaskStatusLogs statusLog)
+        public new static void VerifySignInPossible(string url, string tokenName, string tokenSecret, ITaskStatusLogger statusLog)
         {
             var urlManager = TableauServerUrls.FromContentUrl(url, 1000);
             var signIn = new TableauServerSignInToken(urlManager, tokenName, tokenSecret, statusLog);
@@ -46,7 +46,7 @@ namespace TableauAPI.RESTRequests
         /// <param name="tokenName">Personal Access Token name</param>
         /// <param name="tokenSecret">Personal Access Token secret</param>
         /// <param name="statusLog">Status log</param>
-        public TableauServerSignInToken(TableauServerUrls url, string tokenName, string tokenSecret, TaskStatusLogs statusLog): base(url, tokenName, tokenSecret, statusLog)
+        public TableauServerSignInToken(TableauServerUrls url, string tokenName, string tokenSecret, ITaskStatusLogger statusLog): base(url, tokenName, tokenSecret, statusLog)
         {
             _tokenName = tokenName;
             _tokenSecret = tokenSecret;

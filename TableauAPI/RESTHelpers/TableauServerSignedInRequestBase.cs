@@ -21,7 +21,7 @@ namespace TableauAPI.RESTHelpers
         /// <summary>
         /// Returns the Status Log for this request.
         /// </summary>
-        public TaskStatusLogs StatusLog => OnlineSession.StatusLog;
+        public ITaskStatusLogger StatusLog => OnlineSession.StatusLog;
 
         /// <summary>
         /// Constructor
@@ -200,7 +200,7 @@ namespace TableauAPI.RESTHelpers
         /// <param name="webException"></param>
         /// <param name="description"></param>
         /// <param name="onlineStatusLog"></param>
-        private static void AttemptToLogWebException(WebException webException, string description, TaskStatusLogs onlineStatusLog)
+        private static void AttemptToLogWebException(WebException webException, string description, ITaskStatusLogger onlineStatusLog)
         {
             if(onlineStatusLog == null) return; //No logger? nothing to do
 
@@ -215,11 +215,11 @@ namespace TableauAPI.RESTHelpers
                 response.Close();
                 if(responseText == null) responseText = "";
 
-                onlineStatusLog.AddError(description +  ": " + webException.Message + "\r\n" + responseText + "\r\n");
+                onlineStatusLog.AddError(description, webException, responseText);
             }
             catch (Exception ex)
             {
-                onlineStatusLog.AddError("Error in web request exception: " + ex.Message);
+                onlineStatusLog.AddError("Error in web request exception", ex);
             }
         }
 

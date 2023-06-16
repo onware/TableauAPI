@@ -57,7 +57,6 @@ namespace TableauAPI.ServerData
         {
             if (userNode.Name.ToLower() != "user")
             {
-                AppDiagnostics.Assert(false, "Not a user");
                 throw new Exception("Unexpected content - not user");
             }
 

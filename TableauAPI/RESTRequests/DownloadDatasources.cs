@@ -84,7 +84,7 @@ namespace TableauAPI.RESTRequests
                 }
                 catch (Exception ex)
                 {
-                    statusLog.AddError("Error during Datasource download " + dsInfo.Name + "\r\n  " + urlDownload + "\r\n  " + ex.ToString());
+                    statusLog.AddError($"Error during Datasource download {dsInfo.Name}: {urlDownload}", ex);
                 }
             } //foreach
 

@@ -80,7 +80,7 @@ namespace TableauAPI.RESTRequests
                 }
                 catch (Exception exPageRequest)
                 {
-                    StatusLog.AddError("Users list error during page request: " + exPageRequest.Message);
+                    StatusLog.AddError("Users list error during page request", exPageRequest);
                 }
             }
 
@@ -121,8 +121,7 @@ namespace TableauAPI.RESTRequests
                 }
                 catch
                 {
-                    AppDiagnostics.Assert(false, "User parse error");
-                    OnlineSession.StatusLog.AddError("Error parsing user: " + itemXml.InnerXml);
+                    OnlineSession.StatusLog.AddError("Error parsing user " + itemXml.InnerXml);
                 }
             } //end: foreach
 

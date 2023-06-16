@@ -70,7 +70,6 @@ namespace TableauAPI.RESTRequests
                 }
                 catch
                 {
-                    AppDiagnostics.Assert(false, "Site parse error");
                     statusLog.AddError("Error parsing site: " + contentXml.InnerXml);
                 }
             }

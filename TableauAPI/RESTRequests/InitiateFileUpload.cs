@@ -48,7 +48,7 @@ namespace TableauAPI.RESTRequests
             }
             catch (Exception ex)
             {
-                statusLog.AddError("Error during file upload initiate\r\n  " + urlInitiate + "\r\n  " + ex.ToString());
+                statusLog.AddError("Error during file upload initiate: " + urlInitiate, ex);
             }
 
             //Return the set of successfully downloaded content

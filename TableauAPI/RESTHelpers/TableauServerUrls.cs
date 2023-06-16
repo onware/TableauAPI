@@ -882,15 +882,12 @@ namespace TableauAPI.RESTHelpers
         /// </summary>
         /// <param name="str">URL string</param>
         /// <returns></returns>
-        private static bool _ValidateTemplateReplaceComplete(string str)
+        private static void _ValidateTemplateReplaceComplete(string str)
         {
             if (str.Contains("%%iws"))
             {
-                AppDiagnostics.Assert(false, "Template has incomplete parts that need to be replaced");
-                return false;
+                throw new ApplicationException($"Template replacement was incomplete: {str}");
             }
-
-            return true;
         }
 
         #endregion

@@ -20,7 +20,6 @@ namespace TableauAPI.ServerData
         public SiteSchedule(XmlNode ScheduleNode)
         {
             if (ScheduleNode.Name.ToLower() != "schedule") {
-                AppDiagnostics.Assert(false, "Not a schedule");
                 throw new Exception("Unexpected content - not schedule");
             }
             if (ScheduleNode.Attributes != null && ScheduleNode.Attributes["id"] != null)

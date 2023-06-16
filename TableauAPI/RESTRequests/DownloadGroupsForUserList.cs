@@ -81,7 +81,7 @@ namespace TableauAPI.RESTRequests
                 }
                 catch (Exception exPageRequest)
                 {
-                    StatusLog.AddError("User groups error during page request: " + exPageRequest.Message);
+                    StatusLog.AddError("User groups error during page request", exPageRequest);
                 }
             }
 
@@ -122,7 +122,6 @@ namespace TableauAPI.RESTRequests
                 }
                 catch
                 {
-                    AppDiagnostics.Assert(false, "Group parse error");
                     OnlineSession.StatusLog.AddError("Error parsing Group: " + itemXml.InnerXml);
                 }
             } //end: foreach

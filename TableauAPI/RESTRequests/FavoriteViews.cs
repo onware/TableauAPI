@@ -163,7 +163,6 @@ namespace TableauAPI.RESTRequests
                 }
                 catch
                 {
-                    AppDiagnostics.Assert(false, "Favorite view parse error");
                     OnlineSession.StatusLog.AddError("Error parsing favorite view: " + itemXml.InnerXml);
                 }
             } //end: foreach

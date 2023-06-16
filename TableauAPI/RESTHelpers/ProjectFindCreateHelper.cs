@@ -66,7 +66,7 @@ namespace TableauAPI.RESTHelpers
                 }
                 catch (Exception exCreateProject)
                 {
-                    StatusLog.AddError("Failed attempting to create project '" + projectName + "', " + exCreateProject.Message);
+                    StatusLog.AddError("Failed attempting to create project '" + projectName + "'", exCreateProject);
                 }
             }
 

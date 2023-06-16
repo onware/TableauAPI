@@ -31,7 +31,6 @@ namespace TableauAPI.ServerData
         {
             if (flowNode.Name.ToLower() != "flowruns") 
             {
-                AppDiagnostics.Assert(false, "Not a flow run");
                 throw new Exception("Unexpected content - not flow run");
             }
             //Get the underlying data source type

@@ -55,7 +55,7 @@ namespace TableauAPI.RESTRequests
                 }
                 catch(Exception exPageRequest)
                 {
-                    StatusLog.AddError("Datasources error during page request: " + exPageRequest.Message);
+                    StatusLog.AddError("Datasources error during page request", exPageRequest);
                 }
             }
             _datasources = onlineDatasources;
@@ -95,7 +95,6 @@ namespace TableauAPI.RESTRequests
                 }
                 catch
                 {
-                    AppDiagnostics.Assert(false, "Datasource parse error");
                     OnlineSession.StatusLog.AddError("Error parsing datasource: " + itemXml.InnerXml);
                 }
             } //end: foreach
@@ -135,7 +134,6 @@ namespace TableauAPI.RESTRequests
                 }
                 catch
                 {
-                    AppDiagnostics.Assert(false, "Datasource parse error");
                     OnlineSession.StatusLog.AddError("Error parsing datasource: " + itemXml.InnerXml);
                 }
             } //end: foreach
@@ -165,7 +163,6 @@ namespace TableauAPI.RESTRequests
             }
             catch
             {
-                AppDiagnostics.Assert(false, "Datasource parse error");
                 OnlineSession.StatusLog.AddError("Error parsing datasource: " + itemXml.InnerXml);
                 return null;
             }

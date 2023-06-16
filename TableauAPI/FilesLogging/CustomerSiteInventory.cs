@@ -43,7 +43,7 @@ namespace TableauAPI.FilesLogging
         /// <summary>
         /// Status log data
         /// </summary>
-        public readonly TaskStatusLogs StatusLog;
+        public readonly ITaskStatusLogger StatusLog;
 
         /// <summary>
         /// Constructor.  Builds the data for the CSV file
@@ -60,7 +60,7 @@ namespace TableauAPI.FilesLogging
             IEnumerable<SiteWorkbook> workbooks,
             IEnumerable<SiteUser> users,
             IEnumerable<SiteGroup> groups,
-            TaskStatusLogs statusLogger)
+            ITaskStatusLogger statusLogger)
         {
             //Somewhere to store status logs
             if (statusLogger == null)
@@ -97,7 +97,7 @@ namespace TableauAPI.FilesLogging
             }
             catch(Exception ex)
             {
-                StatusLog.AddError("Error looking up user id, " + ex.Message);
+                StatusLog.AddError("Error looking up user id", ex);
                 return "** Error in user lookup **"; //Continue onward
             }
         }

@@ -97,7 +97,7 @@ namespace TableauAPI.RESTRequests
                 }
                 catch (Exception ex)
                 {
-                    statusLog.AddError("Error during Workbook download " + contentInfo.Name + "\r\n  " + urlDownload + "\r\n  " + ex.ToString());
+                    statusLog.AddError($"Error during Workbook download {contentInfo.Name}: {urlDownload}", ex);
                 }
             } //foreach
 

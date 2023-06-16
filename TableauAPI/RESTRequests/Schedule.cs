@@ -45,7 +45,6 @@ namespace TableauAPI.RESTRequests
                     schedules.Add(s);
                 }
                 catch {
-                    AppDiagnostics.Assert(false, "schedule parse error");
                     OnlineSession.StatusLog.AddError("Error parsing schedule: " + itemXml.InnerXml);
                 }
             }
@@ -77,7 +76,6 @@ namespace TableauAPI.RESTRequests
             }
             catch
             {
-                AppDiagnostics.Assert(false, "schedule parse error");
                 OnlineSession.StatusLog.AddError("Error parsing schedule: " + collection.InnerXml);
             }
         }

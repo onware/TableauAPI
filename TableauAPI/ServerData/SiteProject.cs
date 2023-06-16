@@ -60,7 +60,6 @@ namespace TableauAPI.ServerData
 
             if (projectNode.Name.ToLower() != "project")
             {
-                AppDiagnostics.Assert(false, "Not a project");
                 throw new Exception("Unexpected content - not project");
             }
 

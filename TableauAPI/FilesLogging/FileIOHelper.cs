@@ -114,7 +114,7 @@ namespace TableauAPI.FilesLogging
         /// <param name="project">Project record.</param>
         /// <param name="statusLog">Logging object.</param>
         /// <returns></returns>
-        public static string EnsureProjectBasedPath(string basePath, IProjectsList projectList, IHasProjectId project, TaskStatusLogs statusLog)
+        public static string EnsureProjectBasedPath(string basePath, IProjectsList projectList, IHasProjectId project, ITaskStatusLogger statusLog)
         {
             //If we have no project list to do lookups in then just return the base path
             if (projectList == null) return basePath;
@@ -147,7 +147,7 @@ namespace TableauAPI.FilesLogging
         /// <param name="project">Project record.</param>
         /// <param name="statusLog">Logging object.</param>
         /// <returns></returns>
-        public static string EnsureProjectBasedPath(string basePath, SiteProject project, TaskStatusLogs statusLog)
+        public static string EnsureProjectBasedPath(string basePath, SiteProject project, ITaskStatusLogger statusLog)
         {
             //If we have no project list to do lookups in then just return the base path
             if (project == null)
@@ -176,7 +176,7 @@ namespace TableauAPI.FilesLogging
         /// <param name="workbook">Workbook record.</param>
         /// <param name="statusLog">Logging object.</param>
         /// <returns></returns>
-        public static string EnsureProjectBasedPath(string basePath, SiteWorkbook workbook, TaskStatusLogs statusLog)
+        public static string EnsureProjectBasedPath(string basePath, SiteWorkbook workbook, ITaskStatusLogger statusLog)
         {
             //If we have no project list to do lookups in then just return the base path
             if (workbook == null)

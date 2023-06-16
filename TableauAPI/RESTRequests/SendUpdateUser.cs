@@ -54,7 +54,7 @@ namespace TableauAPI.RESTRequests
             }
             catch (Exception exUser)
             {
-                StatusLog.AddError("Error attempting to update user '" + _userId + "'," + exUser.Message);
+                StatusLog.AddError("Error attempting to update user '" + _userId + "'", exUser);
             }
         }
 

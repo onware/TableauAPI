@@ -52,7 +52,6 @@ namespace TableauAPI.ServerData
 
             if (projectNode.Name.ToLower() != "connection")
             {
-                AppDiagnostics.Assert(false, "Not a connection");
                 throw new Exception("Unexpected content - not connection");
             }
 

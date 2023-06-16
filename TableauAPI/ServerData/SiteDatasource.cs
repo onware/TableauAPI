@@ -64,7 +64,6 @@ namespace TableauAPI.ServerData
         {
             if (datasourceNode.Name.ToLower() != "datasource")
             {
-                AppDiagnostics.Assert(false, "Not a datasource");
                 throw new Exception("Unexpected content - not datasource");
             }
 

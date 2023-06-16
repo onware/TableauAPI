@@ -25,7 +25,7 @@ namespace TableauAPI.RESTRequests
         /// <summary>
         /// Status Log for the current Sign In Session
         /// </summary>
-        public readonly TaskStatusLogs StatusLog;
+        public readonly ITaskStatusLogger StatusLog;
         
         /// <summary>
         /// Synchronous call to test and make sure sign in works
@@ -34,7 +34,7 @@ namespace TableauAPI.RESTRequests
         /// <param name="username">Tableau username</param>
         /// <param name="userPassword">Tableau user's password</param>
         /// <param name="statusLog">Status log</param>
-        public static void VerifySignInPossible(string url, string username, string userPassword, TaskStatusLogs statusLog)
+        public static void VerifySignInPossible(string url, string username, string userPassword, ITaskStatusLogger statusLog)
         {
             var urlManager = TableauServerUrls.FromContentUrl(url, 1000);
             var signIn = new TableauServerSignIn(urlManager, username, userPassword, statusLog);
@@ -53,7 +53,7 @@ namespace TableauAPI.RESTRequests
         /// <param name="username">Tableau username</param>
         /// <param name="password">Tableau user's password</param>
         /// <param name="statusLog">Status log</param>
-        public TableauServerSignIn(TableauServerUrls url, string username, string password, TaskStatusLogs statusLog)
+        public TableauServerSignIn(TableauServerUrls url, string username, string password, ITaskStatusLogger statusLog)
         {
             if (statusLog == null) { statusLog = new TaskStatusLogs(); }
             StatusLog = statusLog;

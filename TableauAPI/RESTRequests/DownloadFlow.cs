@@ -76,7 +76,7 @@ namespace TableauAPI.RESTRequests
             }
             catch (Exception ex)
             {
-                statusLog.AddError("Error during Flow download " + _flow.Name + "\r\n  " + urlDownload + "\r\n  " + ex.ToString());
+                statusLog.AddError($"Error during Flow download '{_flow.Name}': {urlDownload}", ex);
             }
 
             //Return the set of successfully downloaded content

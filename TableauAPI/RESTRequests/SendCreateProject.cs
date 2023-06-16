@@ -44,7 +44,7 @@ namespace TableauAPI.RESTRequests
             }
             catch (Exception exProject)
             {
-                StatusLog.AddError("Error attempting to create project '" + _projectName + "', " + exProject.Message);
+                StatusLog.AddError("Error attempting to create project '" + _projectName + "'", exProject);
                 return null;
             }
         }
@@ -93,7 +93,7 @@ namespace TableauAPI.RESTRequests
                 }
                 catch (Exception parseXml)
                 {
-                    StatusLog.AddError("Data source upload, error parsing XML resposne " + parseXml.Message + "\r\n" + xNodeProject.InnerXml);
+                    StatusLog.AddError("Data source upload, error parsing XML resposne", parseXml, xNodeProject.InnerXml);
                     return null;
                 }
 

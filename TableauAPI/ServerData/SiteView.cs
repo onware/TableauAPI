@@ -56,7 +56,6 @@ namespace TableauAPI.ServerData
         {
             if (viewNode.Name.ToLower() != "view")
             {
-                AppDiagnostics.Assert(false, "Not a view");
                 throw new Exception("Unexpected content - not a view");
             }
 

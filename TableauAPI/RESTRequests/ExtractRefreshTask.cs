@@ -54,7 +54,6 @@ namespace TableauAPI.RESTRequests
                 }
                 catch
                 {
-                    AppDiagnostics.Assert(false, "task parse error");
                     statusLog.AddError("Error parsing task: " + xmlDoc.InnerXml);
                 }
             }

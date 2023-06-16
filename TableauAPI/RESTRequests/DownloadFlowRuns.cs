@@ -72,7 +72,6 @@ namespace TableauAPI.RESTRequests
                 }
                 catch
                 {
-                    AppDiagnostics.Assert(false, "Flow run parse error");
                     OnlineSession.StatusLog.AddError("Error parsing flow run: " + itemXml.InnerXml);
                 }
             }

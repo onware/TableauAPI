@@ -12,7 +12,7 @@ namespace TableauAPI.RESTHelpers
         /// <param name="pathDBCredentials"></param>
         /// <param name="statusLog"></param>
         /// <returns></returns>
-        internal static CredentialManager LoadFromFile(string pathDBCredentials, TaskStatusLogs statusLog)
+        internal static CredentialManager LoadFromFile(string pathDBCredentials, ITaskStatusLogger statusLog)
         {
             if(statusLog == null) 
             {
@@ -34,7 +34,7 @@ namespace TableauAPI.RESTHelpers
                 }
                 catch(Exception ex)
                 {
-                    statusLog.AddError("Error parsing credential, " + ex.Message + ", " + credentialNode.OuterXml);
+                    statusLog.AddError("Error parsing credential", ex, credentialNode.OuterXml);
                 }
             }
 

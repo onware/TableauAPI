@@ -150,7 +150,6 @@ namespace TableauAPI.RESTRequests
                 }
                 catch
                 {
-                    AppDiagnostics.Assert(false, "Favorite workbook parse error");
                     OnlineSession.StatusLog.AddError("Error parsing favorite workbook: " + itemXml.InnerXml);
                 }
             } //end: foreach

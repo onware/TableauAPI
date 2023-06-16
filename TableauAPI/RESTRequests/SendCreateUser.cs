@@ -52,7 +52,7 @@ namespace TableauAPI.RESTRequests
             }
             catch (Exception exProject)
             {
-                StatusLog.AddError("Error attempting to create user '" + _name + "', " + exProject.Message);
+                StatusLog.AddError("Error attempting to create user '" + _name + "'", exProject);
                 return null;
             }
         }

@@ -56,7 +56,7 @@ namespace TableauAPI.RESTRequests
                 }
                 catch (Exception exPageRequest)
                 {
-                    StatusLog.AddError("Projects error during page request: " + exPageRequest.Message);
+                    StatusLog.AddError("Projects error during page request", exPageRequest);
                 }
             }
 
@@ -141,7 +141,6 @@ namespace TableauAPI.RESTRequests
                 }
                 catch
                 {
-                    AppDiagnostics.Assert(false, "Project parse error");
                     OnlineSession.StatusLog.AddError("Error parsing project: " + itemXml.OuterXml);
                 }
             } //end: foreach

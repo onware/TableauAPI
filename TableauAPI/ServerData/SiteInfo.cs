@@ -47,7 +47,6 @@ namespace TableauAPI.ServerData
         {
             if(content.Name.ToLower() != "site")
             {
-                AppDiagnostics.Assert(false, "Not a site");
                 throw new Exception("Unexpected content - not site");
             }
 

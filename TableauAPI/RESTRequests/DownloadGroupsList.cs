@@ -57,7 +57,7 @@ namespace TableauAPI.RESTRequests
                 }
                 catch (Exception exPageRequest)
                 {
-                    StatusLog.AddError("Groups error during page request: " + exPageRequest.Message);
+                    StatusLog.AddError("Groups error during page request", exPageRequest);
                 }
             }
 
@@ -147,8 +147,7 @@ namespace TableauAPI.RESTRequests
                 }
                 catch (Exception exGetGroup)
                 {
-                    AppDiagnostics.Assert(false, "Group parse error");
-                    OnlineSession.StatusLog.AddError("Error parsing group: " + itemXml.OuterXml + ", " + exGetGroup.Message);
+                    OnlineSession.StatusLog.AddError("Error parsing group: " + itemXml.OuterXml, exGetGroup);
                 }
 
 
@@ -168,7 +167,7 @@ namespace TableauAPI.RESTRequests
                     }
                     catch (Exception exGetUsers)
                     {
-                        OnlineSession.StatusLog.AddError("Error parsing group's users: " + exGetUsers.Message);
+                        OnlineSession.StatusLog.AddError("Error parsing group's users", exGetUsers);
                     }
                 }
 

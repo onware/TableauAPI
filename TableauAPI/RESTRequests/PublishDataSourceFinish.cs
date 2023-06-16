@@ -79,7 +79,7 @@ namespace TableauAPI.RESTRequests
             }
             catch (Exception ex)
             {
-                statusLog.AddError("Error during file upload append\r\n  " + urlPublish + "\r\n  " + ex.ToString());
+                statusLog.AddError("Error during file upload append: " + urlPublish, ex);
             }
         }
     }

@@ -74,7 +74,7 @@ namespace TableauAPI.RESTRequests
                 }
                 catch (Exception exPageRequest)
                 {
-                    StatusLog.AddError("Workbooks error during page request: " + exPageRequest.Message);
+                    StatusLog.AddError("Workbooks error during page request", exPageRequest);
                 }
             }
 
@@ -115,7 +115,6 @@ namespace TableauAPI.RESTRequests
                 }
                 catch
                 {
-                    AppDiagnostics.Assert(false, "Workbook parse error");
                     OnlineSession.StatusLog.AddError("Error parsing workbook: " + itemXml.InnerXml);
                 }
             } //end: foreach

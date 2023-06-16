@@ -26,7 +26,6 @@ namespace TableauAPI.ServerData
         {
             if (tagsNode.Name.ToLower() != "tags")
             {
-                AppDiagnostics.Assert(false, "Not tags");
                 throw new Exception("Unexpected content - not tags");
             }
 

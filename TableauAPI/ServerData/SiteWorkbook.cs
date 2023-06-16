@@ -72,7 +72,6 @@ namespace TableauAPI.ServerData
         {
             if (workbookNode.Name.ToLower() != "workbook")
             {
-                AppDiagnostics.Assert(false, "Not a workbook");
                 throw new Exception("Unexpected content - not workbook");
             }
 

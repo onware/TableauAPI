@@ -54,7 +54,7 @@ namespace TableauAPI.RESTRequests
             }
             catch (Exception exProject)
             {
-                StatusLog.AddError("Error attempting to delete content tag " + _contentId + "/" + _tagText + "', " + exProject.Message);
+                StatusLog.AddError("Error attempting to delete content tag " + _contentId + "/" + _tagText + "'", exProject);
             }
         }
 

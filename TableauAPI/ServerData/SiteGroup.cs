@@ -51,7 +51,6 @@ namespace TableauAPI.ServerData
 
             if(projectNode.Name.ToLower() != "group")
             {
-                AppDiagnostics.Assert(false, "Not a group");
                 throw new Exception("Unexpected content - not group");
             }
 

@@ -1,10 +1,12 @@
-﻿namespace TableauAPI.FilesLogging
+﻿using System;
+
+namespace TableauAPI.FilesLogging
 {
     /// <summary>
     /// Records status of a set of API calls. Contains a log of statuses, and a log specific to errors thrown by the
     /// REST API.
     /// </summary>
-    public class TaskStatusLogs
+    public class TaskStatusLogs : ITaskStatusLogger
     {
         readonly Logger _statusLog = new Logger();
         readonly Logger _errorLog = new Logger();
@@ -42,7 +44,7 @@
         /// <remarks>If no status level is provided, a default value of 0 is used.</remarks>
         public void AddStatus(string statusText, int statusLevel = 0)
         {
-            if(statusLevel >= _minimumStatusLevel)
+            if (statusLevel >= _minimumStatusLevel)
             {
                 //Indent the lower status items
                 string prefixText = "";
@@ -70,6 +72,16 @@
         {
             _statusLog.AddStatus("Error: " + errorText);
             _errorLog.AddStatus(errorText);
+        }
+
+        public void AddError(string errorText, Exception ex)
+        {
+            AddError($"{errorText}: {ex.Message}");
+        }
+
+        public void AddError(string errorText, Exception ex, string extraInfo)
+        {
+            AddError($"{errorText}: {ex.Message} \r\n{extraInfo}");
         }
     }
 }

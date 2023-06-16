@@ -55,7 +55,7 @@ namespace TableauAPI.RESTRequests
                 }
                 catch (Exception exPageRequest)
                 {
-                    StatusLog.AddError("Flows error during page request: " + exPageRequest.Message);
+                    StatusLog.AddError("Flows error during page request", exPageRequest);
                 }
             }
             _flows = onlineFlows;
@@ -95,7 +95,6 @@ namespace TableauAPI.RESTRequests
                 }
                 catch
                 {
-                    AppDiagnostics.Assert(false, "Flow parse error");
                     OnlineSession.StatusLog.AddError("Error parsing flow: " + itemXml.InnerXml);
                 }
             } //end: foreach
